@@ -1,4 +1,4 @@
-import { appDataSource } from './config/data-source';
+import { appDataSource } from './config/dataSource';
 import { User } from './entities/User';
 
 appDataSource
