@@ -18,7 +18,7 @@ class AuthController extends Controller {
 
   private async signUp(request: express.Request, response: express.Response) {
     response.send('Hello world');
-  };
+  }
 }
 
 export default AuthController;
