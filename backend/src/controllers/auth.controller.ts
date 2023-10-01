@@ -1,28 +1,25 @@
-import { Express, Request, Response } from 'express';
+/* eslint no-console: ["error", { allow: ["info", "error"] }] */
+import * as express from 'express';
+import Controller from '../models/interfaces/controller';
 import { userService } from '../services/user.service';
-import BaseController from './baseController';
 
-class AuthController extends BaseController {
-  private userService = userService;
+class AuthController extends Controller {
+  private static readonly PATH = '/auth';
 
-  public static init(app: Express) {
-    this.instance = new AuthController(app);
-    return this.instance;
+  public userService = userService;
+
+  public constructor() {
+    super();
   }
 
-  protected constructor(app: Express) {
-    super(app);
-    this.app.get('/auth/signin', this.signUp);
-    this.app.get('/auth/signup', this.signUp);
+  protected initRoutes() {
+    this.router.post(`${AuthController.PATH}/signup`, this.signUp);
   }
 
-  private signUp(req: Request, res: Response) {
-    res.send('Hello world!');
-  }
-
-  private signIn(req: Request, res: Response) {
-    res.send('Hello world!');
-  }
+  private async signUp(request: express.Request, response: express.Response) {
+    response.send('Hello world');
+  };
 }
 
 export default AuthController;
+export const authControllerInstance = new AuthController();

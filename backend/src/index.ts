@@ -1,12 +1,11 @@
-import AuthController from './controllers/auth.controller';
-import express from 'express';
+import Server from './server';
 
-const app = express();
-const port = 8080; // default port to listen
+// controllers instances
+import { authControllerInstance } from './controllers/auth.controller';
 
-AuthController.init(app);
+(async () => {
+  const app = new Server([authControllerInstance]);
+  app.listen();
 
-// start the Express server
-app.listen(port, () => {
-  console.log(`server started at http://localhost:${port}`);
-});
+  return null;
+})();
