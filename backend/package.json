@@ -1,33 +1,33 @@
 {
-  "name": "backend",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "build": "tsc",
-    "prestart": "npm run build",
-    "start": "node ./dist",
-    "prettier-format": "prettier --config .prettierrc --write ./src",
-    "lint": "eslint src",
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "author": "",
-  "license": "ISC",
-  "dependencies": {
-    "@types/express": "^4.17.18",
-    "express": "^4.18.2",
-    "pg": "^8.11.3",
-    "reflect-metadata": "^0.1.13",
-    "typeorm": "^0.3.17"
-  },
-  "devDependencies": {
-    "@types/node": "^20.8.0",
-    "@typescript-eslint/eslint-plugin": "^6.7.3",
-    "@typescript-eslint/parser": "^6.7.3",
-    "eslint": "^8.50.0",
-    "eslint-config-prettier": "^9.0.0",
-    "eslint-plugin-prettier": "^5.0.0",
-    "prettier": "^3.0.3",
-    "typescript": "^5.2.2"
-  }
+   "name": "backend",
+   "version": "1.0.0",
+   "description": "",
+   "main": "index.js",
+   "scripts": {
+      "start": "ts-node src/index.ts",
+      "prettier-format": "prettier --config .prettierrc --write ./src",
+      "lint": "eslint src",
+      "test": "echo \"Error: no test specified\" && exit 1",
+      "typeorm": "typeorm-ts-node-commonjs"
+   },
+   "author": "",
+   "license": "ISC",
+   "dependencies": {
+      "@types/express": "^4.17.18",
+      "express": "^4.18.2",
+      "pg": "^8.4.0",
+      "reflect-metadata": "^0.1.13",
+      "typeorm": "0.3.17"
+   },
+   "devDependencies": {
+      "@types/node": "^16.11.10",
+      "@typescript-eslint/eslint-plugin": "^6.7.3",
+      "@typescript-eslint/parser": "^6.7.3",
+      "eslint": "^8.50.0",
+      "eslint-config-prettier": "^9.0.0",
+      "eslint-plugin-prettier": "^5.0.0",
+      "prettier": "^3.0.3",
+      "typescript": "4.5.2",
+      "ts-node": "10.7.0"
+   }
 }
