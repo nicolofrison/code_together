@@ -1,5 +1,5 @@
 import { Repository } from 'typeorm/repository/Repository';
-import { User } from '../entities/User';
+import { User } from '../models/entities/User';
 import { userRepository } from '../repositories/user.repository';
 
 class UserService {
