@@ -1,6 +1,6 @@
 /* eslint no-console: ["error", { allow: ["info", "error"] }] */
 import * as express from 'express';
-import Controller from './models/interfaces/controller';
+import Controller from './models/http/controller';
 
 class Server {
   public app: express.Application;
