@@ -1,23 +1,12 @@
-import { appDataSource } from './config/dataSource';
-import { User } from './entities/User';
+import AuthController from './controllers/auth.controller';
+import express from 'express';
 
-appDataSource
-  .initialize()
-  .then(async () => {
-    console.log('Inserting a new user into the database...');
-    const user = new User();
-    user.email = 'Timber';
-    user.password = 'Saw';
+const app = express();
+const port = 8080; // default port to listen
 
-    await appDataSource.manager.save(user);
-    console.log('Saved a new user with id: ' + user.id);
+AuthController.init(app);
 
-    console.log('Loading users from the database...');
-    const users = await appDataSource.manager.find(User);
-    console.log('Loaded users: ', users);
-
-    console.log(
-      'Here you can setup and run express / fastify / any other framework.'
-    );
-  })
-  .catch((error) => console.log(error));
+// start the Express server
+app.listen(port, () => {
+  console.log(`server started at http://localhost:${port}`);
+});
