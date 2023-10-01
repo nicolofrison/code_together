@@ -1,5 +1,6 @@
 import CodeEditor from '@uiw/react-textarea-code-editor';
-import React, { useState } from 'react';
+import { useState } from 'react';
+// library used by react-textarea-code-editor
 import { refractor } from 'refractor/lib/core.js';
 import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
