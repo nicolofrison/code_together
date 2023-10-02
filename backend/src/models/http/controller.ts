@@ -3,9 +3,7 @@ import { Router } from 'express';
 abstract class Controller {
   protected router = Router();
 
-  protected constructor() {
-    this.initRoutes();
-  }
+  protected constructor() {}
 
   protected abstract initRoutes(): void;
 

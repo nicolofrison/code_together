@@ -10,6 +10,7 @@ class AuthController extends Controller {
 
   public constructor() {
     super();
+    this.initRoutes();
   }
 
   protected initRoutes() {
