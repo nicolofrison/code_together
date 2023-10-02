@@ -44,3 +44,15 @@ Implement security measures to protect user data and prevent unauthorized access
 Optimize the application for performance, especially concerning real-time updates in a local hosting context.
 
 This project showcases your ability to create a locally hosted, full-stack, real-time collaborative code editor with various complex features, making it an impressive addition to a full-stack developer's resume.
+
+
+
+# Installation
+
+## backend
+npm install
+with database up and running, npm run migration:migrate
+
+### to create new migration
+Create/Edit any entity
+npm run migration:generate Name-of-the-migration

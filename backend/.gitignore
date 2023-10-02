@@ -1,4 +1,6 @@
-node_modules
-
-# Ignore built ts files
-dist
+.idea/
+.vscode/
+node_modules/
+build/
+tmp/
+temp/
