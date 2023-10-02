@@ -1,6 +1,7 @@
 /* eslint no-console: ["error", { allow: ["info", "error"] }] */
 import * as express from 'express';
 import Controller from './models/http/controller';
+import errorMiddleware from './middlewares/error.middleware';
 
 class Server {
   public app: express.Application;
@@ -25,7 +26,9 @@ class Server {
     });
   }
 
-  private initPostRequestMiddlewares() {}
+  private initPostRequestMiddlewares() {
+    this.app.use(errorMiddleware);
+  }
 
   public listen() {
     this.app.listen(this.port, () => {
