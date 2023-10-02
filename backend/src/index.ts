@@ -1,23 +1,19 @@
+import 'reflect-metadata';
+import Server from './server';
+
+// controllers instances
+import { authControllerInstance } from './controllers/auth.controller';
 import { appDataSource } from './config/dataSource';
-import { User } from './entities/User';
 
-appDataSource
-  .initialize()
-  .then(async () => {
-    console.log('Inserting a new user into the database...');
-    const user = new User();
-    user.email = 'Timber';
-    user.password = 'Saw';
+(async () => {
+  try {
+    await appDataSource.initialize();
+  } catch (error) {
+    console.error('Error while connecting to the database', error);
+    return error;
+  }
+  const app = new Server([authControllerInstance]);
+  app.listen();
 
-    await appDataSource.manager.save(user);
-    console.log('Saved a new user with id: ' + user.id);
-
-    console.log('Loading users from the database...');
-    const users = await appDataSource.manager.find(User);
-    console.log('Loaded users: ', users);
-
-    console.log(
-      'Here you can setup and run express / fastify / any other framework.'
-    );
-  })
-  .catch((error) => console.log(error));
+  return null;
+})();
