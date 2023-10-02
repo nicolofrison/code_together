@@ -7,6 +7,6 @@ export const userRepository = appDataSource.getRepository(User).extend({
     return this.save(user);
   },
   async findByEmail(email: string) {
-    return await this.findOne({ email });
+    return await this.findOneBy({ email });
   }
 });
