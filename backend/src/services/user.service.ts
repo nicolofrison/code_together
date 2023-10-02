@@ -2,7 +2,7 @@ import { userRepository } from '../repositories/user.repository';
 import AuthPost from '../models/http/requests/authPost';
 import AuthenticationUtils from '../utils/authentication';
 import WrongPasswordError from '../models/exceptions/WrongPasswordError';
-import { User } from '../models/entities/User';
+import User from '../models/entities/User';
 import RecordNotFound from '../models/exceptions/RecordNotFoundError';
 
 class UserService {

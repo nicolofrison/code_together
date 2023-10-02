@@ -1,5 +1,5 @@
 import { appDataSource } from '../config/dataSource';
-import { User } from '../models/entities/User';
+import User from '../models/entities/User';
 
 export const userRepository = appDataSource.getRepository(User).extend({
   async createAndSave(email: string, password: string) {
