@@ -9,6 +9,15 @@ import RecordAlreadyExistsError from '../models/exceptions/RecordAlreadyExistsEr
 class UserService {
   private userRepo = userRepository;
 
+  public async findById(id: number): Promise<User> {
+    const user = await this.userRepo.findOneBy({ id });
+    if (user != null) {
+      throw new RecordAlreadyExistsError(User.name, 'id');
+    }
+
+    return user;
+  }
+
   public async createUser(authData: AuthPost): Promise<User> {
     const alreadyExistentUser = await this.userRepo.findByEmail(authData.email);
     if (alreadyExistentUser != null) {
