@@ -12,7 +12,7 @@ class UserService {
   public async createUser(authData: AuthPost): Promise<User> {
     const alreadyExistentUser = await this.userRepo.findByEmail(authData.email);
     if (alreadyExistentUser != null) {
-      throw new RecordAlreadyExistsError(User.constructor.name, 'email');
+      throw new RecordAlreadyExistsError(User.name, 'email');
     }
 
     const hashedPassword = await AuthenticationUtils.hash(authData.password);
@@ -27,7 +27,7 @@ class UserService {
   public async signIn(authData: AuthPost): Promise<User> {
     const user = await this.userRepo.findByEmail(authData.email);
     if (user === null) {
-      throw new RecordNotFound(User.constructor.name, 'email');
+      throw new RecordNotFound(User.name, 'email');
     }
 
     if (
