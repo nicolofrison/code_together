@@ -9,6 +9,8 @@ import HttpError from '../models/http/errors/HttpError';
 import RecordNotFoundError from '../models/exceptions/RecordNotFoundError';
 import WrongPasswordError from '../models/exceptions/WrongPasswordError';
 import RecordAlreadyExistsError from '../models/exceptions/RecordAlreadyExistsError';
+import { jwtService } from '../services/jwt.service';
+import UserWithTokenResponse from '../models/http/responses/userWithToken.interface';
 
 class AuthController extends Controller {
   private static readonly PATH = '/auth';
@@ -72,8 +74,14 @@ class AuthController extends Controller {
       const user = await this.userService.signIn(authData);
 
       if (user != null) {
+        const token = jwtService.createToken(user);
+        const userWithToken = {
+          ...user,
+          accessToken: token
+        } as UserWithTokenResponse;
+
         response.status(200);
-        response.send(user);
+        response.send(userWithToken);
       }
     } catch (e) {
       if (e instanceof RecordNotFoundError || e instanceof WrongPasswordError) {
