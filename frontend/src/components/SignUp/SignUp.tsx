@@ -1,13 +1,10 @@
-import { Dispatch, SetStateAction, useState } from 'react';
+import { useState } from 'react';
 
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
 
-import AuthPost from '../../models/http/requests/authPost';
-import UserService from '../../services/user.service';
-import { AxiosError, AxiosResponse } from 'axios';
 import userService from '../../services/user.service';
 import { FormControlLabel, Radio, RadioGroup } from '@mui/material';
 
@@ -21,20 +18,6 @@ export default function SignUp() {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [mode, setMode] = useState<ModeEnum>(ModeEnum.signUp);
-
-  const handleSubmit = () => {
-    const authPost: AuthPost = {
-      email,
-      password
-    };
-    UserService.signUp(authPost)
-      .then((res: AxiosResponse) => {
-        console.debug(res.data);
-      })
-      .catch((error: Error | AxiosError) => {
-        console.error(error);
-      });
-  };
 
   const handleFormSubmit = async () => {
     if (mode === ModeEnum.signUp) {
