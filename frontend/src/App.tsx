@@ -1,5 +1,6 @@
 import './App.css';
 import { CodeEditorWithSyntax } from './components/CodeEditorWithSyntax/CodeEditorWithSyntax';
+import SignUp from './components/SignUp/SignUp';
 
 function App() {
   return (
@@ -14,6 +15,7 @@ function App() {
       >
         <CodeEditorWithSyntax />
       </div>
+      <SignUp />
     </div>
   );
 }

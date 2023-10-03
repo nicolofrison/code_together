@@ -15,7 +15,7 @@ export class UserService extends BaseService {
   }
 
   public signUp(authPost: AuthPost) {
-    return axios.post(this.baseUrl + 'auth/register', authPost);
+    return axios.post(this.baseUrl + 'auth/signup', authPost);
   }
 }
 
