@@ -7,6 +7,7 @@ import AuthPost from '../models/http/requests/authPost';
 import ServerHttpError from '../models/http/errors/ServerHttpError';
 import HttpError from '../models/http/errors/HttpError';
 import RecordNotFoundError from '../models/exceptions/RecordNotFoundError';
+import RecordAlreadyExistsError from '../models/exceptions/RecordAlreadyExistsError';
 
 class AuthController extends Controller {
   private static readonly PATH = '/auth';
@@ -41,7 +42,10 @@ class AuthController extends Controller {
         response.send(createdUser);
       }
     } catch (e) {
-      if (e instanceof RecordNotFoundError) {
+      if (
+        e instanceof RecordNotFoundError ||
+        e instanceof RecordAlreadyExistsError
+      ) {
         next(new HttpError(400, e.message, ''));
       } else {
         console.error(e);

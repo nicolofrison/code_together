@@ -4,6 +4,7 @@ import AuthenticationUtils from '../utils/authentication';
 import WrongPasswordError from '../models/exceptions/WrongPasswordError';
 import User from '../models/entities/User';
 import RecordNotFound from '../models/exceptions/RecordNotFoundError';
+import RecordAlreadyExistsError from '../models/exceptions/RecordAlreadyExistsError';
 
 class UserService {
   private userRepo = userRepository;
@@ -11,7 +12,7 @@ class UserService {
   public async createUser(authData: AuthPost): Promise<User> {
     const alreadyExistentUser = await this.userRepo.findByEmail(authData.email);
     if (alreadyExistentUser != null) {
-      throw new WrongPasswordError();
+      throw new RecordAlreadyExistsError(User.constructor.name, 'email');
     }
 
     const hashedPassword = await AuthenticationUtils.hash(authData.password);
