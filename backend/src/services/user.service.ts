@@ -9,13 +9,18 @@ import RecordAlreadyExistsError from '../models/exceptions/RecordAlreadyExistsEr
 class UserService {
   private userRepo = userRepository;
 
+  private formatUser(user: User): User {
+    delete user.password;
+    return user;
+  }
+
   public async findById(id: number): Promise<User> {
     const user = await this.userRepo.findOneBy({ id });
     if (user != null) {
       throw new RecordAlreadyExistsError(User.name, 'id');
     }
 
-    return user;
+    return this.formatUser(user);
   }
 
   public async createUser(authData: AuthPost): Promise<User> {
@@ -30,7 +35,7 @@ class UserService {
       authData.email,
       hashedPassword
     );
-    return user;
+    return this.formatUser(user);
   }
 
   public async signIn(authData: AuthPost): Promise<User> {
@@ -48,7 +53,7 @@ class UserService {
       throw new WrongPasswordError();
     }
 
-    return user;
+    return this.formatUser(user);
   }
 }
 
