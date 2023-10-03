@@ -1,5 +1,6 @@
 /* eslint no-console: ["error", { allow: ["info", "error"] }] */
 import * as express from 'express';
+import * as cors from 'cors';
 import Controller from './models/http/controller';
 import errorMiddleware from './middlewares/error.middleware';
 
@@ -18,6 +19,7 @@ class Server {
 
   private initPreRequestMiddlewares() {
     this.app.use(express.json());
+    this.app.use(cors());
   }
 
   private initControllers(controllers: Controller[]) {
