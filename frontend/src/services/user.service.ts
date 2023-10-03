@@ -14,12 +14,16 @@ export class UserService extends BaseService {
     return UserService.instance;
   }
 
-  public signUp(authPost: AuthPost) {
-    return axios.post(this.baseUrl + 'auth/signup', authPost);
+  public async signUp(authPost: AuthPost) {
+    const response = await axios.post(this.baseUrl + 'auth/signup', authPost);
+
+    return response.data;
   }
 
-  public signIn(authPost: AuthPost) {
-    return axios.post(this.baseUrl + 'auth/signin', authPost);
+  public async signIn(authPost: AuthPost) {
+    const response = await axios.post(this.baseUrl + 'auth/signin', authPost);
+
+    return response.data;
   }
 }
 
