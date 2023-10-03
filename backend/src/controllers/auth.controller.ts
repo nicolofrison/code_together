@@ -7,6 +7,7 @@ import AuthPost from '../models/http/requests/authPost';
 import ServerHttpError from '../models/http/errors/ServerHttpError';
 import HttpError from '../models/http/errors/HttpError';
 import RecordNotFoundError from '../models/exceptions/RecordNotFoundError';
+import WrongPasswordError from '../models/exceptions/WrongPasswordError';
 import RecordAlreadyExistsError from '../models/exceptions/RecordAlreadyExistsError';
 
 class AuthController extends Controller {
@@ -20,11 +21,17 @@ class AuthController extends Controller {
   }
 
   protected initRoutes() {
-    this.router.post(
-      `${AuthController.PATH}/signup`,
-      validationMiddleware(AuthPost),
-      this.signUp
-    );
+    this.router
+      .post(
+        `${AuthController.PATH}/signup`,
+        validationMiddleware(AuthPost),
+        this.signUp
+      )
+      .post(
+        `${AuthController.PATH}/signin`,
+        validationMiddleware(AuthPost),
+        this.signIn
+      );
   }
 
   private signUp = async (
@@ -46,6 +53,30 @@ class AuthController extends Controller {
         e instanceof RecordNotFoundError ||
         e instanceof RecordAlreadyExistsError
       ) {
+        next(new HttpError(400, e.message, ''));
+      } else {
+        console.error(e);
+        next(new ServerHttpError());
+      }
+    }
+  };
+
+  private signIn = async (
+    request: express.Request,
+    response: express.Response,
+    next: express.NextFunction
+  ) => {
+    const authData: AuthPost = request.body;
+
+    try {
+      const user = await this.userService.signIn(authData);
+
+      if (user != null) {
+        response.status(200);
+        response.send(user);
+      }
+    } catch (e) {
+      if (e instanceof RecordNotFoundError || e instanceof WrongPasswordError) {
         next(new HttpError(400, e.message, ''));
       } else {
         console.error(e);
