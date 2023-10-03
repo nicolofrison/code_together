@@ -2,6 +2,7 @@ import axios from 'axios';
 
 import AuthPost from '../models/http/requests/authPost';
 import BaseService from './base.service';
+import UserUtils from '../utils/UserUtils';
 import User from '../models/interfaces/user.interface';
 
 export class UserService extends BaseService {
@@ -23,8 +24,12 @@ export class UserService extends BaseService {
 
   public async signIn(authPost: AuthPost) {
     const response = await axios.post(this.baseUrl + 'auth/signin', authPost);
+    const user = response.data;
 
-    return response.data as User;
+    UserUtils.setUser(user);
+    delete user.accessToken;
+
+    return user as User;
   }
 }
 

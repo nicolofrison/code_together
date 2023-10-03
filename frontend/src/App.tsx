@@ -2,7 +2,11 @@ import './App.css';
 import { CodeEditorWithSyntax } from './components/CodeEditorWithSyntax/CodeEditorWithSyntax';
 import SignUp from './components/SignUp/SignUp';
 
+import UserUtils from './utils/UserUtils';
+
 function App() {
+  const isLoggedIn = UserUtils.IsLoggedIn();
+
   return (
     <div className="App">
       <div
@@ -15,6 +19,7 @@ function App() {
       >
         <CodeEditorWithSyntax />
       </div>
+      {isLoggedIn ? 'Logged In' : ''}
       <SignUp />
     </div>
   );
