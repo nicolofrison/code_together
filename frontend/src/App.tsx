@@ -1,5 +1,5 @@
 import './App.css';
-import { CodeEditorWithSyntax } from './components/CodeEditorWithSyntax';
+import { CodeEditorWithSyntax } from './components/CodeEditorWithSyntax/CodeEditorWithSyntax';
 
 function App() {
   return (
