@@ -6,6 +6,7 @@ import {
   AuthenticationHttpError,
   AuthenticationHttpErrorType
 } from '../../src/models/http/errors/AuthenticationHttpError';
+import User from '../../src/models/entities/User';
 
 describe('JwtService', () => {
   describe('createToken', () => {
@@ -66,11 +67,35 @@ describe('JwtService', () => {
         password: 'hashedPassword'
       };
 
+      process.env.JWT_SECRET = 'differentSecret';
+      const createTokenJwtService = new JwtService();
+      process.env.JWT_SECRET = 'anotherSecret';
+      const authenticateJwtService = new JwtService();
+
+      const token = createTokenJwtService.createToken(notExpectedUser);
+      try {
+        await authenticateJwtService.authenticate(token);
+        throw new Error(
+          'The authenticate should throw AuthenticationHttpErrorType'
+        );
+      } catch (e) {
+        expect(e).toBeInstanceOf(AuthenticationHttpError);
+        expect(e.type).toBe(
+          AuthenticationHttpErrorType.MissingOrWrongAuthenticationToken
+        );
+      }
+    });
+
+    test('authenticate valid jwt token with not a number user id throws AuthenticationHttpError of type WrongAuthenticationToken', async () => {
+      const notExpectedUser = {
+        id: 'a1',
+        email: 'email',
+        password: 'hashedPassword'
+      };
+
       userService.findById = jest.fn(() => Promise.resolve(null));
 
-      process.env.JWT_SECRET = 'differentSecret';
-      const token = jwtService.createToken(notExpectedUser);
-      process.env.JWT_SECRET = originalEnv.JWT_SECRET;
+      const token = jwtService.createToken(notExpectedUser as unknown as User);
       try {
         await jwtService.authenticate(token);
         throw new Error(
