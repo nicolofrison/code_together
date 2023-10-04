@@ -19,7 +19,7 @@ describe('UserService', () => {
       expect(user).not.toHaveProperty('password');
     });
 
-    test('findById user not found', async () => {
+    test('findById user not found throws RecordNotFoundError', async () => {
       userRepository.findOneBy = jest.fn(() => Promise.resolve(null));
 
       await expect(userService.findById(1)).rejects.toThrow(
@@ -47,7 +47,7 @@ describe('UserService', () => {
       expect(user).not.toHaveProperty('password');
     });
 
-    test('findById user with same email exists', async () => {
+    test('findById user with same email exists throws RecordAlreadyExistsError', async () => {
       const email = 'vjoebwnviubie@venwv';
       const password = 'fbht45h54hwe4w4h5';
 
@@ -84,7 +84,7 @@ describe('UserService', () => {
       expect(user).not.toHaveProperty('password');
     });
 
-    test('signIn email not found', async () => {
+    test('signIn email not found throws RecordNotFoundError', async () => {
       const email = 'vjoebwnviubie@venwv';
       const password = 'fbht45h54hwe4w4h5';
 
