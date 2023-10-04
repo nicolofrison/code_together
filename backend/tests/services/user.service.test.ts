@@ -22,7 +22,9 @@ describe('UserService', () => {
     test('findById user not found', async () => {
       userRepository.findOneBy = jest.fn(() => Promise.resolve(null));
 
-      await expect(userService.findById(1)).rejects.toThrow(RecordNotFoundError);
+      await expect(userService.findById(1)).rejects.toThrow(
+        RecordNotFoundError
+      );
     });
   });
 
