@@ -15,7 +15,8 @@ describe('JwtService', () => {
       const token = jwtService.createToken(expectedUser);
 
       const decoded = jwt.verify(token, process.env.JWT_SECRET);
-      expect(decoded.user).toStrictEqual(expectedUser);
+      expect(decoded.user).toMatchObject(expectedUser);
+      expect(decoded.user).not.toHaveProperty('password');
     });
   });
 

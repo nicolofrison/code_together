@@ -49,6 +49,7 @@ class JwtService {
   }
 
   public createToken(user: User): string {
+    delete user.password;
     const dataStoredInToken: DataStoredInToken = {
       user
     };
