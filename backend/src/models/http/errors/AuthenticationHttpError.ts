@@ -30,7 +30,8 @@ export class AuthenticationHttpError extends HttpError {
           'The authentication token is missing or wrong',
           'missingOrWrongAuthenticationToken'
         );
-        this.type = AuthenticationHttpErrorType.MissingOrWrongAuthenticationToken;
+        this.type =
+          AuthenticationHttpErrorType.MissingOrWrongAuthenticationToken;
         break;
       case AuthenticationHttpErrorType.WrongAuthenticationToken:
         super(

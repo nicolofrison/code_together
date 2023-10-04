@@ -101,7 +101,8 @@ describe('UserService', () => {
       const password = 'fbht45h54hwe4w4h5';
 
       const authData = { email, password };
-      const hashedPassword = await AuthenticationUtils.hash('differentPassword');
+      const hashedPassword =
+        await AuthenticationUtils.hash('differentPassword');
       userRepository.findByEmail = jest.fn(() =>
         Promise.resolve({ id: 1, email, password: hashedPassword })
       );

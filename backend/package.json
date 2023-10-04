@@ -5,7 +5,7 @@
    "main": "index.js",
    "scripts": {
       "start": "ts-node src/index.ts",
-      "prettier-format": "prettier --config .prettierrc --write ./src",
+      "prettier-format": "prettier --config .prettierrc --write ./src --write ./tests",
       "lint": "eslint src",
       "test": "echo \"Error: no test specified\" && exit 1",
       "typeorm": "typeorm-ts-node-commonjs",

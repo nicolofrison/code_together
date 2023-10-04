@@ -2,7 +2,10 @@ import 'dotenv/config';
 import JwtService, { jwtService } from '../../src/services/jwt.service';
 import * as jwt from 'jsonwebtoken';
 import { userService } from '../../src/services/user.service';
-import { AuthenticationHttpError, AuthenticationHttpErrorType } from '../../src/models/http/errors/AuthenticationHttpError';
+import {
+  AuthenticationHttpError,
+  AuthenticationHttpErrorType
+} from '../../src/models/http/errors/AuthenticationHttpError';
 
 describe('JwtService', () => {
   describe('createToken', () => {
