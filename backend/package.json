@@ -28,6 +28,7 @@
       "jsonwebtoken": "^9.0.2",
       "pg": "^8.4.0",
       "reflect-metadata": "^0.1.13",
+      "supertest": "^6.3.3",
       "typeorm": "0.3.17"
    },
    "devDependencies": {
