@@ -7,9 +7,9 @@ import AuthenticationUtils from '../../src/utils/authentication';
 import WrongPasswordError from '../../src/models/exceptions/WrongPasswordError';
 
 describe('UserService', () => {
-  describe('findById', () => {
-    jest.mock('../../src/repositories/user.repository', () => jest.fn());
+  jest.mock('../../src/repositories/user.repository', () => jest.fn());
 
+  describe('findById', () => {
     test('findById user found', async () => {
       const expectedUser = new User('email', 'password');
       userRepository.findOneBy = jest.fn(() => Promise.resolve(expectedUser));
