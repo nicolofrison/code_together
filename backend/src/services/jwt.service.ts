@@ -1,3 +1,4 @@
+import { isNumber } from 'class-validator';
 import User from '../models/entities/User';
 import {
   AuthenticationHttpError,
@@ -20,6 +21,12 @@ class JwtService {
       ) as DataStoredInToken;
       const { id } = verificationResponse.user;
 
+      if (!isNumber(id)) {
+        throw new AuthenticationHttpError(
+          AuthErrorType.WrongAuthenticationToken
+        );
+      }
+
       const user = await this.userService.findById(id);
       if (user) {
         return user;
@@ -29,13 +36,15 @@ class JwtService {
         );
       }
     } catch (error) {
-      const jwtError = error as jwt.JsonWebTokenError;
-      if (!jwtError) {
-        throw new AuthenticationHttpError(AuthErrorType.General);
+      if (error instanceof AuthenticationHttpError) {
+        throw error;
       }
+      const jwtError = error as jwt.JsonWebTokenError;
       throw jwtError.name === 'TokenExpiredError'
         ? new AuthenticationHttpError(AuthErrorType.ExpiredAuthenticationToken)
-        : new AuthenticationHttpError(AuthErrorType.WrongAuthenticationToken);
+        : new AuthenticationHttpError(
+            AuthErrorType.MissingOrWrongAuthenticationToken
+          );
     }
   }
 
