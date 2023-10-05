@@ -16,8 +16,8 @@ class UserService {
 
   public async findById(id: number): Promise<User> {
     const user = await this.userRepo.findOneBy({ id });
-    if (user != null) {
-      throw new RecordAlreadyExistsError(User.name, 'id');
+    if (user == null) {
+      throw new RecordNotFound(User.name, 'id');
     }
 
     return this.formatUser(user);

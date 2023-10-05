@@ -51,10 +51,7 @@ class AuthController extends Controller {
         response.send(createdUser);
       }
     } catch (e) {
-      if (
-        e instanceof RecordNotFoundError ||
-        e instanceof RecordAlreadyExistsError
-      ) {
+      if (e instanceof RecordAlreadyExistsError) {
         next(new HttpError(400, e.message, ''));
       } else {
         console.error(e);
