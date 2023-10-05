@@ -1,4 +1,4 @@
-import { ChangeEvent, FormEvent, useState } from 'react';
+import { FormEvent, useEffect, useState } from 'react';
 
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
@@ -7,7 +7,7 @@ import Typography from '@mui/material/Typography';
 
 import userService from '../../services/user.service';
 import { FormControlLabel, Radio, RadioGroup } from '@mui/material';
-import AuthPost from '../../models/http/requests/authPost';
+import validator from 'validator';
 
 const enum ModeEnum {
   signIn,
@@ -18,6 +18,48 @@ export default function SignUp() {
   const [formData, setFormData] = useState({ email: '', password: '' });
   const [confirmPassword, setConfirmPassword] = useState('');
   const [mode, setMode] = useState<ModeEnum>(ModeEnum.signUp);
+  const [errors, setErrors] = useState({
+    email: false,
+    password: false,
+    confirmPassword: false
+  });
+  const [submittedOnce, setSubmittedOnce] = useState(false);
+
+  useEffect(() => {
+    if (
+      mode === ModeEnum.signUp &&
+      submittedOnce &&
+      formData.password !== confirmPassword
+    ) {
+      setErrors({ ...errors, confirmPassword: true });
+      return;
+    }
+  }, [formData.password, confirmPassword, submittedOnce]);
+
+  useEffect(() => {
+    if (submittedOnce && !validator.isEmail(formData.email)) {
+      setErrors({ ...errors, email: true });
+      return;
+    }
+    console.log('email validation');
+  }, [formData.email]);
+
+  useEffect(() => {
+    if (
+      submittedOnce &&
+      !validator.isStrongPassword(formData.password, {
+        // minLength: 8 default
+        minLowercase: 0, // default 1
+        minUppercase: 0, // default 1
+        minNumbers: 0, // default 1
+        minSymbols: 0 // default 1
+      })
+    ) {
+      setErrors({ ...errors, password: true });
+      return;
+    }
+    console.log('password validation');
+  }, [formData.password]);
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
@@ -28,6 +70,11 @@ export default function SignUp() {
     // Prevent the browser from reloading the page
     e.preventDefault();
 
+    setSubmittedOnce(true);
+
+    if (Object.values(errors).some((e) => e)) {
+      return;
+    }
     if (mode === ModeEnum.signUp) {
       if (formData.password !== confirmPassword) {
         console.log('Error: passwords do not match');
@@ -93,6 +140,8 @@ export default function SignUp() {
               id="email"
               label="Email"
               autoFocus
+              error={errors.email}
+              helperText={!errors.email ? '' : 'The email is invalid'}
               onChange={handleChange}
               value={formData.email}
             />
@@ -107,12 +156,19 @@ export default function SignUp() {
               type="password"
               id="password"
               autoComplete="password"
+              error={errors.password}
+              helperText={
+                !errors.password
+                  ? ''
+                  : "The password doesn't match the pattern: at least 8 charactes length"
+              }
               onChange={handleChange}
               value={formData.password}
             />
           </Grid>
           {mode === ModeEnum.signUp && (
             <Grid item xs={12}>
+              {errors.confirmPassword.toString()}
               <TextField
                 variant="outlined"
                 required
@@ -122,6 +178,10 @@ export default function SignUp() {
                 type="password"
                 id="confirmPassword"
                 autoComplete="confirmPassword"
+                error={errors.confirmPassword}
+                helperText={
+                  !errors.confirmPassword ? '' : 'The passwords do not match'
+                }
                 onChange={(e) => setConfirmPassword(e.target.value)}
               />
             </Grid>
