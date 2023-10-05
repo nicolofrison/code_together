@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { ChangeEvent, FormEvent, useState } from 'react';
 
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
@@ -7,6 +7,7 @@ import Typography from '@mui/material/Typography';
 
 import userService from '../../services/user.service';
 import { FormControlLabel, Radio, RadioGroup } from '@mui/material';
+import AuthPost from '../../models/http/requests/authPost';
 
 const enum ModeEnum {
   signIn,
@@ -14,20 +15,27 @@ const enum ModeEnum {
 }
 
 export default function SignUp() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [formData, setFormData] = useState({ email: '', password: '' });
   const [confirmPassword, setConfirmPassword] = useState('');
   const [mode, setMode] = useState<ModeEnum>(ModeEnum.signUp);
 
-  const handleFormSubmit = async () => {
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = event.target;
+    setFormData((prevFormData) => ({ ...prevFormData, [name]: value }));
+  };
+
+  const handleSubmit = async (e: FormEvent) => {
+    // Prevent the browser from reloading the page
+    e.preventDefault();
+
     if (mode === ModeEnum.signUp) {
-      if (password !== confirmPassword) {
+      if (formData.password !== confirmPassword) {
         console.log('Error: passwords do not match');
         return;
       }
 
       try {
-        const user = await userService.signUp({ email, password });
+        const user = await userService.signUp(formData);
 
         console.log(user);
       } catch (e) {
@@ -35,7 +43,7 @@ export default function SignUp() {
       }
     } else {
       try {
-        const user = await userService.signIn({ email, password });
+        const user = await userService.signIn(formData);
 
         console.log(user);
       } catch (e) {
@@ -49,7 +57,7 @@ export default function SignUp() {
       <Typography component="h1" variant="h5">
         Sign up
       </Typography>
-      <form noValidate>
+      <form method="post" onSubmit={handleSubmit}>
         <Grid container spacing={2}>
           <Grid item xs={12}>
             <RadioGroup
@@ -85,7 +93,8 @@ export default function SignUp() {
               id="email"
               label="Email"
               autoFocus
-              onChange={(e) => setEmail(e.target.value)}
+              onChange={handleChange}
+              value={formData.email}
             />
           </Grid>
           <Grid item xs={12}>
@@ -98,7 +107,8 @@ export default function SignUp() {
               type="password"
               id="password"
               autoComplete="password"
-              onChange={(e) => setPassword(e.target.value)}
+              onChange={handleChange}
+              value={formData.password}
             />
           </Grid>
           {mode === ModeEnum.signUp && (
@@ -121,7 +131,7 @@ export default function SignUp() {
               size="large"
               variant="contained"
               color="primary"
-              onClick={handleFormSubmit}
+              type="submit"
             >
               {mode === ModeEnum.signUp ? 'Sign Up' : 'Sign In'}
             </Button>
