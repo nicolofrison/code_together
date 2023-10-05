@@ -8,9 +8,9 @@ import Typography from '@mui/material/Typography';
 import userService from '../../services/user.service';
 import { FormControlLabel, Radio, RadioGroup } from '@mui/material';
 import validator from 'validator';
-import handleError from '../../utils/errorHandler';
 import { AlertType } from '../Utils/TopAlert';
 import alertService from '../../services/alert.service';
+import handleError from '../../utils/errorHandler';
 
 const enum ModeEnum {
   signIn,
@@ -28,41 +28,36 @@ export default function SignUp() {
   });
   const [submittedOnce, setSubmittedOnce] = useState(false);
 
-  useEffect(() => {
-    if (
-      mode === ModeEnum.signUp &&
-      submittedOnce &&
-      formData.password !== confirmPassword
-    ) {
-      setErrors({ ...errors, confirmPassword: true });
-      return;
-    }
-  }, [formData.password, confirmPassword, submittedOnce]);
+  const isConfirmPasswordError = () => {
+    return mode === ModeEnum.signUp && formData.password !== confirmPassword;
+  };
+
+  const isEmailError = () => {
+    return !validator.isEmail(formData.email);
+  };
+
+  const isPasswordError = () => {
+    return !validator.isStrongPassword(formData.password, {
+      minLength: 8,
+      minLowercase: 0, // default 1
+      minUppercase: 0, // default 1
+      minNumbers: 0, // default 1
+      minSymbols: 0 // default 1
+    });
+  };
 
   useEffect(() => {
-    if (submittedOnce && !validator.isEmail(formData.email)) {
-      setErrors({ ...errors, email: true });
-      return;
-    }
+    setErrors({ ...errors, email: submittedOnce && isEmailError() });
     console.log('email validation');
-  }, [formData.email]);
+  }, [formData.email, submittedOnce]);
 
   useEffect(() => {
-    if (
-      submittedOnce &&
-      !validator.isStrongPassword(formData.password, {
-        // minLength: 8 default
-        minLowercase: 0, // default 1
-        minUppercase: 0, // default 1
-        minNumbers: 0, // default 1
-        minSymbols: 0 // default 1
-      })
-    ) {
-      setErrors({ ...errors, password: true });
-      return;
-    }
-    console.log('password validation');
-  }, [formData.password]);
+    setErrors({
+      ...errors,
+      password: submittedOnce && isPasswordError(),
+      confirmPassword: submittedOnce && isConfirmPasswordError()
+    });
+  }, [formData.password, confirmPassword, submittedOnce]);
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
@@ -75,15 +70,10 @@ export default function SignUp() {
 
     setSubmittedOnce(true);
 
-    if (Object.values(errors).some((e) => e)) {
+    if (isEmailError() || isPasswordError() || isConfirmPasswordError()) {
       return;
     }
     if (mode === ModeEnum.signUp) {
-      if (formData.password !== confirmPassword) {
-        console.log('Error: passwords do not match');
-        return;
-      }
-
       try {
         const user = await userService.signUp(formData);
 
