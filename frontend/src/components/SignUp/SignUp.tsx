@@ -8,6 +8,8 @@ import Typography from '@mui/material/Typography';
 import userService from '../../services/user.service';
 import { FormControlLabel, Radio, RadioGroup } from '@mui/material';
 import validator from 'validator';
+import { AlertType } from '../Utils/TopAlert';
+import alertService from '../../services/alert.service';
 
 const enum ModeEnum {
   signIn,
@@ -84,17 +86,27 @@ export default function SignUp() {
       try {
         const user = await userService.signUp(formData);
 
+        alertService.showAlert(
+          'The user signed up successfully',
+          AlertType.success
+        );
         console.log(user);
       } catch (e) {
         console.error(e);
+        alertService.showAlert((e as Error).message, AlertType.error);
       }
     } else {
       try {
         const user = await userService.signIn(formData);
 
+        alertService.showAlert(
+          'The user authenticated successfully',
+          AlertType.success
+        );
         console.log(user);
       } catch (e) {
         console.error(e);
+        alertService.showAlert((e as Error).message, AlertType.error);
       }
     }
   };
