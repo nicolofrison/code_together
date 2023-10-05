@@ -8,6 +8,7 @@ import Typography from '@mui/material/Typography';
 import userService from '../../services/user.service';
 import { FormControlLabel, Radio, RadioGroup } from '@mui/material';
 import validator from 'validator';
+import handleError from '../../utils/errorHandler';
 import { AlertType } from '../Utils/TopAlert';
 import alertService from '../../services/alert.service';
 
@@ -93,7 +94,7 @@ export default function SignUp() {
         console.log(user);
       } catch (e) {
         console.error(e);
-        alertService.showAlert((e as Error).message, AlertType.error);
+        handleError(e as Error);
       }
     } else {
       try {
@@ -106,7 +107,7 @@ export default function SignUp() {
         console.log(user);
       } catch (e) {
         console.error(e);
-        alertService.showAlert((e as Error).message, AlertType.error);
+        handleError(e as Error);
       }
     }
   };
