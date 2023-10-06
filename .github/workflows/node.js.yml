@@ -21,7 +21,7 @@ jobs:
 
     steps:
     - name: Check out repository code
-    - uses: actions/checkout@v3
+      uses: actions/checkout@v3
     
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v3
@@ -30,7 +30,7 @@ jobs:
         cache: 'npm'
     
     - name: Go to frontend and build
-    - run: cd frontend && npm ci
+      run: cd frontend && npm ci
     
     - name: Run cypress tests
-    - run: npx cypress run
+      run: npx cypress run
