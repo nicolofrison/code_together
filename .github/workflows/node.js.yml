@@ -30,8 +30,7 @@ jobs:
         cache: 'npm'
     
     - name: Go to frontend and build
-    - run: cd frontend
-    - run: npm ci
+    - run: cd frontend && npm ci
     
     - name: Run cypress tests
     - run: npx cypress run
