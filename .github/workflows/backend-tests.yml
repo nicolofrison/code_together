@@ -11,29 +11,29 @@ on:
 
 jobs:
   build:
-    name: Frontend components tests
-
+    name: Backend tests
+    
     runs-on: ubuntu-latest
 
     env:
-      work-dir: ./frontend
+      work-dir: ./backend
       node-version: 18.x
     
     steps:
     - name: Check out repository code
       uses: actions/checkout@v3
 
-    - name: Use Node.js ${{ env.node-version }}
+    - name: Use Node.js ${{env.node-version}}
       uses: actions/setup-node@v3
       with:
-        node-version: ${{ env.node-version }}
+        node-version: ${{env.node-version}}
         cache: 'npm'
-        cache-dependency-path: frontend/package-lock.json
+        cache-dependency-path: backend/package-lock.json
     
     - name: npm install
       run: npm ci
-      working-directory: ${{ env.work-dir }}
+      working-directory: ${{env.work-dir}}
     
-    - name: Run cypress tests
+    - name: Run jest tests
       run: npm run tests
-      working-directory: ${{ env.work-dir }}
+      working-directory: ${{env.work-dir}}
