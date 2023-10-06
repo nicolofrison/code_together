@@ -135,7 +135,6 @@ export default function SignUp() {
           <Grid item xs={12}>
             <TextField
               autoComplete="email"
-              type="email"
               name="email"
               variant="outlined"
               required
