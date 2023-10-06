@@ -1,11 +1,11 @@
 import axios from 'axios';
 
 import AuthPost from '../models/http/requests/authPost';
-import BaseService from './base.service';
+import BaseAuthService from './baseAuth.service';
 import UserUtils from '../utils/UserUtils';
 import User from '../models/interfaces/user.interface';
 
-export class UserService extends BaseService {
+export class UserService extends BaseAuthService {
   private static instance: UserService;
 
   public static getInstance() {
@@ -17,13 +17,19 @@ export class UserService extends BaseService {
   }
 
   public async signUp(authPost: AuthPost) {
-    const response = await axios.post(this.baseUrl + 'auth/signup', authPost);
+    const response = await this.axiosWithOptions().post(
+      'auth/signup',
+      authPost
+    );
 
     return response.data as User;
   }
 
   public async signIn(authPost: AuthPost) {
-    const response = await axios.post(this.baseUrl + 'auth/signin', authPost);
+    const response = await this.axiosWithOptions().post(
+      'auth/signin',
+      authPost
+    );
     const user = response.data;
 
     UserUtils.setUser(user);
