@@ -33,7 +33,7 @@ jobs:
         cache: 'npm'
     
     - name: npm install
-    - run: npm ci
+      run: npm ci
     
     - name: Run cypress tests
       run: npx cypress run
