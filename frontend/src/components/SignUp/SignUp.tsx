@@ -46,10 +46,19 @@ export default function SignUp() {
     });
   };
 
+  // implemented separetely because if both the other useEffect will work on the submittedOnce change, one would overwrite the other
+  useEffect(() => {
+    setErrors({
+      email: submittedOnce && isEmailError(),
+      password: submittedOnce && isPasswordError(),
+      confirmPassword: submittedOnce && isConfirmPasswordError()
+    });
+  }, [submittedOnce]);
+
   useEffect(() => {
     setErrors({ ...errors, email: submittedOnce && isEmailError() });
     console.log('email validation');
-  }, [formData.email, submittedOnce]);
+  }, [formData.email]);
 
   useEffect(() => {
     setErrors({
@@ -57,7 +66,7 @@ export default function SignUp() {
       password: submittedOnce && isPasswordError(),
       confirmPassword: submittedOnce && isConfirmPasswordError()
     });
-  }, [formData.password, confirmPassword, submittedOnce]);
+  }, [formData.password, confirmPassword]);
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;

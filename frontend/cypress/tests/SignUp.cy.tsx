@@ -1,9 +1,7 @@
-import React from 'react';
 import SignUp from '../../src/components/SignUp/SignUp';
 import userService from '../../src/services/user.service';
 import alertService from '../../src/services/alert.service';
 import { AlertType } from '../../src/components/Utils/TopAlert';
-import errorHandlerModule from '../../src/utils/errorHandler';
 
 describe('<SignUp />', () => {
   describe('sign Up', () => {
@@ -22,12 +20,10 @@ describe('<SignUp />', () => {
 
       cy.get('[name="mode"]').should('have.value', 1); // 1 is for signUp, check in signUp component
 
-      cy.get('input[name="email"]').type('aaaa@aaaa.com');
+      cy.get('input[name="email"]').type('aaaa');
       cy.get('input[name="password"]').type('password');
       cy.get('input[name="confirmPassword"]').type('password');
       cy.get('button').click();
-
-      cy.get('input[name="email"]').clear().type('aaa');
 
       const emailInputParent = cy.get('input[name="email"]').parent('div');
 
@@ -178,11 +174,9 @@ describe('<SignUp />', () => {
       cy.mount(<SignUp />);
       setSignIn();
 
-      cy.get('input[name="email"]').type('aaaa@aaaa.com');
+      cy.get('input[name="email"]').type('aaaa');
       cy.get('input[name="password"]').type('password');
       cy.get('button').click();
-
-      cy.get('input[name="email"]').clear().type('aaa');
 
       const emailInputParent = cy.get('input[name="email"]').parent('div');
 
