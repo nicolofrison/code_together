@@ -11,7 +11,8 @@ on:
 
 jobs:
   build:
-
+    name: Backend tests
+    
     runs-on: ubuntu-latest
 
     env:
