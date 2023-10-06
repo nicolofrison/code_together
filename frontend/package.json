@@ -28,7 +28,7 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "prettier-format": "prettier --config .prettierrc --write ./src",
+    "prettier-format": "prettier --config .prettierrc --write ./src  --write ./cypress/tests",
     "lint": "eslint src"
   },
   "eslintConfig": {
@@ -50,6 +50,7 @@
     ]
   },
   "devDependencies": {
+    "cypress": "^13.3.0",
     "eslint-config-prettier": "^9.0.0",
     "eslint-plugin-prettier": "^5.0.0",
     "prettier": "^3.0.3"
