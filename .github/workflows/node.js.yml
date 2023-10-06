@@ -19,6 +19,9 @@ jobs:
         node-version: [18.x]
         # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
 
+    env:
+      work-dir: ./frontend
+    
     steps:
     - name: Check out repository code
       uses: actions/checkout@v3
@@ -32,6 +35,8 @@ jobs:
     
     - name: Go to frontend and npm install
       run: cd frontend && npm ci
+      working-directory: ${{env.work-dir}}
     
     - name: Run cypress tests
       run: npx cypress run
+      working-directory: ${{env.work-dir}}
