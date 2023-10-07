@@ -11,7 +11,7 @@ on:
 
 jobs:
   build:
-    name: Components
+    name: Frontend Components tests
 
     runs-on: ubuntu-latest
 
