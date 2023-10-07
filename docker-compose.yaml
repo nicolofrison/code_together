@@ -1,0 +1,13 @@
+version: '3.9'
+
+services:
+  postgres:
+    image: postgres
+    ports:
+      - 5432:5432
+    volumes:
+      - ./postgresdb:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_PASSWORD=love2code
+      - POSTGRES_USER=user
+      - POSTGRES_DB=code_together
