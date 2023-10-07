@@ -18,6 +18,9 @@ jobs:
     env:
       work-dir: ./backend
       node-version: 18.x
+      JWT_SECRET: test
+      # JWT Expiration time in seconds 
+      JWT_EXPIRATION: 14400
     
     steps:
     - name: Check out repository code
