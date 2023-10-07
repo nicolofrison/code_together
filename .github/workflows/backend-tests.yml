@@ -11,7 +11,7 @@ on:
 
 jobs:
   build:
-    name: Unit tests
+    name: Backend Unit tests
     
     runs-on: ubuntu-latest
 
