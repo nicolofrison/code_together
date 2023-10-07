@@ -1,0 +1,42 @@
+# This workflow will do a clean installation of node dependencies, cache/restore them, build the source code and run tests across different versions of node
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-nodejs
+
+name: Backend tests
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    name: Backend Unit tests
+    
+    runs-on: ubuntu-latest
+
+    env:
+      work-dir: ./backend
+      node-version: 18.x
+      JWT_SECRET: test
+      # JWT Expiration time in seconds 
+      JWT_EXPIRATION: 14400
+    
+    steps:
+    - name: Check out repository code
+      uses: actions/checkout@v3
+
+    - name: Use Node.js ${{env.node-version}}
+      uses: actions/setup-node@v3
+      with:
+        node-version: ${{env.node-version}}
+        cache: 'npm'
+        cache-dependency-path: backend/package-lock.json
+    
+    - name: npm install
+      run: npm ci
+      working-directory: ${{env.work-dir}}
+    
+    - name: Run jest tests
+      run: npm run test
+      working-directory: ${{env.work-dir}}
