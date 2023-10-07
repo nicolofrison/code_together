@@ -7,7 +7,7 @@
       "start": "ts-node src/index.ts",
       "prettier-format": "prettier --config .prettierrc --write ./src --write ./tests",
       "lint": "eslint src",
-      "test": "echo \"Error: no test specified\" && exit 1",
+      "test": "jest",
       "typeorm": "typeorm-ts-node-commonjs",
       "migration:generate": "typeorm-ts-node-commonjs migration:generate -d src/config/dataSource.ts",
       "migration:migrate": "typeorm-ts-node-commonjs migration:run -d src/config/dataSource.ts",
