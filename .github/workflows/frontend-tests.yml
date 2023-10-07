@@ -11,7 +11,7 @@ on:
 
 jobs:
   build:
-    name: Components tests
+    name: Components
 
     runs-on: ubuntu-latest
 
