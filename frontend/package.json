@@ -30,7 +30,7 @@
     "eject": "react-scripts eject",
     "prettier-format": "prettier --config .prettierrc --write ./src  --write ./cypress/tests",
     "lint": "eslint src",
-	"tests": "cypress run --component"
+    "tests": "cypress run --component"
   },
   "eslintConfig": {
     "extends": [
