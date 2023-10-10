@@ -1,9 +1,12 @@
-import CodeEditor from '@uiw/react-textarea-code-editor';
 import React, { ChangeEventHandler, useState } from 'react';
+
+import CodeEditor from '@uiw/react-textarea-code-editor';
 // library used by react-textarea-code-editor
 import { refractor } from 'refractor/lib/core.js';
+
 import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
+
 import './CodeEditorWithSyntax.css';
 import { CodeData } from '../../models/interfaces/webSocketMessage.interface';
 import WebSocketService from '../../services/webSocket.service';
