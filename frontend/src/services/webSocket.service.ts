@@ -31,6 +31,10 @@ export default class WebSocketService extends BaseAuthService {
     this.onCodeCallback = callback;
   }
 
+  public removeOnCodeCallback() {
+    this.onCodeCallback = undefined;
+  }
+
   private constructor() {
     super();
 
@@ -113,7 +117,9 @@ export default class WebSocketService extends BaseAuthService {
   };
 
   private onCodeInternal = (data: CodeData) => {
-    this.onCodeCallbacks.forEach((c) => c(data));
+    if (this.onCodeCallback) {
+      this.onCodeCallback(data);
+    }
   };
 
   private onCodeCallbacks: ((data: CodeData) => void)[] = [];
