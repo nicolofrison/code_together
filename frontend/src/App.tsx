@@ -6,7 +6,7 @@ import TopAlert from './components/Utils/TopAlert';
 import UserUtils from './utils/UserUtils';
 
 function App() {
-  const isLoggedIn = UserUtils.IsLoggedIn();
+  const isLoggedIn = UserUtils.getInstance().IsLoggedIn();
 
   return (
     <>

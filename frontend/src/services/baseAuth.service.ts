@@ -5,7 +5,7 @@ export default abstract class BaseAuthService {
   protected readonly baseUrl = `${process.env.REACT_APP_BACKEND_URL}:${process.env.REACT_APP_BACKEND_PORT}/`;
 
   private getToken() {
-    return UserUtils.getToken();
+    return UserUtils.getInstance().getToken();
   }
 
   protected apiRequest() {

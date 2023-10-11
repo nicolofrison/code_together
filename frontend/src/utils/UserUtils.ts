@@ -3,7 +3,7 @@ import User from '../models/interfaces/user.interface';
 export default class UserUtils {
   private static readonly userKey = 'user';
 
-  public static getUser(): User | null {
+  public getUser(): User | null {
     const jsonUser = sessionStorage.getItem(UserUtils.userKey);
     console.log(jsonUser);
     if (!jsonUser) {
@@ -19,10 +19,17 @@ export default class UserUtils {
 
     return user;
   }
+  private static instance: UserUtils;
+  public static getInstance() {
+    if (!this.instance) {
+      this.instance = new UserUtils();
+    }
 
-  public static getToken(): string | null {
+    return this.instance;
+  }
+
+  public getToken(): string | null {
     const user = this.getUser();
-
     if (!user) {
       return null;
     }
@@ -30,15 +37,15 @@ export default class UserUtils {
     return user.accessToken;
   }
 
-  public static IsLoggedIn() {
+  public IsLoggedIn() {
     return this.getUser() != null;
   }
 
-  public static removeUser() {
+  public removeUser() {
     sessionStorage.removeItem(UserUtils.userKey);
   }
 
-  public static setUser(user: User) {
+  public setUser(user: User) {
     sessionStorage.setItem(UserUtils.userKey, JSON.stringify(user));
   }
 }

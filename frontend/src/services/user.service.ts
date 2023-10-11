@@ -24,7 +24,7 @@ export class UserService extends BaseAuthService {
     const response = await this.apiRequest().post('auth/signin', authPost);
     const user = response.data;
 
-    UserUtils.setUser(user);
+    UserUtils.getInstance().setUser(user);
     delete user.accessToken;
 
     return user as User;

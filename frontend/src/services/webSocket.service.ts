@@ -54,7 +54,7 @@ export default class WebSocketService extends BaseAuthService {
     if (!this.isWaitingLogging) {
       this.isWaitingLogging = true;
 
-      const token = UserUtils.getToken();
+      const token = UserUtils.getInstance().getToken();
       if (token === null) {
         this.isWaitingLogging = false;
         console.log('no user logged in');
