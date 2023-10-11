@@ -6,7 +6,7 @@ export const AuthContext = createContext<boolean>(
 );
 
 type Props = {
-  children: string | JSX.Element | (string | JSX.Element)[];
+  children: React.ReactNode;
 };
 
 export const AuthContextProvider = ({ children }: Props) => {
