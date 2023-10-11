@@ -8,7 +8,7 @@ export default abstract class BaseAuthService {
     return UserUtils.getToken();
   }
 
-  protected axiosWithOptions() {
+  protected apiRequest() {
     const defaultOptions: CreateAxiosDefaults<object> = {
       baseURL: this.baseUrl
     };
