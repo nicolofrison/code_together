@@ -1,29 +1,43 @@
+import { useContext } from 'react';
 import './App.css';
+import { AuthContext, AuthContextProvider } from './components/AuthContext';
 import { CodeEditorWithSyntax } from './components/CodeEditorWithSyntax/CodeEditorWithSyntax';
 import SignUp from './components/SignUp/SignUp';
 import TopAlert from './components/Utils/TopAlert';
+import userService from './services/user.service';
 
-import UserUtils from './utils/UserUtils';
+function Auth() {
+  const isLoggedIn = useContext(AuthContext);
+
+  return (
+    <>
+      {!isLoggedIn ? (
+        <SignUp />
+      ) : (
+        <button onClick={() => userService.signOut()}>Sign Out</button>
+      )}
+    </>
+  );
+}
 
 function App() {
-  const isLoggedIn = UserUtils.IsLoggedIn();
-
   return (
     <>
       <TopAlert />
       <div className="App">
-        <div
-          style={{
-            width: '50%',
-            height: '50vh',
-            border: '1px solid black',
-            overflow: 'auto'
-          }}
-        >
-          <CodeEditorWithSyntax />
-        </div>
-        {isLoggedIn ? 'Logged In' : ''}
-        <SignUp />
+        <AuthContextProvider>
+          <div
+            style={{
+              width: '50%',
+              height: '50vh',
+              border: '1px solid black',
+              overflow: 'auto'
+            }}
+          >
+            <CodeEditorWithSyntax />
+          </div>
+          <Auth />
+        </AuthContextProvider>
       </div>
     </>
   );

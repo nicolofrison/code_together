@@ -1,6 +1,7 @@
 import axios, { AxiosError } from 'axios';
 import alertService from '../services/alert.service';
 import { AlertType } from '../components/Utils/TopAlert';
+import userService from '../services/user.service';
 
 export default function handleError(error: Error | AxiosError) {
   if (axios.isAxiosError(error)) {
@@ -13,6 +14,10 @@ export default function handleError(error: Error | AxiosError) {
       errorResponse?.data?.message ??
       error.message;
     alertService.showAlert(errorMessage, AlertType.error);
+
+    if (errorResponse?.status === 409) {
+      userService.signOut();
+    }
   } else {
     // Just a stock error
     console.error(error);
