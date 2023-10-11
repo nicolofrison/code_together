@@ -7,8 +7,12 @@ import {
   WebSocketMessage
 } from '../models/interfaces/webSocketMessage.interface';
 import UserUtils from '../utils/UserUtils';
+import { Observer } from '../utils/Observer';
 
-export default class WebSocketService extends BaseAuthService {
+export default class WebSocketService
+  extends BaseAuthService
+  implements Observer<boolean>
+{
   private readonly WS_URL = `ws://${this.baseUrl.split('/')[2]}/ws`;
 
   private socket: WebSocket;
@@ -42,7 +46,26 @@ export default class WebSocketService extends BaseAuthService {
 
     this.socket.onopen = this.onOpen.bind(this);
     this.socket.onmessage = this.onMessage.bind(this);
+    this.socket.onclose = this.onClose.bind(this);
+
+    UserUtils.getInstance().attach(this);
   }
+
+  update(isLoggedIn: boolean): void {
+    if (isLoggedIn) {
+      this.createSocket();
+    } else {
+      this.socket.close();
+    }
+  }
+
+  private createSocket = () => {
+    this.socket = new WebSocket(this.WS_URL);
+
+    this.socket.onopen = this.onOpen.bind(this);
+    this.socket.onmessage = this.onMessage.bind(this);
+    this.socket.onclose = this.onClose.bind(this);
+  };
 
   private sendJsonMessage = (data: object) => {
     this.socket.send(JSON.stringify(data));
@@ -102,6 +125,10 @@ export default class WebSocketService extends BaseAuthService {
     }
   };
 
+  private onClose = () => {
+    this.removeOnCodeCallback();
+  };
+
   private onAuth = (data: AuthData) => {
     console.log('On Auth');
     console.log(this);
@@ -120,11 +147,5 @@ export default class WebSocketService extends BaseAuthService {
     if (this.onCodeCallback) {
       this.onCodeCallback(data);
     }
-  };
-
-  private onCodeCallbacks: ((data: CodeData) => void)[] = [];
-
-  public addOnCodeCallback = (callback: (data: CodeData) => void) => {
-    this.onCodeCallbacks.push(callback);
   };
 }

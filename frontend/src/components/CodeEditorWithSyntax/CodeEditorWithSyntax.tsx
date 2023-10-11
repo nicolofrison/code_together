@@ -1,4 +1,9 @@
-import React, { ChangeEventHandler, useState } from 'react';
+import React, {
+  ChangeEventHandler,
+  useContext,
+  useEffect,
+  useState
+} from 'react';
 
 import CodeEditor from '@uiw/react-textarea-code-editor';
 // library used by react-textarea-code-editor
@@ -10,6 +15,7 @@ import Select from '@mui/material/Select';
 import './CodeEditorWithSyntax.css';
 import { CodeData } from '../../models/interfaces/webSocketMessage.interface';
 import WebSocketService from '../../services/webSocket.service';
+import { AuthContext } from '../AuthContext';
 
 export function CodeEditorWithSyntax(): JSX.Element {
   const [code, setCode] = useState(``);
@@ -19,9 +25,22 @@ export function CodeEditorWithSyntax(): JSX.Element {
 
   const languages = refractor.listLanguages();
 
-  WebSocketService.getInstance().setOnCodeCallback((data: CodeData) => {
-    setCode(data.text);
-  });
+  const isLoggedIn = useContext(AuthContext);
+
+  if (isLoggedIn) {
+    WebSocketService.getInstance().setOnCodeCallback((data: CodeData) => {
+      setCode(data.text);
+    });
+  }
+
+  useEffect(() => {
+    console.log('isLoggedIn effect: ' + isLoggedIn);
+    if (isLoggedIn) {
+      WebSocketService.getInstance().setOnCodeCallback((data: CodeData) => {
+        setCode(data.text);
+      });
+    }
+  }, [isLoggedIn]);
 
   const onChange: ChangeEventHandler = (
     e: React.ChangeEvent<HTMLTextAreaElement>
@@ -29,8 +48,10 @@ export function CodeEditorWithSyntax(): JSX.Element {
     console.log(e);
     setCode(e.target.value);
 
-    const codeData: CodeData = { text: e.target.value };
-    WebSocketService.getInstance().sendCode(codeData);
+    if (isLoggedIn) {
+      const codeData: CodeData = { text: e.target.value };
+      WebSocketService.getInstance().sendCode(codeData);
+    }
   };
 
   return (

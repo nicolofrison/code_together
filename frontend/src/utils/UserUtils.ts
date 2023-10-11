@@ -1,6 +1,7 @@
 import User from '../models/interfaces/user.interface';
+import { Observable } from './Observer';
 
-export default class UserUtils {
+export default class UserUtils extends Observable<boolean> {
   private static readonly userKey = 'user';
 
   private _isLoggedIn: boolean | undefined;
@@ -12,7 +13,16 @@ export default class UserUtils {
     return this._isLoggedIn as boolean;
   }
   private set isLoggedIn(value: boolean) {
+    let toNotify = false;
+    if (this._isLoggedIn != value) {
+      toNotify = true;
+    }
+
     this._isLoggedIn = value;
+
+    if (toNotify) {
+      this.notify(this.isLoggedIn);
+    }
   }
 
   public get user(): User | null {
