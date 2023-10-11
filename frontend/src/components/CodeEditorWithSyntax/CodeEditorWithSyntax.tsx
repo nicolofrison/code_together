@@ -27,14 +27,7 @@ export function CodeEditorWithSyntax(): JSX.Element {
 
   const isLoggedIn = useContext(AuthContext);
 
-  if (isLoggedIn) {
-    WebSocketService.getInstance().setOnCodeCallback((data: CodeData) => {
-      setCode(data.text);
-    });
-  }
-
   useEffect(() => {
-    console.log('isLoggedIn effect: ' + isLoggedIn);
     if (isLoggedIn) {
       WebSocketService.getInstance().setOnCodeCallback((data: CodeData) => {
         setCode(data.text);
