@@ -29,6 +29,10 @@ export class UserService extends BaseAuthService {
 
     return user as User;
   }
+
+  signOut() {
+    UserUtils.getInstance().removeUser();
+  }
 }
 
 export default UserService.getInstance();

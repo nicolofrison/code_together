@@ -138,6 +138,9 @@ export default class WebSocketService
       this.isLoggedIn = true;
     } else {
       console.error(data);
+      if (data.code === AuthCodes.TOKEN_EXPIRED) {
+        UserUtils.getInstance().removeUser();
+      }
     }
 
     this.isWaitingLogging = false;
