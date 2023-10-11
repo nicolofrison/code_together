@@ -3,10 +3,23 @@ import User from '../models/interfaces/user.interface';
 export default class UserUtils {
   private static readonly userKey = 'user';
 
-  public getUser(): User | null {
+  private _isLoggedIn: boolean | undefined;
+  public get isLoggedIn(): boolean {
+    if (this._isLoggedIn === undefined) {
+      this.user;
+    }
+
+    return this._isLoggedIn as boolean;
+  }
+  private set isLoggedIn(value: boolean) {
+    this._isLoggedIn = value;
+  }
+
+  public get user(): User | null {
     const jsonUser = sessionStorage.getItem(UserUtils.userKey);
     console.log(jsonUser);
     if (!jsonUser) {
+      this.isLoggedIn = false;
       return null;
     }
 
@@ -17,8 +30,20 @@ export default class UserUtils {
       return null;
     }
 
+    this.isLoggedIn = true;
+
     return user;
   }
+  private set user(value: User | null) {
+    if (value) {
+      sessionStorage.setItem(UserUtils.userKey, JSON.stringify(value));
+      this.isLoggedIn = true;
+    } else {
+      sessionStorage.removeItem(UserUtils.userKey);
+      this.isLoggedIn = false;
+    }
+  }
+
   private static instance: UserUtils;
   public static getInstance() {
     if (!this.instance) {
@@ -29,7 +54,8 @@ export default class UserUtils {
   }
 
   public getToken(): string | null {
-    const user = this.getUser();
+    const user = this.user;
+
     if (!user) {
       return null;
     }
@@ -37,15 +63,11 @@ export default class UserUtils {
     return user.accessToken;
   }
 
-  public IsLoggedIn() {
-    return this.getUser() != null;
-  }
-
   public removeUser() {
-    sessionStorage.removeItem(UserUtils.userKey);
+    this.user = null;
   }
 
   public setUser(user: User) {
-    sessionStorage.setItem(UserUtils.userKey, JSON.stringify(user));
+    this.user = user;
   }
 }
