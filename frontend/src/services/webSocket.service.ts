@@ -18,7 +18,6 @@ export default class WebSocketService
   private socket: WebSocket;
 
   private isWaitingLogging = false;
-  private isLoggedIn = false;
 
   // #region OnOpenCallbacks
   private onConnectedCallbacks: ((isConnected: boolean) => void)[] = [];
@@ -150,7 +149,6 @@ export default class WebSocketService
 
     if (data.code === AuthCodes.SUCCESS) {
       console.log('Auth successful');
-      this.isLoggedIn = true;
     } else {
       console.error(data);
       if (data.code === AuthCodes.TOKEN_EXPIRED) {
