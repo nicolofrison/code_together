@@ -21,13 +21,13 @@ export default class WebSocketService
   private isLoggedIn = false;
 
   // #region OnOpenCallbacks
-  private onOpenCallbacks: ((isConnected: boolean) => void)[] = [];
-  public addOnOpenCallbacks(callback: (isConnected: boolean) => void) {
-    this.onOpenCallbacks.push(callback);
+  private onConnectedCallbacks: ((isConnected: boolean) => void)[] = [];
+  public addOnConnectedCallback(callback: (isConnected: boolean) => void) {
+    this.onConnectedCallbacks.push(callback);
   }
 
-  public clearOnOpenCallbacks() {
-    this.onOpenCallbacks = [];
+  public clearOnConnectedCallbacks() {
+    this.onConnectedCallbacks = [];
   }
   // #endregion
 
@@ -96,7 +96,7 @@ export default class WebSocketService
         return;
       }
 
-      this.onOpenCallbacks.forEach((c) => c(true));
+      this.onConnectedCallbacks.forEach((c) => c(true));
 
       this.sendJsonMessage({
         type: MessageType.AUTH,
@@ -141,7 +141,7 @@ export default class WebSocketService
 
   private onClose = () => {
     this.removeOnCodeCallback();
-    this.clearOnOpenCallbacks();
+    this.clearOnConnectedCallbacks();
   };
 
   private onAuth = (data: AuthData) => {

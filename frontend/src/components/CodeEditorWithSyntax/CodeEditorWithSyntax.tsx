@@ -37,7 +37,7 @@ export function CodeEditorWithSyntax(): JSX.Element {
       WebSocketService.getInstance().setOnCodeCallback((data: CodeData) => {
         setCode(data.text);
       });
-      WebSocketService.getInstance().addOnOpenCallbacks(
+      WebSocketService.getInstance().addOnConnectedCallback(
         (isConnected: boolean) => {
           console.log('onOpen');
           setIsWsConnected(isConnected);
