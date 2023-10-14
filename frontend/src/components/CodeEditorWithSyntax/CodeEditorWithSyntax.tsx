@@ -28,18 +28,16 @@ export function CodeEditorWithSyntax(): JSX.Element {
   const { isLoggedIn, token } = useContext(AuthContext);
 
   useEffect(() => {
-    if (isLoggedIn) {
-      WebSocketService.getInstance().setOnCodeCallback((data: CodeData) => {
-        setCode(data.text);
-      });
-      WebSocketService.getInstance().addOnConnectedCallback(
-        (isConnected: boolean) => {
-          console.log('onOpen');
-          setIsWsConnected(isConnected);
-        }
-      );
-    }
-  }, [isLoggedIn]);
+    WebSocketService.getInstance().setOnCodeCallback((data: CodeData) => {
+      setCode(data.text);
+    });
+    WebSocketService.getInstance().addOnConnectedCallback(
+      (isConnected: boolean) => {
+        console.log('onOpen');
+        setIsWsConnected(isConnected);
+      }
+    );
+  }, []);
 
   const onChange: ChangeEventHandler = (
     e: React.ChangeEvent<HTMLTextAreaElement>
