@@ -11,7 +11,7 @@ import UserUtils from '../utils/UserUtils';
 export default class WebSocketService extends BaseAuthService {
   private readonly WS_URL = `ws://${this.baseUrl.split('/')[2]}/ws`;
 
-  private socket: WebSocket;
+  private socket?: WebSocket;
 
   private isWaitingLogging = false;
 
@@ -48,16 +48,13 @@ export default class WebSocketService extends BaseAuthService {
 
   private constructor() {
     super();
-
-    this.socket = new WebSocket(this.WS_URL);
-
-    this.socket.onopen = this.onOpen.bind(this);
-    this.socket.onmessage = this.onMessage.bind(this);
-    this.socket.onclose = this.onClose.bind(this);
   }
 
+  public connectSocket = (protocol?: string) => {
+    if (this.socket) {
+      this.socket.close();
+    }
 
-  private createSocket = () => {
     this.socket = new WebSocket(this.WS_URL);
 
     this.socket.onopen = this.onOpen.bind(this);
@@ -66,7 +63,7 @@ export default class WebSocketService extends BaseAuthService {
   };
 
   private sendJsonMessage = (data: object) => {
-    this.socket.send(JSON.stringify(data));
+    this.socket?.send(JSON.stringify(data));
   };
 
   private onOpen = (event: WebSocketEventMap['open']) => {
@@ -81,8 +78,6 @@ export default class WebSocketService extends BaseAuthService {
         console.log('no user logged in');
         return;
       }
-
-      this.onConnectedCallbacks.forEach((c) => c(true));
 
       this.sendJsonMessage({
         type: MessageType.AUTH,
@@ -126,8 +121,7 @@ export default class WebSocketService extends BaseAuthService {
   };
 
   private onClose = () => {
-    this.removeOnCodeCallback();
-    this.clearOnConnectedCallbacks();
+    //
   };
 
   private onAuth = (data: AuthData) => {
@@ -136,6 +130,7 @@ export default class WebSocketService extends BaseAuthService {
 
     if (data.code === AuthCodes.SUCCESS) {
       console.log('Auth successful');
+      this.onConnectedCallbacks.forEach((c) => c(true));
     } else {
       console.error(data);
       if (data.code === AuthCodes.TOKEN_EXPIRED) {
