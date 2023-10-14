@@ -38,7 +38,7 @@ export const AuthContextProvider = ({ children }: Props) => {
 
   const onTokenSubmit = (t: string) => {
     setToken(t);
-    WebSocketService.getInstance().connectSocket();
+    WebSocketService.getInstance().connectSocket(t);
   };
 
   return (

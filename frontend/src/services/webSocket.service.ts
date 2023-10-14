@@ -13,6 +13,9 @@ export default class WebSocketService extends BaseAuthService {
 
   private socket?: WebSocket;
 
+  // the connection id, shared with the users that share the same code
+  private protocol?: string;
+
   private isWaitingLogging = false;
 
   // #region OnOpenCallbacks
@@ -50,25 +53,30 @@ export default class WebSocketService extends BaseAuthService {
     super();
   }
 
-  public connectSocket = () => {
+  public connectSocket = (protocol: string) => {
     if (this.socket) {
       this.socket.close();
     }
 
-    this.socket = new WebSocket(this.WS_URL);
+    if (protocol) {
+      this.protocol = protocol;
+      this.socket = new WebSocket(this.WS_URL, protocol);
+    } else {
+      this.socket = new WebSocket(this.WS_URL);
+    }
 
     this.socket.onopen = this.onOpen.bind(this);
     this.socket.onmessage = this.onMessage.bind(this);
     this.socket.onclose = this.onClose.bind(this);
   };
 
-  private sendJsonMessage = (data: object) => {
-    this.socket?.send(JSON.stringify(data));
-  };
-
   public closeSocket() {
     this.socket?.close();
   }
+
+  private sendJsonMessage = (data: object) => {
+    this.socket?.send(JSON.stringify(data));
+  };
 
   private onOpen = (event: WebSocketEventMap['open']) => {
     console.log(event);
