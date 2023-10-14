@@ -10,16 +10,18 @@ type Props = {
 };
 
 export const AuthContextProvider = ({ children }: Props) => {
-  const [loggedIn, setLoggedIn] = useState(UserUtils.getInstance().isLoggedIn);
+  const [isLoggedIn, setIsLoggedIn] = useState(
+    UserUtils.getInstance().isLoggedIn
+  );
 
   UserUtils.getInstance().attach({
     update(value: boolean) {
       console.log('update: ' + value);
-      setLoggedIn(value);
+      setIsLoggedIn(value);
     }
   });
 
   return (
-    <AuthContext.Provider value={loggedIn}>{children}</AuthContext.Provider>
+    <AuthContext.Provider value={isLoggedIn}>{children}</AuthContext.Provider>
   );
 };
