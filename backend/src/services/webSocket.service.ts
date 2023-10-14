@@ -103,10 +103,13 @@ export default class WebSocketService {
         console.log('WS Connection succeded');
         this.wsClients[token] = ws;
 
-        response = {
-          code: AuthCodes.SUCCESS,
-          text: 'Websocket login successful'
-        };
+        this.sendObj(ws, {
+          type: MessageType.AUTH,
+          data: {
+            code: AuthCodes.SUCCESS,
+            text: 'Websocket login successful'
+          }
+        });
       })
       .catch((e) => {
         if (e instanceof AuthenticationHttpError) {
