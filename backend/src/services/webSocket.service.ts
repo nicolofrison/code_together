@@ -82,7 +82,9 @@ export default class WebSocketService {
     }
 
     Object.values(this.wsClients)
-      .filter((wsClient) => wsClient !== ws)
+      .filter(
+        (wsClient) => wsClient !== ws && wsClient.protocol === ws.protocol
+      )
       .forEach((wsClient) => {
         this.sendObj(wsClient, {
           type: MessageType.CODE,
