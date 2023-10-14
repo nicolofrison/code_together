@@ -18,7 +18,14 @@ type Props = {
   handleClose: () => void;
 };
 
-const defaultCode = (Math.floor(Math.random() * 999999) + 1).toPrecision(6);
+const tokenNumberFormat = new Intl.NumberFormat('en-US', {
+  minimumIntegerDigits: 6,
+  useGrouping: false
+});
+
+export const defaultCode = tokenNumberFormat.format(
+  Math.floor(Math.random() * 999999) + 1
+);
 
 export default function AlertDialog(props: Props) {
   const { onSubmit, open, handleClose } = props;

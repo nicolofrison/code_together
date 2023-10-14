@@ -17,9 +17,11 @@ import { CodeData } from '../../models/interfaces/webSocketMessage.interface';
 import WebSocketService from '../../services/webSocket.service';
 import { AuthContext } from '../AuthContext';
 import { Grid } from '@mui/material';
+import { defaultCode } from '../Utils/CreateJoinSharedCodeDialog';
 
 export function CodeEditorWithSyntax(): JSX.Element {
   const [code, setCode] = useState(``);
+  const [isFirstCodeReceived, setIsFirstCodeReceived] = useState(false);
   const [isWSConnected, setIsWsConnected] = useState(false);
   const [language, setLanguage] = useState('javascript');
 
@@ -29,6 +31,9 @@ export function CodeEditorWithSyntax(): JSX.Element {
 
   useEffect(() => {
     WebSocketService.getInstance().setOnCodeCallback((data: CodeData) => {
+      if (!isFirstCodeReceived) {
+        setIsFirstCodeReceived(true);
+      }
       setCode(data.text);
     });
     WebSocketService.getInstance().addOnConnectedCallback(
@@ -79,7 +84,13 @@ export function CodeEditorWithSyntax(): JSX.Element {
         </Grid>
         <Grid item xs>
           <CodeEditor
-            disabled={isLoggedIn && !isWSConnected}
+            disabled={
+              // is logged in && is not connected
+              // is logged in && is connected && defaultCode !== token && not received first code websocket message
+              isLoggedIn &&
+              (!isWSConnected ||
+                (defaultCode !== token && !isFirstCodeReceived))
+            }
             value={code}
             language={language}
             placeholder={`Please enter ${language} code.`}
