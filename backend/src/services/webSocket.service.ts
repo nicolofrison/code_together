@@ -51,6 +51,10 @@ export default class WebSocketService {
     });
   }
 
+  public isWsCodeUsed(wsCode: string) {
+    return Object.values(this.wsClients).some((ws) => ws.protocol === wsCode);
+  }
+
   private onMessage(ws: WebSocket, data: string) {
     console.log('On Message');
     const message = JSON.parse(data) as WebSocketMessage;
