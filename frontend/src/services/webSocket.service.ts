@@ -7,7 +7,7 @@ import {
   WebSocketMessage
 } from '../models/interfaces/webSocketMessage.interface';
 import UserUtils from '../utils/UserUtils';
-import { Observer } from '../utils/Observer';
+import { Observable, Observer } from '../utils/Observer';
 
 export default class WebSocketService
   extends BaseAuthService
@@ -20,7 +20,27 @@ export default class WebSocketService
   private isWaitingLogging = false;
   private isLoggedIn = false;
 
+  // #region OnOpenCallbacks
+  private onOpenCallbacks: ((isConnected: boolean) => void)[] = [];
+  public addOnOpenCallbacks(callback: (isConnected: boolean) => void) {
+    this.onOpenCallbacks.push(callback);
+  }
+
+  public clearOnOpenCallbacks() {
+    this.onOpenCallbacks = [];
+  }
+  // #endregion
+
+  // #region OnCodeCallback
   private onCodeCallback: ((data: CodeData) => void) | undefined;
+  public setOnCodeCallback(callback: (data: CodeData) => void) {
+    this.onCodeCallback = callback;
+  }
+
+  public removeOnCodeCallback() {
+    this.onCodeCallback = undefined;
+  }
+  // #endregion
 
   private static instance: WebSocketService;
   public static getInstance(): WebSocketService {
@@ -29,14 +49,6 @@ export default class WebSocketService
     }
 
     return WebSocketService.instance;
-  }
-
-  public setOnCodeCallback(callback: (data: CodeData) => void) {
-    this.onCodeCallback = callback;
-  }
-
-  public removeOnCodeCallback() {
-    this.onCodeCallback = undefined;
   }
 
   private constructor() {
@@ -84,6 +96,8 @@ export default class WebSocketService
         return;
       }
 
+      this.onOpenCallbacks.forEach((c) => c(true));
+
       this.sendJsonMessage({
         type: MessageType.AUTH,
         data: {
@@ -127,6 +141,7 @@ export default class WebSocketService
 
   private onClose = () => {
     this.removeOnCodeCallback();
+    this.clearOnOpenCallbacks();
   };
 
   private onAuth = (data: AuthData) => {

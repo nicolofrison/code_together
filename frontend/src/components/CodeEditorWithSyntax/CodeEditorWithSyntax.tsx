@@ -23,6 +23,7 @@ export function CodeEditorWithSyntax(): JSX.Element {
   const [code, setCode] = useState(``);
   const [token, setToken] = useState('');
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isWSConnected, setIsWsConnected] = useState(false);
   const [language, setLanguage] = useState('javascript');
   // used to keep the opacity when the select is expanded, otherwise it would lose it
   const [selectIsExpanded, setSelectIsExpanded] = useState(false);
@@ -36,6 +37,12 @@ export function CodeEditorWithSyntax(): JSX.Element {
       WebSocketService.getInstance().setOnCodeCallback((data: CodeData) => {
         setCode(data.text);
       });
+      WebSocketService.getInstance().addOnOpenCallbacks(
+        (isConnected: boolean) => {
+          console.log('onOpen');
+          setIsWsConnected(isConnected);
+        }
+      );
       setIsDialogOpen(true);
     }
   }, [isLoggedIn]);
@@ -91,6 +98,7 @@ export function CodeEditorWithSyntax(): JSX.Element {
         </Grid>
         <Grid item xs>
           <CodeEditor
+            disabled={isLoggedIn && !isWSConnected}
             value={code}
             language={language}
             placeholder={`Please enter ${language} code.`}
