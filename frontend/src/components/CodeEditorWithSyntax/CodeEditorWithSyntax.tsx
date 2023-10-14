@@ -25,8 +25,6 @@ export function CodeEditorWithSyntax(): JSX.Element {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isWSConnected, setIsWsConnected] = useState(false);
   const [language, setLanguage] = useState('javascript');
-  // used to keep the opacity when the select is expanded, otherwise it would lose it
-  const [selectIsExpanded, setSelectIsExpanded] = useState(false);
 
   const languages = refractor.listLanguages();
 
@@ -85,8 +83,6 @@ export function CodeEditorWithSyntax(): JSX.Element {
             id="language-select"
             value={language}
             label="Language"
-            onOpen={() => setSelectIsExpanded(true)}
-            onClose={() => setSelectIsExpanded(false)}
             onChange={(e) => setLanguage(e.target.value)}
           >
             {languages.map((l) => (
