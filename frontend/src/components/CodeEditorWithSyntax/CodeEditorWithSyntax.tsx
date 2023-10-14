@@ -16,19 +16,16 @@ import './CodeEditorWithSyntax.css';
 import { CodeData } from '../../models/interfaces/webSocketMessage.interface';
 import WebSocketService from '../../services/webSocket.service';
 import { AuthContext } from '../AuthContext';
-import CreateJoinSharedCodeDialog from '../Utils/CreateJoinSharedCodeDialog';
 import { Grid } from '@mui/material';
 
 export function CodeEditorWithSyntax(): JSX.Element {
   const [code, setCode] = useState(``);
-  const [token, setToken] = useState('');
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isWSConnected, setIsWsConnected] = useState(false);
   const [language, setLanguage] = useState('javascript');
 
   const languages = refractor.listLanguages();
 
-  const isLoggedIn = useContext(AuthContext);
+  const { isLoggedIn, token } = useContext(AuthContext);
 
   useEffect(() => {
     if (isLoggedIn) {
@@ -41,13 +38,8 @@ export function CodeEditorWithSyntax(): JSX.Element {
           setIsWsConnected(isConnected);
         }
       );
-      setIsDialogOpen(true);
     }
   }, [isLoggedIn]);
-
-  const onTokenSubmit = (t: string) => {
-    setToken(t);
-  };
 
   const onChange: ChangeEventHandler = (
     e: React.ChangeEvent<HTMLTextAreaElement>
@@ -63,11 +55,6 @@ export function CodeEditorWithSyntax(): JSX.Element {
 
   return (
     <>
-      <CreateJoinSharedCodeDialog
-        onSubmit={onTokenSubmit}
-        open={isDialogOpen}
-        handleClose={() => setIsDialogOpen(false)}
-      />
       <Grid
         container
         height="100%"

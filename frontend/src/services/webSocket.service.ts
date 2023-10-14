@@ -50,7 +50,7 @@ export default class WebSocketService extends BaseAuthService {
     super();
   }
 
-  public connectSocket = (protocol?: string) => {
+  public connectSocket = () => {
     if (this.socket) {
       this.socket.close();
     }
@@ -65,6 +65,10 @@ export default class WebSocketService extends BaseAuthService {
   private sendJsonMessage = (data: object) => {
     this.socket?.send(JSON.stringify(data));
   };
+
+  public closeSocket() {
+    this.socket?.close();
+  }
 
   private onOpen = (event: WebSocketEventMap['open']) => {
     console.log(event);
