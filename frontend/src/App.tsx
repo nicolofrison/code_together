@@ -7,7 +7,7 @@ import TopAlert from './components/Utils/TopAlert';
 import userService from './services/user.service';
 
 function Auth() {
-  const isLoggedIn = useContext(AuthContext);
+  const { isLoggedIn } = useContext(AuthContext);
 
   return (
     <>
