@@ -1,7 +1,7 @@
 import { useState, createContext, useEffect } from 'react';
 import UserUtils from '../utils/UserUtils';
 import WebSocketService from '../services/webSocket.service';
-import CreateJoinSharedCodeDialog from './Utils/CreateJoinSharedCodeDialog';
+import WebSocketCodeDialog from './Utils/WebSocketCodeDialog';
 
 export const AuthContext = createContext<{
   isLoggedIn: boolean;
@@ -43,7 +43,7 @@ export const AuthContextProvider = ({ children }: Props) => {
 
   return (
     <AuthContext.Provider value={{ isLoggedIn, wsCode }}>
-      <CreateJoinSharedCodeDialog
+      <WebSocketCodeDialog
         onSubmit={onTokenSubmit}
         open={isDialogOpen}
         handleClose={() => setIsDialogOpen(false)}

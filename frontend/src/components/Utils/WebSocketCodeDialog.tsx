@@ -27,7 +27,7 @@ export const defaultWsCode = wsCodeFormat.format(
   Math.floor(Math.random() * 999999) + 1
 );
 
-export default function AlertDialog(props: Props) {
+export default function WebSocketCodeDialog(props: Props) {
   const { onSubmit, open, handleClose } = props;
 
   const [wsCode, setWsCode] = useState(defaultWsCode);

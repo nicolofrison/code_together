@@ -17,7 +17,7 @@ import { CodeData } from '../../models/interfaces/webSocketMessage.interface';
 import WebSocketService from '../../services/webSocket.service';
 import { AuthContext } from '../AuthContext';
 import { Grid } from '@mui/material';
-import { defaultWsCode } from '../Utils/CreateJoinSharedCodeDialog';
+import { defaultWsCode } from '../Utils/WebSocketCodeDialog';
 
 export function CodeEditorWithSyntax(): JSX.Element {
   const [code, setCode] = useState(``);
