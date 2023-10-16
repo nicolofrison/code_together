@@ -17,7 +17,7 @@ import { CodeData } from '../../models/interfaces/webSocketMessage.interface';
 import WebSocketService from '../../services/webSocket.service';
 import { AuthContext } from '../AuthContext';
 import { Grid } from '@mui/material';
-import { defaultCode } from '../Utils/CreateJoinSharedCodeDialog';
+import { defaultWsCode } from '../Utils/CreateJoinSharedCodeDialog';
 
 export function CodeEditorWithSyntax(): JSX.Element {
   const [code, setCode] = useState(``);
@@ -27,7 +27,7 @@ export function CodeEditorWithSyntax(): JSX.Element {
 
   const languages = refractor.listLanguages();
 
-  const { isLoggedIn, token } = useContext(AuthContext);
+  const { isLoggedIn, wsCode } = useContext(AuthContext);
 
   useEffect(() => {
     WebSocketService.getInstance().setOnCodeCallback((data: CodeData) => {
@@ -65,7 +65,7 @@ export function CodeEditorWithSyntax(): JSX.Element {
         alignItems="stretch"
       >
         <Grid item xs={8}>
-          <p>Connected to {token}</p>
+          <p>Connected to {wsCode}</p>
         </Grid>
         <Grid item xs={4}>
           <Select
@@ -86,10 +86,10 @@ export function CodeEditorWithSyntax(): JSX.Element {
           <CodeEditor
             disabled={
               // is logged in && is not connected
-              // is logged in && is connected && defaultCode !== token && not received first code websocket message
+              // is logged in && is connected && defaultWsCode !== wsCode && not received first text code websocket message
               isLoggedIn &&
               (!isWSConnected ||
-                (defaultCode !== token && !isFirstCodeReceived))
+                (defaultWsCode !== wsCode && !isFirstCodeReceived))
             }
             value={code}
             language={language}

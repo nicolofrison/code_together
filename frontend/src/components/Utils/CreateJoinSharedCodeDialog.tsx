@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
@@ -13,26 +13,26 @@ enum CodeAction {
 }
 
 type Props = {
-  onSubmit: (token: string) => void;
+  onSubmit: (wsCode: string) => void;
   open: boolean;
   handleClose: () => void;
 };
 
-const tokenNumberFormat = new Intl.NumberFormat('en-US', {
+const wsCodeFormat = new Intl.NumberFormat('en-US', {
   minimumIntegerDigits: 6,
   useGrouping: false
 });
 
-export const defaultCode = tokenNumberFormat.format(
+export const defaultWsCode = wsCodeFormat.format(
   Math.floor(Math.random() * 999999) + 1
 );
 
 export default function AlertDialog(props: Props) {
   const { onSubmit, open, handleClose } = props;
 
-  const [token, setToken] = useState(defaultCode);
+  const [wsCode, setWsCode] = useState(defaultWsCode);
 
-  const isTokenValid = (t: string) => {
+  const isWsCodeValid = (t: string) => {
     const reg = new RegExp('[0-9]{6}');
     return reg.test(t);
   };
@@ -40,35 +40,35 @@ export default function AlertDialog(props: Props) {
   const [error, setError] = useState('');
   const handleValidation = (e: React.ChangeEvent<HTMLInputElement>) => {
     setError(
-      isTokenValid(e.target.value)
+      isWsCodeValid(e.target.value)
         ? ''
-        : 'The token should be composed by exactly 6 numbers'
+        : 'The shared code should be composed by exactly 6 numbers'
     );
-    setToken(e.target.value);
+    setWsCode(e.target.value);
   };
 
   const setAction = (action: CodeAction) => {
     if (action === CodeAction.CREATE) {
-      if (token === defaultCode) {
-        onSubmit(token);
+      if (wsCode === defaultWsCode) {
+        onSubmit(wsCode);
         handleClose();
       } else {
-        setToken(defaultCode);
+        setWsCode(defaultWsCode);
       }
     } else {
-      if (token === defaultCode) {
-        setToken('');
-      } else if (isTokenValid(token)) {
-        onSubmit(token);
+      if (wsCode === defaultWsCode) {
+        setWsCode('');
+      } else if (isWsCodeValid(wsCode)) {
+        onSubmit(wsCode);
         handleClose();
       }
     }
   };
 
   const checkDisable = () => {
-    console.log(token);
-    console.log(defaultCode);
-    return token === defaultCode;
+    console.log(wsCode);
+    console.log(defaultWsCode);
+    return wsCode === defaultWsCode;
   };
 
   return (
@@ -88,8 +88,8 @@ export default function AlertDialog(props: Props) {
           <TextField
             autoFocus
             margin="dense"
-            id="token"
-            label="Token"
+            id="wsCode"
+            label="Shared code"
             fullWidth
             variant="standard"
             type="numeric"
@@ -97,12 +97,12 @@ export default function AlertDialog(props: Props) {
             onChange={handleValidation}
             error={error ? true : false}
             helperText={error}
-            value={token}
+            value={wsCode}
           />
         </DialogContent>
         <DialogActions>
           <Button
-            disabled={!isTokenValid(token)}
+            disabled={!isWsCodeValid(wsCode)}
             onClick={() => setAction(CodeAction.JOIN)}
           >
             Join

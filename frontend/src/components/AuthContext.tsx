@@ -5,8 +5,8 @@ import CreateJoinSharedCodeDialog from './Utils/CreateJoinSharedCodeDialog';
 
 export const AuthContext = createContext<{
   isLoggedIn: boolean;
-  token: string;
-}>({ isLoggedIn: false, token: '' });
+  wsCode: string;
+}>({ isLoggedIn: false, wsCode: '' });
 
 type Props = {
   children: React.ReactNode;
@@ -18,7 +18,7 @@ export const AuthContextProvider = ({ children }: Props) => {
   );
 
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [token, setToken] = useState('');
+  const [wsCode, setWsCode] = useState('');
 
   UserUtils.getInstance().attach({
     update(value: boolean) {
@@ -37,12 +37,12 @@ export const AuthContextProvider = ({ children }: Props) => {
   }, [isLoggedIn]);
 
   const onTokenSubmit = (t: string) => {
-    setToken(t);
+    setWsCode(t);
     WebSocketService.getInstance().connectSocket(t);
   };
 
   return (
-    <AuthContext.Provider value={{ isLoggedIn, token }}>
+    <AuthContext.Provider value={{ isLoggedIn, wsCode }}>
       <CreateJoinSharedCodeDialog
         onSubmit={onTokenSubmit}
         open={isDialogOpen}
