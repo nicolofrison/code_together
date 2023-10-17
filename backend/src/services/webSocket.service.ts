@@ -51,8 +51,23 @@ export default class WebSocketService {
     });
   }
 
-  public isWsCodeUsed(wsCode: string) {
-    return Object.values(this.wsClients).some((ws) => ws.protocol === wsCode);
+  public generateUniqueWsCode() {
+    const wsCodeNumberFormat = new Intl.NumberFormat('en-US', {
+      minimumIntegerDigits: 6,
+      useGrouping: false
+    });
+
+    let defaultWsCode = '';
+
+    do {
+      defaultWsCode = wsCodeNumberFormat.format(
+        Math.floor(Math.random() * 999999) + 1
+      );
+    } while (
+      Object.values(this.wsClients).some((ws) => ws.protocol === defaultWsCode)
+    );
+
+    return defaultWsCode;
   }
 
   private onMessage(ws: WebSocket, data: string) {
