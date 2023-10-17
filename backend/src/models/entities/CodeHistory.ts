@@ -27,4 +27,16 @@ export default class CodeHistory {
 
   @Column({ type: 'timestamptz' }) // Recommended
   timestamp: Date;
+
+  public constructor(
+    codeId: number,
+    comment: string,
+    commit_sha: string,
+    timestamp: Date
+  ) {
+    this.codeId = codeId;
+    this.comment = comment;
+    this.commit_sha = commit_sha;
+    this.timestamp = timestamp;
+  }
 }
