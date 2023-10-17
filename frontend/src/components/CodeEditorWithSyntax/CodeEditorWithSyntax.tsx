@@ -43,15 +43,27 @@ export function CodeEditorWithSyntax(): JSX.Element {
     );
   }, []);
 
+  const isAllowedToWrite = () => {
+    // is not logged in (normal editor without sharing)
+    // is logged in && ws connected && wsCode is created
+    // is logged in && ws connected && wsCode is joined && received the code at least once
+    return (
+      !isLoggedIn ||
+      (isWSConnected && (defaultWsCode === wsCode || isFirstCodeReceived))
+    );
+  };
+
   const onChange: ChangeEventHandler = (
     e: React.ChangeEvent<HTMLTextAreaElement>
   ) => {
     console.log(e);
-    setCode(e.target.value);
+    if (isAllowedToWrite()) {
+      setCode(e.target.value);
 
-    if (isLoggedIn) {
-      const codeData: CodeData = { text: e.target.value };
-      WebSocketService.getInstance().sendCode(codeData);
+      if (isLoggedIn) {
+        const codeData: CodeData = { text: e.target.value };
+        WebSocketService.getInstance().sendCode(codeData);
+      }
     }
   };
 
@@ -83,13 +95,7 @@ export function CodeEditorWithSyntax(): JSX.Element {
         </Grid>
         <Grid item xs>
           <CodeEditor
-            disabled={
-              // is logged in && is not connected
-              // is logged in && is connected && defaultWsCode !== wsCode && not received first text code websocket message
-              isLoggedIn &&
-              (!isWSConnected ||
-                (defaultWsCode !== wsCode && !isFirstCodeReceived))
-            }
+            disabled={isAllowedToWrite()}
             value={code}
             language={language}
             placeholder={`Please enter ${language} code.`}
