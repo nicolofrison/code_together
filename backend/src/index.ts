@@ -2,9 +2,11 @@ import 'dotenv/config';
 import 'reflect-metadata';
 import Server from './server';
 
+import { appDataSource } from './config/dataSource';
+
 // controllers instances
 import { authControllerInstance } from './controllers/auth.controller';
-import { appDataSource } from './config/dataSource';
+import { codeControllerInstance } from './controllers/code.controller';
 
 (async () => {
   try {
@@ -13,7 +15,7 @@ import { appDataSource } from './config/dataSource';
     console.error('Error while connecting to the database', error);
     return error;
   }
-  const app = new Server([authControllerInstance]);
+  const app = new Server([authControllerInstance, codeControllerInstance]);
   app.listen();
 
   return null;
