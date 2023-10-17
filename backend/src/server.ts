@@ -3,6 +3,7 @@ import * as express from 'express';
 import * as cors from 'cors';
 import Controller from './models/http/controller';
 import errorMiddleware from './middlewares/error.middleware';
+import WebSocketService from './services/webSocket.service';
 
 class Server {
   public app: express.Application;
@@ -33,9 +34,11 @@ class Server {
   }
 
   public listen() {
-    this.app.listen(this.port, () => {
+    const webServer = this.app.listen(this.port, () => {
       console.info(`App listening on the port ${this.port}`);
     });
+
+    WebSocketService.getInstance(webServer).init();
   }
 }
 

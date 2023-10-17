@@ -8,9 +8,11 @@ import RecordAlreadyExistsError from '../../src/models/exceptions/RecordAlreadyE
 import { TypeORMError } from 'typeorm';
 import RecordNotFoundError from '../../src/models/exceptions/RecordNotFoundError';
 import WrongPasswordError from '../../src/models/exceptions/WrongPasswordError';
+import WebSocketService from '../../src/services/webSocket.service';
 
 describe('AuthController', () => {
   jest.mock('../../src/services/user.service', () => jest.fn());
+  jest.mock('../../src/services/webSocket.service', () => jest.fn());
 
   describe('signIn', () => {
     const apiUrl = '/auth/signin';
@@ -26,10 +28,18 @@ describe('AuthController', () => {
         Promise.resolve(expectedUser as User)
       );
 
+      const expectedWsCode = 133456;
+      const mockStaticGetInstance = jest.fn().mockReturnValue({
+        generateUniqueWsCode: () => expectedWsCode
+      });
+
+      WebSocketService.getInstance = mockStaticGetInstance;
+
       const response = await request(server.app).post(apiUrl).send(req);
       expect(response.statusCode).toBe(200);
       expect(response.body).toMatchObject(expectedUser);
       expect(response.body).toHaveProperty('accessToken');
+      expect(response.body).toHaveProperty('wsCode', expectedWsCode);
     });
 
     test('sign in a user with wrong request body response 400', async () => {

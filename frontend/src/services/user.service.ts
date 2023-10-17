@@ -1,5 +1,3 @@
-import axios from 'axios';
-
 import AuthPost from '../models/http/requests/authPost';
 import BaseAuthService from './baseAuth.service';
 import UserUtils from '../utils/UserUtils';
@@ -17,25 +15,29 @@ export class UserService extends BaseAuthService {
   }
 
   public async signUp(authPost: AuthPost) {
-    const response = await this.axiosWithOptions().post(
-      'auth/signup',
-      authPost
-    );
+    const response = await this.apiRequest().post('auth/signup', authPost);
 
     return response.data as User;
   }
 
   public async signIn(authPost: AuthPost) {
-    const response = await this.axiosWithOptions().post(
-      'auth/signin',
-      authPost
-    );
+    const response = await this.apiRequest().post('auth/signin', authPost);
     const user = response.data;
 
-    UserUtils.setUser(user);
+    if (!user.accessToken || !user.wsCode) {
+      throw new Error(
+        'The response from the server is missing some information'
+      );
+    }
+
+    UserUtils.getInstance().setUser(user);
     delete user.accessToken;
 
     return user as User;
+  }
+
+  signOut() {
+    UserUtils.getInstance().removeUser();
   }
 }
 
