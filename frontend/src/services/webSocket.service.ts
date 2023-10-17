@@ -7,20 +7,38 @@ import {
   WebSocketMessage
 } from '../models/interfaces/webSocketMessage.interface';
 import UserUtils from '../utils/UserUtils';
-import { Observer } from '../utils/Observer';
 
-export default class WebSocketService
-  extends BaseAuthService
-  implements Observer<boolean>
-{
+export default class WebSocketService extends BaseAuthService {
   private readonly WS_URL = `ws://${this.baseUrl.split('/')[2]}/ws`;
 
-  private socket: WebSocket;
+  private socket?: WebSocket;
+
+  // the connection id, shared with the users that share the same code
+  private protocol?: string;
 
   private isWaitingLogging = false;
-  private isLoggedIn = false;
 
+  // #region OnOpenCallbacks
+  private onConnectedCallbacks: ((isConnected: boolean) => void)[] = [];
+  public addOnConnectedCallback(callback: (isConnected: boolean) => void) {
+    this.onConnectedCallbacks.push(callback);
+  }
+
+  public clearOnConnectedCallbacks() {
+    this.onConnectedCallbacks = [];
+  }
+  // #endregion
+
+  // #region OnCodeCallback
   private onCodeCallback: ((data: CodeData) => void) | undefined;
+  public setOnCodeCallback(callback: (data: CodeData) => void) {
+    this.onCodeCallback = callback;
+  }
+
+  public removeOnCodeCallback() {
+    this.onCodeCallback = undefined;
+  }
+  // #endregion
 
   private static instance: WebSocketService;
   public static getInstance(): WebSocketService {
@@ -31,44 +49,33 @@ export default class WebSocketService
     return WebSocketService.instance;
   }
 
-  public setOnCodeCallback(callback: (data: CodeData) => void) {
-    this.onCodeCallback = callback;
-  }
-
-  public removeOnCodeCallback() {
-    this.onCodeCallback = undefined;
-  }
-
   private constructor() {
     super();
-
-    this.socket = new WebSocket(this.WS_URL);
-
-    this.socket.onopen = this.onOpen.bind(this);
-    this.socket.onmessage = this.onMessage.bind(this);
-    this.socket.onclose = this.onClose.bind(this);
-
-    UserUtils.getInstance().attach(this);
   }
 
-  update(isLoggedIn: boolean): void {
-    if (isLoggedIn) {
-      this.createSocket();
-    } else {
+  public connectSocket = (protocol: string) => {
+    if (this.socket) {
       this.socket.close();
     }
-  }
 
-  private createSocket = () => {
-    this.socket = new WebSocket(this.WS_URL);
+    if (protocol) {
+      this.protocol = protocol;
+      this.socket = new WebSocket(this.WS_URL, protocol);
+    } else {
+      this.socket = new WebSocket(this.WS_URL);
+    }
 
     this.socket.onopen = this.onOpen.bind(this);
     this.socket.onmessage = this.onMessage.bind(this);
     this.socket.onclose = this.onClose.bind(this);
   };
 
+  public closeSocket() {
+    this.socket?.close();
+  }
+
   private sendJsonMessage = (data: object) => {
-    this.socket.send(JSON.stringify(data));
+    this.socket?.send(JSON.stringify(data));
   };
 
   private onOpen = (event: WebSocketEventMap['open']) => {
@@ -126,7 +133,7 @@ export default class WebSocketService
   };
 
   private onClose = () => {
-    this.removeOnCodeCallback();
+    //
   };
 
   private onAuth = (data: AuthData) => {
@@ -135,7 +142,7 @@ export default class WebSocketService
 
     if (data.code === AuthCodes.SUCCESS) {
       console.log('Auth successful');
-      this.isLoggedIn = true;
+      this.onConnectedCallbacks.forEach((c) => c(true));
     } else {
       console.error(data);
       if (data.code === AuthCodes.TOKEN_EXPIRED) {

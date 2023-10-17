@@ -24,6 +24,12 @@ export class UserService extends BaseAuthService {
     const response = await this.apiRequest().post('auth/signin', authPost);
     const user = response.data;
 
+    if (!user.accessToken || !user.wsCode) {
+      throw new Error(
+        'The response from the server is missing some information'
+      );
+    }
+
     UserUtils.getInstance().setUser(user);
     delete user.accessToken;
 

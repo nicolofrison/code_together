@@ -10,7 +10,8 @@ import RecordNotFoundError from '../models/exceptions/RecordNotFoundError';
 import WrongPasswordError from '../models/exceptions/WrongPasswordError';
 import RecordAlreadyExistsError from '../models/exceptions/RecordAlreadyExistsError';
 import { jwtService } from '../services/jwt.service';
-import UserWithTokenResponse from '../models/http/responses/userWithToken.interface';
+import UserSignInResponse from '../models/http/responses/userSignIn.interface';
+import WebSocketService from '../services/webSocket.service';
 
 class AuthController extends Controller {
   private static readonly PATH = '/auth';
@@ -74,8 +75,9 @@ class AuthController extends Controller {
         const token = jwtService.createToken(user);
         const userWithToken = {
           ...user,
-          accessToken: token
-        } as UserWithTokenResponse;
+          accessToken: token,
+          wsCode: WebSocketService.getInstance().generateUniqueWsCode()
+        } as UserSignInResponse;
 
         response.status(200);
         response.send(userWithToken);

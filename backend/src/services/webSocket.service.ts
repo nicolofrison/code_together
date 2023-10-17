@@ -51,6 +51,25 @@ export default class WebSocketService {
     });
   }
 
+  public generateUniqueWsCode() {
+    const wsCodeNumberFormat = new Intl.NumberFormat('en-US', {
+      minimumIntegerDigits: 6,
+      useGrouping: false
+    });
+
+    let defaultWsCode = '';
+
+    do {
+      defaultWsCode = wsCodeNumberFormat.format(
+        Math.floor(Math.random() * 999999) + 1
+      );
+    } while (
+      Object.values(this.wsClients).some((ws) => ws.protocol === defaultWsCode)
+    );
+
+    return defaultWsCode;
+  }
+
   private onMessage(ws: WebSocket, data: string) {
     console.log('On Message');
     const message = JSON.parse(data) as WebSocketMessage;
@@ -82,7 +101,9 @@ export default class WebSocketService {
     }
 
     Object.values(this.wsClients)
-      .filter((wsClient) => wsClient !== ws)
+      .filter(
+        (wsClient) => wsClient !== ws && wsClient.protocol === ws.protocol
+      )
       .forEach((wsClient) => {
         this.sendObj(wsClient, {
           type: MessageType.CODE,
@@ -103,10 +124,13 @@ export default class WebSocketService {
         console.log('WS Connection succeded');
         this.wsClients[token] = ws;
 
-        response = {
-          code: AuthCodes.SUCCESS,
-          text: 'Websocket login successful'
-        };
+        this.sendObj(ws, {
+          type: MessageType.AUTH,
+          data: {
+            code: AuthCodes.SUCCESS,
+            text: 'Websocket login successful'
+          }
+        });
       })
       .catch((e) => {
         if (e instanceof AuthenticationHttpError) {

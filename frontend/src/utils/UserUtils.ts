@@ -73,6 +73,16 @@ export default class UserUtils extends Observable<boolean> {
     return user.accessToken;
   }
 
+  public getDefaultWsCode(): string {
+    const user = this.user;
+
+    if (!user) {
+      return '';
+    }
+
+    return user.wsCode;
+  }
+
   public removeUser() {
     this.user = null;
   }
