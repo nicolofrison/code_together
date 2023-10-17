@@ -21,4 +21,9 @@ export default class Code {
 
   @Column({ nullable: false })
   ownerId: number;
+
+  public constructor(name: string, ownerId: number) {
+    this.name = name;
+    this.ownerId = ownerId;
+  }
 }
