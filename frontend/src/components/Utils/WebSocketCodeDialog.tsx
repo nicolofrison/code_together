@@ -1,11 +1,11 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
-import { TextField } from '@mui/material';
+import { ButtonGroup, TextField } from '@mui/material';
 
 enum CodeAction {
   CREATE,
@@ -30,11 +30,14 @@ export const defaultWsCode = wsCodeFormat.format(
 export default function WebSocketCodeDialog(props: Props) {
   const { onSubmit, open, handleClose } = props;
 
+  const [action, setAction] = useState(CodeAction.CREATE);
   const [wsCode, setWsCode] = useState(defaultWsCode);
 
-  const isWsCodeValid = (t: string) => {
+  const isWsCodeValid = (code: string) => {
     const reg = new RegExp('[0-9]{6}');
-    return reg.test(t);
+    return (
+      reg.test(code) && (action === CodeAction.CREATE || code !== defaultWsCode)
+    );
   };
 
   const [error, setError] = useState('');
@@ -42,33 +45,28 @@ export default function WebSocketCodeDialog(props: Props) {
     setError(
       isWsCodeValid(e.target.value)
         ? ''
-        : 'The shared code should be composed by exactly 6 numbers'
+        : 'The shared code should be composed by exactly 6 numbers and different from the default code'
     );
     setWsCode(e.target.value);
   };
 
-  const setAction = (action: CodeAction) => {
+  useEffect(() => {
     if (action === CodeAction.CREATE) {
-      if (wsCode === defaultWsCode) {
-        onSubmit(wsCode);
-        handleClose();
-      } else {
-        setWsCode(defaultWsCode);
-      }
+      setError('');
+      setWsCode(defaultWsCode);
     } else {
-      if (wsCode === defaultWsCode) {
-        setWsCode('');
-      } else if (isWsCodeValid(wsCode)) {
-        onSubmit(wsCode);
-        handleClose();
-      }
+      setWsCode('');
     }
-  };
+  }, [action]);
 
-  const checkDisable = () => {
-    console.log(wsCode);
-    console.log(defaultWsCode);
-    return wsCode === defaultWsCode;
+  const submit = () => {
+    if (action === CodeAction.CREATE) {
+      onSubmit(defaultWsCode);
+      handleClose();
+    } else if (isWsCodeValid(wsCode)) {
+      onSubmit(wsCode);
+      handleClose();
+    }
   };
 
   return (
@@ -85,6 +83,23 @@ export default function WebSocketCodeDialog(props: Props) {
           <DialogContentText id="alert-dialog-description">
             Create or Join a code session?
           </DialogContentText>
+          <ButtonGroup
+            aria-label="Create/Join session buttons"
+            style={{ display: 'block' }}
+          >
+            <Button
+              variant={action === CodeAction.CREATE ? 'contained' : 'outlined'}
+              onClick={() => setAction(CodeAction.CREATE)}
+            >
+              Create Session
+            </Button>
+            <Button
+              variant={action === CodeAction.JOIN ? 'contained' : 'outlined'}
+              onClick={() => setAction(CodeAction.JOIN)}
+            >
+              Join Session
+            </Button>
+          </ButtonGroup>
           <TextField
             autoFocus
             margin="dense"
@@ -93,7 +108,7 @@ export default function WebSocketCodeDialog(props: Props) {
             fullWidth
             variant="standard"
             type="numeric"
-            disabled={checkDisable()}
+            disabled={action === CodeAction.CREATE}
             onChange={handleValidation}
             error={error ? true : false}
             helperText={error}
@@ -101,14 +116,8 @@ export default function WebSocketCodeDialog(props: Props) {
           />
         </DialogContent>
         <DialogActions>
-          <Button
-            disabled={!isWsCodeValid(wsCode)}
-            onClick={() => setAction(CodeAction.JOIN)}
-          >
-            Join
-          </Button>
-          <Button onClick={() => setAction(CodeAction.CREATE)} autoFocus>
-            Create
+          <Button disabled={!isWsCodeValid(wsCode)} onClick={() => submit()}>
+            {action === CodeAction.CREATE ? 'Create Session' : 'Join Session'}
           </Button>
         </DialogActions>
       </Dialog>
