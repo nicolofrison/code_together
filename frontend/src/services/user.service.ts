@@ -2,7 +2,6 @@ import AuthPost from '../models/http/requests/authPost';
 import BaseAuthService from './baseAuth.service';
 import UserUtils from '../utils/UserUtils';
 import User from '../models/interfaces/user.interface';
-import { use } from 'chai';
 
 export class UserService extends BaseAuthService {
   private static instance: UserService;

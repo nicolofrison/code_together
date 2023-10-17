@@ -6,7 +6,8 @@ import WebSocketCodeDialog from './Utils/WebSocketCodeDialog';
 export const AuthContext = createContext<{
   isLoggedIn: boolean;
   wsCode: string;
-}>({ isLoggedIn: false, wsCode: '' });
+  defaultWsCode: string;
+}>({ isLoggedIn: false, defaultWsCode: '', wsCode: '' });
 
 type Props = {
   children: React.ReactNode;
@@ -18,6 +19,7 @@ export const AuthContextProvider = ({ children }: Props) => {
   );
 
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [defaultWsCode, setDefaultWsCode] = useState('');
   const [wsCode, setWsCode] = useState('');
 
   UserUtils.getInstance().attach({
@@ -29,6 +31,7 @@ export const AuthContextProvider = ({ children }: Props) => {
 
   useEffect(() => {
     console.log('effect');
+    setDefaultWsCode(UserUtils.getInstance().getDefaultWsCode());
     if (isLoggedIn) {
       setIsDialogOpen(true);
     } else {
@@ -42,11 +45,12 @@ export const AuthContextProvider = ({ children }: Props) => {
   };
 
   return (
-    <AuthContext.Provider value={{ isLoggedIn, wsCode }}>
+    <AuthContext.Provider value={{ isLoggedIn, defaultWsCode, wsCode }}>
       <WebSocketCodeDialog
         onSubmit={onTokenSubmit}
         open={isDialogOpen}
         handleClose={() => setIsDialogOpen(false)}
+        defaultWsCode={defaultWsCode}
       />
       {children}
     </AuthContext.Provider>

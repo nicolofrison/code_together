@@ -73,11 +73,11 @@ export default class UserUtils extends Observable<boolean> {
     return user.accessToken;
   }
 
-  public getDefaultWsCode(): string | null {
+  public getDefaultWsCode(): string {
     const user = this.user;
 
     if (!user) {
-      return null;
+      return '';
     }
 
     return user.wsCode;

@@ -16,27 +16,24 @@ type Props = {
   onSubmit: (wsCode: string) => void;
   open: boolean;
   handleClose: () => void;
+  defaultWsCode: string;
 };
-
-const wsCodeFormat = new Intl.NumberFormat('en-US', {
-  minimumIntegerDigits: 6,
-  useGrouping: false
-});
-
-export const defaultWsCode = wsCodeFormat.format(
-  Math.floor(Math.random() * 999999) + 1
-);
 
 export default function WebSocketCodeDialog(props: Props) {
   const { onSubmit, open, handleClose } = props;
 
+  const [wsCode, setWsCode] = useState('');
   const [action, setAction] = useState(CodeAction.CREATE);
-  const [wsCode, setWsCode] = useState(defaultWsCode);
+
+  useEffect(() => {
+    setWsCode(props.defaultWsCode);
+  }, [props.defaultWsCode]);
 
   const isWsCodeValid = (code: string) => {
     const reg = new RegExp('[0-9]{6}');
     return (
-      reg.test(code) && (action === CodeAction.CREATE || code !== defaultWsCode)
+      reg.test(code) &&
+      (action === CodeAction.CREATE || code !== props.defaultWsCode)
     );
   };
 
@@ -53,7 +50,7 @@ export default function WebSocketCodeDialog(props: Props) {
   useEffect(() => {
     if (action === CodeAction.CREATE) {
       setError('');
-      setWsCode(defaultWsCode);
+      setWsCode(props.defaultWsCode);
     } else {
       setWsCode('');
     }
@@ -61,7 +58,7 @@ export default function WebSocketCodeDialog(props: Props) {
 
   const submit = () => {
     if (action === CodeAction.CREATE) {
-      onSubmit(defaultWsCode);
+      onSubmit(props.defaultWsCode);
       handleClose();
     } else if (isWsCodeValid(wsCode)) {
       onSubmit(wsCode);
