@@ -6,6 +6,7 @@ import RecordNotFound from '../models/exceptions/RecordNotFoundError';
 import CodeHistoryPost from '../models/http/requests/codeHistoryPost';
 import { codeRepository } from '../repositories/code.repository';
 import { codeHistoryRepository } from '../repositories/codeHistory.repository';
+import { gitService } from './git.service';
 
 class CodeHistoryService {
   private codeRepo = codeRepository;
@@ -49,22 +50,35 @@ class CodeHistoryService {
       code = await this.codeRepo.createAndSave(codeHistoryPost.codeId, ownerId);
     }
 
-    // manage new text
+    const commitInfo = await gitService.commit(
+      ownerId.toString(),
+      ownerId.toString(),
+      codeHistoryPost.text,
+      codeHistoryPost.comment
+    );
 
     return await this.codeHistoryRepo.createAndSave(
       code.id,
       codeHistoryPost.comment,
-      'commit_sha',
-      new Date()
+      commitInfo.hash,
+      commitInfo.timestamp
     );
   }
 
   public async delete(ownerId: number, codeHistoryId: number) {
-    const lastCodeHistory = await this.codeHistoryRepo.findOne({
-      order: { timestamp: 'DESC' }
-    });
-    const codeHistory = await this.codeHistoryRepo.findOneBy({
-      id: codeHistoryId
+    const [lastCodeHistory, beforeLastCodeHistory] =
+      await this.codeHistoryRepo.find({
+        order: { timestamp: 'DESC' },
+        take: 2
+      });
+
+    const codeHistory = await this.codeHistoryRepo.findOne({
+      where: {
+        id: codeHistoryId
+      },
+      relations: {
+        code: true
+      }
     });
     if (codeHistory === null) {
       throw new RecordNotFound(CodeHistory.name, 'id');
@@ -76,6 +90,14 @@ class CodeHistoryService {
     }
 
     await this.codeHistoryRepo.delete(codeHistoryId);
+    if (beforeLastCodeHistory === null || beforeLastCodeHistory === undefined) {
+      await this.codeRepo.delete(codeHistory.codeId);
+    } else {
+      await gitService.resetToCommit(
+        ownerId.toString(),
+        beforeLastCodeHistory.commit_sha
+      );
+    }
   }
 }
 
