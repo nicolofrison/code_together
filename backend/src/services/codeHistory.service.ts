@@ -3,6 +3,7 @@ import CodeHistory from '../models/entities/CodeHistory';
 import NotLastCodeHistoryError from '../models/exceptions/NotLastCodeHistoryError';
 import RecordNotAuthorized from '../models/exceptions/RecordNotAuthorizedError';
 import RecordNotFound from '../models/exceptions/RecordNotFoundError';
+import CodeHistoryPost from '../models/http/requests/codeHistoryPost';
 import { codeRepository } from '../repositories/code.repository';
 import { codeHistoryRepository } from '../repositories/codeHistory.repository';
 
@@ -29,23 +30,30 @@ class CodeHistoryService {
 
   public async create(
     ownerId: number,
-    name: string,
-    codeId: number,
-    comment: string,
-    _: string // text
+    codeHistoryPost: CodeHistoryPost
   ): Promise<CodeHistory> {
-    let code = await this.codeRepo.findOneBy({ id: codeId });
-    if (code !== null && code.ownerId !== ownerId) {
-      throw new RecordNotAuthorized(Code.name, 'id');
-    } else if (code === null) {
-      code = await this.codeRepo.createAndSave(name, ownerId);
+    let code = null;
+
+    if (typeof codeHistoryPost.codeId === 'number') {
+      // Create only codeHistory
+      code = await this.codeRepo.findOneBy({
+        id: codeHistoryPost.codeId
+      });
+      if (code === null) {
+        throw new RecordNotFound(Code.name, 'id');
+      } else if (code.ownerId !== ownerId) {
+        throw new RecordNotAuthorized(Code.name, 'id');
+      }
+    } else {
+      // Create code with codeId as name
+      code = await this.codeRepo.createAndSave(codeHistoryPost.codeId, ownerId);
     }
 
     // manage new text
 
     return await this.codeHistoryRepo.createAndSave(
-      codeId,
-      comment,
+      code.id,
+      codeHistoryPost.comment,
       'commit_sha',
       new Date()
     );

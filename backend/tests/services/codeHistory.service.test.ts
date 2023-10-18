@@ -7,6 +7,7 @@ import { codeHistoryService } from '../../src/services/codeHistory.service';
 import { DeleteResult } from 'typeorm';
 import RecordNotAuthorizedError from '../../src/models/exceptions/RecordNotAuthorizedError';
 import NotLastCodeHistoryError from '../../src/models/exceptions/NotLastCodeHistoryError';
+import CodeHistoryPost from '../../src/models/http/requests/codeHistoryPost';
 
 describe('CodeHistoryService', () => {
   jest.mock('../../src/repositories/code.repository', () => jest.fn());
@@ -95,12 +96,14 @@ describe('CodeHistoryService', () => {
         Promise.resolve(expectedCodeHistory)
       );
 
+      const codeHistoryPost = {
+        codeId: expectedCode.name,
+        comment: expectedCodeHistory.comment,
+        text: 'text'
+      } as CodeHistoryPost;
       const codeHistory = await codeHistoryService.create(
         expectedCode.ownerId,
-        expectedCode.name,
-        expectedCode.id,
-        expectedCodeHistory.comment,
-        'text'
+        codeHistoryPost
       );
       expect(codeHistory).toBe(expectedCodeHistory);
     });
@@ -129,14 +132,28 @@ describe('CodeHistoryService', () => {
         Promise.resolve(expectedCodeHistory)
       );
 
+      const codeHistoryPost = {
+        codeId: expectedCode.id,
+        comment: expectedCodeHistory.comment,
+        text: 'text'
+      } as CodeHistoryPost;
       const codeHistory = await codeHistoryService.create(
         expectedCode.ownerId,
-        expectedCode.name,
-        expectedCode.id,
-        expectedCodeHistory.comment,
-        'text'
+        codeHistoryPost
       );
       expect(codeHistory).toBe(expectedCodeHistory);
+    });
+
+    test('create codeHistory with not existent code through code id throws RecordNotFoundError', async () => {
+      codeRepository.findOneBy = jest.fn(() => Promise.resolve(null));
+
+      const codeHistoryPost = {
+        codeId: 1,
+        comment: 'comment',
+        text: 'text'
+      } as CodeHistoryPost;
+      const codeHistoryCreate = codeHistoryService.create(1, codeHistoryPost);
+      await expect(codeHistoryCreate).rejects.toThrow(RecordNotFoundError);
     });
 
     test('create codeHistory with already existent code owned by another user throws RecordNotAuthorizedError', async () => {
@@ -149,13 +166,12 @@ describe('CodeHistoryService', () => {
 
       codeRepository.findOneBy = jest.fn(() => Promise.resolve(expectedCode));
 
-      const codeHistoryCreate = codeHistoryService.create(
-        2,
-        expectedCode.name,
-        expectedCode.id,
-        'comment',
-        'text'
-      );
+      const codeHistoryPost = {
+        codeId: expectedCode.id,
+        comment: 'comment',
+        text: 'text'
+      } as CodeHistoryPost;
+      const codeHistoryCreate = codeHistoryService.create(2, codeHistoryPost);
       await expect(codeHistoryCreate).rejects.toThrow(RecordNotAuthorizedError);
     });
   });
