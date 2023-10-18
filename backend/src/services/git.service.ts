@@ -1,9 +1,6 @@
 import getGit from '../config/gitConfig';
 import * as fs from 'fs';
-import git from '../config/gitConfig';
 import * as path from 'path';
-import { ListLogLine } from 'simple-git';
-import { time } from 'console';
 
 class GitService {
   public async commit(
@@ -32,6 +29,13 @@ class GitService {
 
     // return commit_sha and timestamp
     return { ...commitInfo, timestamp };
+  }
+
+  public async resetToCommit(gitFolderName: string, commitSha: string) {
+    // get git for the folder
+    const { git } = await getGit(gitFolderName);
+
+    await git.reset(['--hard', commitSha]);
   }
 }
 
