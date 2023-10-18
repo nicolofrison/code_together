@@ -7,6 +7,7 @@ import { appDataSource } from './config/dataSource';
 // controllers instances
 import { authControllerInstance } from './controllers/auth.controller';
 import { codeControllerInstance } from './controllers/code.controller';
+import { codeHistoryControllerInstance } from './controllers/codeHistory.controller';
 
 (async () => {
   try {
@@ -15,7 +16,11 @@ import { codeControllerInstance } from './controllers/code.controller';
     console.error('Error while connecting to the database', error);
     return error;
   }
-  const app = new Server([authControllerInstance, codeControllerInstance]);
+  const app = new Server([
+    authControllerInstance,
+    codeControllerInstance,
+    codeHistoryControllerInstance
+  ]);
   app.listen();
 
   return null;
