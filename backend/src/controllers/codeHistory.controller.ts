@@ -24,12 +24,30 @@ class CodeHistoryController extends Controller {
     this.initRoutes();
   }
 
+  private async queryCodeIdMiddleware(
+    request: RequestWithUser,
+    response: express.Response,
+    next: express.NextFunction
+  ) {
+    const codeId = request.query.codeId as string;
+    if (
+      new RegExp('^[1-9]d*$').test(codeId) &&
+      ((x) => (x | 0) === x)(parseFloat(codeId))
+    ) {
+      next();
+    } else {
+      next(
+        new HttpError(400, 'The codeId as query param is a required number', '')
+      );
+    }
+  }
+
   protected initRoutes() {
     this.router
       .all(`${CodeHistoryController.PATH}`, authMiddleware)
       .get(
         `${CodeHistoryController.PATH}`,
-        query('codeId').isInt(),
+        this.queryCodeIdMiddleware,
         this.findAll
       )
       .post(

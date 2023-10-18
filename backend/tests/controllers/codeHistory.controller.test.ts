@@ -41,7 +41,7 @@ describe('CodeController', () => {
       );
 
       const response = await request(server.app)
-        .get(apiUrl)
+        .get(apiUrl + '?codeId=1')
         .send()
         .set({ authorization: 'Bearer ' + accessToken });
       expect(response.statusCode).toBe(200);
@@ -60,11 +60,24 @@ describe('CodeController', () => {
       );
 
       const response = await request(server.app)
-        .get(apiUrl)
+        .get(apiUrl + '?codeId=1')
         .send()
         .set({ authorization: 'Bearer ' + accessToken });
       expect(response.statusCode).toBe(200);
       expect(response.body).toMatchObject(expectedCodeHistories);
+    });
+
+    test('find all codes without codeId response 400', async () => {
+      const expectedCodeHistories = [] as CodeHistory[];
+      codeHistoryService.findAll = jest.fn(() =>
+        Promise.resolve(expectedCodeHistories)
+      );
+
+      const response = await request(server.app)
+        .get(apiUrl)
+        .send()
+        .set({ authorization: 'Bearer ' + accessToken });
+      expect(response.statusCode).toBe(400);
     });
   });
 
