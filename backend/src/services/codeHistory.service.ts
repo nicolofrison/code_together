@@ -1,5 +1,6 @@
 import Code from '../models/entities/Code';
 import CodeHistory from '../models/entities/CodeHistory';
+import NotLastCodeHistoryError from '../models/exceptions/NotLastCodeHistoryError';
 import RecordNotAuthorized from '../models/exceptions/RecordNotAuthorizedError';
 import RecordNotFound from '../models/exceptions/RecordNotFoundError';
 import { codeRepository } from '../repositories/code.repository';
@@ -51,6 +52,9 @@ class CodeHistoryService {
   }
 
   public async delete(ownerId: number, codeHistoryId: number) {
+    const lastCodeHistory = await this.codeHistoryRepo.findOne({
+      order: { timestamp: 'DESC' }
+    });
     const codeHistory = await this.codeHistoryRepo.findOneBy({
       id: codeHistoryId
     });
@@ -58,6 +62,9 @@ class CodeHistoryService {
       throw new RecordNotFound(CodeHistory.name, 'id');
     } else if (codeHistory.code.ownerId !== ownerId) {
       throw new RecordNotAuthorized(Code.name, 'id');
+    } else if (lastCodeHistory.id !== codeHistory.id) {
+      // error not last commit
+      throw new NotLastCodeHistoryError();
     }
 
     await this.codeHistoryRepo.delete(codeHistoryId);
