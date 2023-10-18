@@ -26,7 +26,7 @@ class CodeHistoryService {
     return codeHistory;
   }
 
-  public async createCodeHistory(
+  public async create(
     ownerId: number,
     name: string,
     codeId: number,
@@ -50,7 +50,7 @@ class CodeHistoryService {
     );
   }
 
-  public async deleteCodeHistory(ownerId: number, codeHistoryId: number) {
+  public async delete(ownerId: number, codeHistoryId: number) {
     const codeHistory = await this.codeHistoryRepo.findOneBy({
       id: codeHistoryId
     });

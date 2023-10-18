@@ -10,7 +10,12 @@ export const codeHistoryRepository = appDataSource
       commit_sha: string,
       timestamp: Date
     ) {
-      const code = new CodeHistory(codeId, comment, commit_sha, timestamp);
-      return this.save(code);
+      const codeHistory = new CodeHistory(
+        codeId,
+        comment,
+        commit_sha,
+        timestamp
+      );
+      return this.save(codeHistory);
     }
   });
