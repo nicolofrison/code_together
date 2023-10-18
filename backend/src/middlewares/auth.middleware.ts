@@ -8,7 +8,8 @@ async function authMiddleware(
   next: NextFunction
 ) {
   const { headers } = request;
-  const authorization = headers?.authorization;
+  const authorization = headers?.authorization.replace('Bearer ', '');
+  console.log(authorization);
   try {
     const user = await jwtService.authenticate(authorization);
     request.user = user;
