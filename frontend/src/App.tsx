@@ -5,41 +5,81 @@ import { CodeEditorWithSyntax } from './components/CodeEditorWithSyntax/CodeEdit
 import SignUp from './components/SignUp/SignUp';
 import TopAlert from './components/Utils/TopAlert';
 import userService from './services/user.service';
+import {
+  Box,
+  Button,
+  Card,
+  CardContent,
+  Container,
+  Grid,
+  Paper,
+  styled
+} from '@mui/material';
 
 function Auth() {
   const { isLoggedIn } = useContext(AuthContext);
 
   return (
-    <>
+    <Grid container direction="column" alignItems="center">
       {!isLoggedIn ? (
-        <SignUp />
+        <Grid item>
+          <SignUp />
+        </Grid>
       ) : (
-        <button onClick={() => userService.signOut()}>Sign Out</button>
+        <Grid item>
+          <Button
+            variant="contained"
+            color="error"
+            onClick={() => userService.signOut()}
+          >
+            Sign Out
+          </Button>
+        </Grid>
       )}
-    </>
+    </Grid>
   );
 }
 
 function App() {
   return (
-    <>
+    <Container
+      style={{ position: 'relative', height: '100vh', paddingBottom: '16px' }}
+    >
       <TopAlert />
-      <div className="App">
+      <Box height="100%">
         <AuthContextProvider>
-          <div
-            style={{
-              width: '50%',
-              height: '50vh',
-              border: '1px solid black',
-              overflow: 'auto'
-            }}
-          >
-            <CodeEditorWithSyntax />
-          </div>
-          <Auth />
+          <Grid container spacing={2} height="100%" style={{ marginTop: 0 }}>
+            <Grid item xs={12} md={3} lg={3}>
+              <Card style={{ height: '100%' }}>
+                <CardContent
+                  style={{
+                    position: 'relative',
+                    paddingTop: 0,
+                    height: 'calc(100% - 24px)'
+                  }}
+                >
+                  <Auth />
+                </CardContent>
+              </Card>
+            </Grid>
+            <Grid item xs={12} md={9} lg={9} overflow={'auto'}>
+              <Card style={{ height: '100%' }}>
+                {/* The padding bottom is 24px, and the top is 16px */}
+                <CardContent
+                  style={{
+                    position: 'relative',
+                    paddingTop: 0,
+                    height: 'calc(100% - 24px)'
+                  }}
+                >
+                  <CodeEditorWithSyntax />
+                </CardContent>
+              </Card>
+            </Grid>
+          </Grid>
         </AuthContextProvider>
-      </div>
-    </>
+      </Box>
+    </Container>
   );
 }
 
