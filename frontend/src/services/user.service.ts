@@ -1,7 +1,7 @@
 import AuthPost from '../models/http/requests/authPost';
 import BaseAuthService from './baseAuth.service';
 import UserUtils from '../utils/UserUtils';
-import User from '../models/interfaces/user.interface';
+import UserSession from '../models/interfaces/userSession.interface';
 
 export class UserService extends BaseAuthService {
   private static instance: UserService;
@@ -17,7 +17,7 @@ export class UserService extends BaseAuthService {
   public async signUp(authPost: AuthPost) {
     const response = await this.apiRequest().post('auth/signup', authPost);
 
-    return response.data as User;
+    return response.data as UserSession;
   }
 
   public async signIn(authPost: AuthPost) {
@@ -33,7 +33,7 @@ export class UserService extends BaseAuthService {
     UserUtils.getInstance().setUser(user);
     delete user.accessToken;
 
-    return user as User;
+    return user as UserSession;
   }
 
   signOut() {

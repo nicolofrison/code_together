@@ -1,6 +1,6 @@
 import CodeHistory from './codeHistory.interface';
 
-export default interface User {
+export default interface UserSession {
   id: number;
   email: string;
   accessToken: string;

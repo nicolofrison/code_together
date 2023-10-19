@@ -21,7 +21,7 @@ import CodeHistoryPost from '../../models/http/requests/codeHistoryPost';
 import codeHistoryService from '../../services/codeHistory.service';
 import handleError from '../../utils/errorHandler';
 import UserUtils from '../../utils/UserUtils';
-import User from '../../models/interfaces/user.interface';
+import UserSession from '../../models/interfaces/userSession.interface';
 import CommitDialog from '../Utils/CommitDialog';
 import { AxiosError } from 'axios';
 import alertService from '../../services/alert.service';
@@ -79,7 +79,7 @@ export function CodeEditorWithSyntax(): JSX.Element {
   };
 
   const onCommitSubmit = async (comment: string) => {
-    const user = UserUtils.getInstance().user as User;
+    const user = UserUtils.getInstance().user as UserSession;
 
     const codeHistoryPost: CodeHistoryPost = {
       codeId: user.lastCodeHistory

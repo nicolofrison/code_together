@@ -1,5 +1,5 @@
 import CodeHistory from '../models/interfaces/codeHistory.interface';
-import User from '../models/interfaces/user.interface';
+import UserSession from '../models/interfaces/userSession.interface';
 import { Observable } from './Observer';
 
 export default class UserUtils extends Observable<boolean> {
@@ -26,7 +26,7 @@ export default class UserUtils extends Observable<boolean> {
     }
   }
 
-  public get user(): User | null {
+  public get user(): UserSession | null {
     const jsonUser = sessionStorage.getItem(UserUtils.userKey);
     console.log(jsonUser);
     if (!jsonUser) {
@@ -45,7 +45,7 @@ export default class UserUtils extends Observable<boolean> {
 
     return user;
   }
-  private set user(value: User | null) {
+  private set user(value: UserSession | null) {
     if (value) {
       sessionStorage.setItem(UserUtils.userKey, JSON.stringify(value));
       this.isLoggedIn = true;
@@ -106,7 +106,7 @@ export default class UserUtils extends Observable<boolean> {
     this.user = null;
   }
 
-  public setUser(user: User) {
+  public setUser(user: UserSession) {
     this.user = user;
   }
 }

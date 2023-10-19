@@ -1,8 +1,8 @@
-import User from './user.interface';
+import UserSession from './userSession.interface';
 
 export default interface Code {
   id: number;
   name: string;
-  owner: User;
+  owner: UserSession;
   ownerId: number;
 }
