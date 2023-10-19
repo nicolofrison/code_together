@@ -15,7 +15,7 @@ export class AlertService {
     | React.Dispatch<React.SetStateAction<AlertType>>
     | undefined;
 
-  public static getInstance() {
+  public static getInstance(): AlertService {
     if (!AlertService.instance) {
       AlertService.instance = new AlertService();
     }

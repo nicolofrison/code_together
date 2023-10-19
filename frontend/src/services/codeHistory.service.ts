@@ -5,7 +5,7 @@ import CodeHistoryPost from '../models/http/requests/codeHistoryPost';
 export class CodeHistoryService extends BaseAuthService {
   private static instance: CodeHistoryService;
 
-  public static getInstance() {
+  public static getInstance(): CodeHistoryService {
     if (!CodeHistoryService.instance) {
       CodeHistoryService.instance = new CodeHistoryService();
     }
@@ -13,13 +13,15 @@ export class CodeHistoryService extends BaseAuthService {
     return CodeHistoryService.instance;
   }
 
-  public async createCodeHistory(codeHistoryPost: CodeHistoryPost) {
+  public async createCodeHistory(
+    codeHistoryPost: CodeHistoryPost
+  ): Promise<CodeHistory> {
     const response = await this.apiRequest().post(
       'codeHistories',
       codeHistoryPost
     );
 
-    return response.data as CodeHistory;
+    return response.data;
   }
 }
 

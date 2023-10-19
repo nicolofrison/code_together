@@ -56,7 +56,7 @@ export default class UserUtils extends Observable<boolean> {
   }
 
   private static instance: UserUtils;
-  public static getInstance() {
+  public static getInstance(): UserUtils {
     if (!this.instance) {
       this.instance = new UserUtils();
     }

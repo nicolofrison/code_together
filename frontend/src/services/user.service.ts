@@ -8,7 +8,7 @@ import UserSignInResponse from '../models/http/responses/userSignIn.interface';
 export class UserService extends BaseAuthService {
   private static instance: UserService;
 
-  public static getInstance() {
+  public static getInstance(): UserService {
     if (!UserService.instance) {
       UserService.instance = new UserService();
     }
@@ -16,13 +16,13 @@ export class UserService extends BaseAuthService {
     return UserService.instance;
   }
 
-  public async signUp(authPost: AuthPost) {
+  public async signUp(authPost: AuthPost): Promise<User> {
     const response = await this.apiRequest().post('auth/signup', authPost);
 
-    return response.data as User;
+    return response.data;
   }
 
-  public async signIn(authPost: AuthPost) {
+  public async signIn(authPost: AuthPost): Promise<User> {
     const response = await this.apiRequest().post('auth/signin', authPost);
     const userResponse = response.data as UserSignInResponse;
 
