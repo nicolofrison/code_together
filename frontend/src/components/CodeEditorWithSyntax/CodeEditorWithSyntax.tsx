@@ -5,27 +5,32 @@ import React, {
   useState
 } from 'react';
 
+import { AxiosError } from 'axios';
+
 import CodeEditor from '@uiw/react-textarea-code-editor';
 // library used by react-textarea-code-editor
 import { refractor } from 'refractor/lib/core.js';
 
+import { Button, Grid } from '@mui/material';
 import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
 
-import './CodeEditorWithSyntax.css';
 import { CodeData } from '../../models/interfaces/webSocketMessage.interface';
-import WebSocketService from '../../services/webSocket.service';
-import { AuthContext } from '../AuthContext';
-import { Button, Grid } from '@mui/material';
 import CodeHistoryPost from '../../models/http/requests/codeHistoryPost';
-import CodeHistoryService from '../../services/codeHistory.service';
+import UserSession from '../../models/interfaces/userSession.interface';
+
 import handleError from '../../utils/errorHandler';
 import UserUtils from '../../utils/UserUtils';
-import UserSession from '../../models/interfaces/userSession.interface';
-import CommitDialog from '../Utils/CommitDialog';
-import { AxiosError } from 'axios';
+
 import AlertService from '../../services/alert.service';
+import WebSocketService from '../../services/webSocket.service';
+import CodeHistoryService from '../../services/codeHistory.service';
+
+import { AuthContext } from '../AuthContext';
+import CommitDialog from '../Utils/CommitDialog';
 import { AlertType } from '../Utils/TopAlert';
+
+import './CodeEditorWithSyntax.css';
 
 const alertService = AlertService.getInstance();
 const codeHistoryService = CodeHistoryService.getInstance();

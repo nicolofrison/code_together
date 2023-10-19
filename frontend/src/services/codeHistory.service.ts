@@ -1,6 +1,7 @@
-import BaseAuthService from './baseAuth.service';
 import CodeHistory from '../models/interfaces/codeHistory.interface';
 import CodeHistoryPost from '../models/http/requests/codeHistoryPost';
+
+import BaseAuthService from './baseAuth.service';
 
 export default class CodeHistoryService extends BaseAuthService {
   private static instance: CodeHistoryService;

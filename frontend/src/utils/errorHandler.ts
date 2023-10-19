@@ -1,6 +1,8 @@
 import axios, { AxiosError } from 'axios';
-import AlertService from '../services/alert.service';
+
 import { AlertType } from '../components/Utils/TopAlert';
+
+import AlertService from '../services/alert.service';
 import UserService from '../services/user.service';
 
 const alertService = AlertService.getInstance();

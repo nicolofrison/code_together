@@ -1,4 +1,3 @@
-import BaseAuthService from './baseAuth.service';
 import {
   AuthCodes,
   AuthData,
@@ -6,7 +5,10 @@ import {
   MessageType,
   WebSocketMessage
 } from '../models/interfaces/webSocketMessage.interface';
+
 import UserUtils from '../utils/UserUtils';
+
+import BaseAuthService from './baseAuth.service';
 
 export default class WebSocketService extends BaseAuthService {
   private readonly WS_URL = `ws://${this.baseUrl.split('/')[2]}/ws`;

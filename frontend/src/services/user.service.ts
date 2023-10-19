@@ -1,9 +1,11 @@
 import AuthPost from '../models/http/requests/authPost';
-import BaseAuthService from './baseAuth.service';
-import UserUtils from '../utils/UserUtils';
 import UserSession from '../models/interfaces/userSession.interface';
 import User from '../models/interfaces/user.interface';
 import UserSignInResponse from '../models/http/responses/userSignIn.interface';
+
+import UserUtils from '../utils/UserUtils';
+
+import BaseAuthService from './baseAuth.service';
 
 export default class UserService extends BaseAuthService {
   private static instance: UserService;

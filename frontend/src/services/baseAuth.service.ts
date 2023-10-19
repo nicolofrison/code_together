@@ -1,4 +1,5 @@
 import axios, { AxiosInstance, CreateAxiosDefaults } from 'axios';
+
 import UserUtils from '../utils/UserUtils';
 
 export default abstract class BaseAuthService {
