@@ -8,22 +8,28 @@ describe('<SignUp />', () => {
     it('the form contains the right form elements', () => {
       cy.mount(<SignUp />);
 
-      cy.get('[name="mode"]').should('have.value', 1); // 1 is for signUp, check in signUp component
+      cy.get('#signUpModeButton').should(
+        'have.class',
+        'MuiButton-containedPrimary'
+      );
       cy.get('input[name="email"]').should('exist').and('be.visible');
       cy.get('input[name="password"]').should('exist').and('be.visible');
       cy.get('input[name="confirmPassword"]').should('exist').and('be.visible');
-      cy.get('button').should('have.text', 'Sign Up');
+      cy.get('button[type="submit"]').should('have.text', 'Sign Up');
     });
 
     it('Simulate an email error', () => {
       cy.mount(<SignUp />);
 
-      cy.get('[name="mode"]').should('have.value', 1); // 1 is for signUp, check in signUp component
+      cy.get('#signUpModeButton').should(
+        'have.class',
+        'MuiButton-containedPrimary'
+      );
 
       cy.get('input[name="email"]').type('aaaa');
       cy.get('input[name="password"]').type('password');
       cy.get('input[name="confirmPassword"]').type('password');
-      cy.get('button').click();
+      cy.get('button[type="submit"]').click();
 
       const emailInputParent = cy.get('input[name="email"]').parent('div');
 
@@ -45,12 +51,15 @@ describe('<SignUp />', () => {
     it('Simulate a password error', () => {
       cy.mount(<SignUp />);
 
-      cy.get('[name="mode"]').should('have.value', 1); // 1 is for signUp, check in signUp component
+      cy.get('#signUpModeButton').should(
+        'have.class',
+        'MuiButton-containedPrimary'
+      );
 
       cy.get('input[name="email"]').type('aaaa@aaaa.com');
       cy.get('input[name="password"]').type('psw');
       cy.get('input[name="confirmPassword"]').type('psw');
-      cy.get('button').click();
+      cy.get('button[type="submit"]').click();
 
       const passwordInputParent = cy
         .get('input[name="password"]')
@@ -77,12 +86,15 @@ describe('<SignUp />', () => {
     it('Simulate a confirm password error', () => {
       cy.mount(<SignUp />);
 
-      cy.get('[name="mode"]').should('have.value', 1); // 1 is for signUp, check in signUp component
+      cy.get('#signUpModeButton').should(
+        'have.class',
+        'MuiButton-containedPrimary'
+      );
 
       cy.get('input[name="email"]').type('aaaa@aaaa.com');
       cy.get('input[name="password"]').type('password');
       cy.get('input[name="confirmPassword"]').type('psw');
-      cy.get('button').click();
+      cy.get('button[type="submit"]').click();
 
       const confirmPasswordInputParent = cy
         .get('input[name="confirmPassword"]')
@@ -112,13 +124,16 @@ describe('<SignUp />', () => {
       cy.stub(userService, 'signUp').returns(user);
       cy.stub(alertService, 'showAlert').as('showAlert');
 
-      cy.get('[name="mode"]').should('have.value', 1); // 1 is for signUp, check in signUp component
+      cy.get('#signUpModeButton').should(
+        'have.class',
+        'MuiButton-containedPrimary'
+      );
 
       cy.get('input[name="email"]').type(user.email);
       cy.get('input[name="password"]').type(user.password);
       cy.get('input[name="confirmPassword"]').type(user.password);
 
-      cy.get('button').click();
+      cy.get('button[type="submit"]').click();
 
       cy.get('@showAlert').should(
         'have.been.calledWithMatch',
@@ -135,13 +150,16 @@ describe('<SignUp />', () => {
       cy.stub(userService, 'signUp').throws(expectedError);
       cy.stub(alertService, 'showAlert').as('showAlert');
 
-      cy.get('[name="mode"]').should('have.value', 1); // 1 is for signUp, check in signUp component
+      cy.get('#signUpModeButton').should(
+        'have.class',
+        'MuiButton-containedPrimary'
+      );
 
       cy.get('input[name="email"]').type(user.email);
       cy.get('input[name="password"]').type(user.password);
       cy.get('input[name="confirmPassword"]').type(user.password);
 
-      cy.get('button').click();
+      cy.get('button[type="submit"]').click();
 
       cy.get('@showAlert').should(
         'have.been.calledWithMatch',
@@ -152,7 +170,7 @@ describe('<SignUp />', () => {
   });
 
   const setSignIn = () => {
-    cy.get('[name="mode"][value="0"]').check();
+    cy.get('#signInModeButton').click();
   };
 
   describe('sign In', () => {
@@ -160,14 +178,15 @@ describe('<SignUp />', () => {
       cy.mount(<SignUp />);
 
       setSignIn();
-      cy.get('[name="mode"][value="1"]').should(
-        'not.have.class',
-        'Mui-checked'
-      ); // 1 is for signUp, check in signUp component
+      cy.get('#signInModeButton').should(
+        'have.class',
+        'MuiButton-containedPrimary'
+      );
+
       cy.get('input[name="email"]').should('exist').and('be.visible');
       cy.get('input[name="password"]').should('exist').and('be.visible');
       cy.get('input[name="confirmPassword"]').should('not.exist');
-      cy.get('button').should('have.text', 'Sign In');
+      cy.get('button[type="submit"]').should('have.text', 'Sign In');
     });
 
     it('Simulate an email error', () => {
@@ -176,7 +195,7 @@ describe('<SignUp />', () => {
 
       cy.get('input[name="email"]').type('aaaa');
       cy.get('input[name="password"]').type('password');
-      cy.get('button').click();
+      cy.get('button[type="submit"]').click();
 
       const emailInputParent = cy.get('input[name="email"]').parent('div');
 
@@ -198,7 +217,7 @@ describe('<SignUp />', () => {
 
       cy.get('input[name="email"]').type('aaaa@aaaa.com');
       cy.get('input[name="password"]').type('psw');
-      cy.get('button').click();
+      cy.get('button[type="submit"]').click();
 
       const passwordInputParent = cy
         .get('input[name="password"]')
@@ -227,12 +246,15 @@ describe('<SignUp />', () => {
       cy.stub(userService, 'signIn').returns(user);
       cy.stub(alertService, 'showAlert').as('showAlert');
 
-      cy.get('[name="mode"]').should('have.value', 1); // 1 is for signUp, check in signUp component
+      cy.get('#signInModeButton').should(
+        'have.class',
+        'MuiButton-containedPrimary'
+      );
 
       cy.get('input[name="email"]').type(user.email);
       cy.get('input[name="password"]').type(user.password);
 
-      cy.get('button').click();
+      cy.get('button[type="submit"]').click();
 
       cy.get('@showAlert').should(
         'have.been.calledWithMatch',
@@ -253,7 +275,7 @@ describe('<SignUp />', () => {
       cy.get('input[name="email"]').type(user.email);
       cy.get('input[name="password"]').type(user.password);
 
-      cy.get('button').click();
+      cy.get('button[type="submit"]').click();
 
       cy.get('@showAlert').should(
         'have.been.calledWithMatch',

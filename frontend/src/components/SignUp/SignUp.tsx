@@ -124,15 +124,17 @@ export default function SignUp() {
             <Grid item>
               <ButtonGroup
                 variant="outlined"
-                aria-label="outlined button group"
+                aria-label="Select Sign In or Sign Up"
               >
                 <Button
+                  id="signUpModeButton"
                   onClick={() => setMode(ModeEnum.signUp)}
                   variant={mode === ModeEnum.signUp ? 'contained' : 'outlined'}
                 >
                   Sign Up
                 </Button>
                 <Button
+                  id="signInModeButton"
                   onClick={() => setMode(ModeEnum.signIn)}
                   variant={mode === ModeEnum.signIn ? 'contained' : 'outlined'}
                 >
