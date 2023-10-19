@@ -76,7 +76,7 @@ export function CodeEditorWithSyntax(): JSX.Element {
         justifyContent="space-between"
       >
         <Grid item>
-          <p>Connected to {wsCode}</p>
+          <p>{wsCode ? `Connected to ${wsCode}` : <br />}</p>
         </Grid>
         <Grid item>
           <Select
