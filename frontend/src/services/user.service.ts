@@ -2,6 +2,8 @@ import AuthPost from '../models/http/requests/authPost';
 import BaseAuthService from './baseAuth.service';
 import UserUtils from '../utils/UserUtils';
 import UserSession from '../models/interfaces/userSession.interface';
+import User from '../models/interfaces/user.interface';
+import UserSignInResponse from '../models/http/responses/userSignIn.interface';
 
 export class UserService extends BaseAuthService {
   private static instance: UserService;
@@ -17,23 +19,24 @@ export class UserService extends BaseAuthService {
   public async signUp(authPost: AuthPost) {
     const response = await this.apiRequest().post('auth/signup', authPost);
 
-    return response.data as UserSession;
+    return response.data as User;
   }
 
   public async signIn(authPost: AuthPost) {
     const response = await this.apiRequest().post('auth/signin', authPost);
-    const user = response.data;
+    const userResponse = response.data as UserSignInResponse;
 
-    if (!user.accessToken || !user.wsCode) {
+    if (!userResponse.accessToken || !userResponse.wsCode) {
       throw new Error(
         'The response from the server is missing some information'
       );
     }
 
-    UserUtils.getInstance().setUser(user);
-    delete user.accessToken;
+    UserUtils.getInstance().setUser(userResponse as UserSession);
 
-    return user as UserSession;
+    const user = { id: userResponse.id, email: userResponse.email } as User;
+
+    return user;
   }
 
   signOut() {
