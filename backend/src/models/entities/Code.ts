@@ -3,11 +3,13 @@ import {
   PrimaryGeneratedColumn,
   Column,
   ManyToOne,
-  JoinColumn
+  JoinColumn,
+  Unique
 } from 'typeorm';
 import User from './User';
 
 @Entity()
+@Unique(['ownerId', 'name'])
 export default class Code {
   @PrimaryGeneratedColumn()
   id: number;
