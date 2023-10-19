@@ -96,7 +96,7 @@ export function CodeEditorWithSyntax(): JSX.Element {
       </Grid>
       <Grid flexGrow={1}>
         <CodeEditor
-          disabled={isAllowedToWrite()}
+          disabled={!isAllowedToWrite()}
           value={code}
           language={language}
           placeholder={`Please enter ${language} code.`}
