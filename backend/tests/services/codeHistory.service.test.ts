@@ -225,7 +225,7 @@ describe('CodeHistoryService', () => {
         timestamp: new Date()
       } as CodeHistory;
 
-      codeHistoryRepository.find = jest.fn(() =>
+      codeHistoryRepository.findLastTwoByLastCodeHistoryId = jest.fn(() =>
         Promise.resolve([
           expectedCodeHistory,
           { ...expectedCodeHistory, id: 2 }
@@ -262,7 +262,7 @@ describe('CodeHistoryService', () => {
         timestamp: new Date()
       } as CodeHistory;
 
-      codeHistoryRepository.find = jest.fn(() =>
+      codeHistoryRepository.findLastTwoByLastCodeHistoryId = jest.fn(() =>
         Promise.resolve([expectedCodeHistory])
       );
       codeHistoryRepository.findOne = jest.fn(() =>
@@ -286,7 +286,9 @@ describe('CodeHistoryService', () => {
     });
 
     test('delete code history not found throws RecordNotFoundError', async () => {
-      codeHistoryRepository.find = jest.fn(() => Promise.resolve([]));
+      codeHistoryRepository.findLastTwoByLastCodeHistoryId = jest.fn(() =>
+        Promise.resolve([])
+      );
       codeHistoryRepository.findOne = jest.fn(() => Promise.resolve(null));
 
       const codeHistoryDelete = codeHistoryService.delete(1, 1);
@@ -313,7 +315,7 @@ describe('CodeHistoryService', () => {
         id: 2
       } as CodeHistory;
 
-      codeHistoryRepository.find = jest.fn(() =>
+      codeHistoryRepository.findLastTwoByLastCodeHistoryId = jest.fn(() =>
         Promise.resolve([expectedLastCodeHistory, expectedCodeHistory])
       );
       codeHistoryRepository.findOne = jest.fn(() =>
@@ -343,7 +345,7 @@ describe('CodeHistoryService', () => {
         timestamp: new Date()
       } as CodeHistory;
 
-      codeHistoryRepository.find = jest.fn(() =>
+      codeHistoryRepository.findLastTwoByLastCodeHistoryId = jest.fn(() =>
         Promise.resolve([expectedCodeHistory, expectedCodeHistory])
       );
       codeHistoryRepository.findOne = jest.fn(() =>

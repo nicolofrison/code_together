@@ -67,10 +67,7 @@ class CodeHistoryService {
 
   public async delete(ownerId: number, codeHistoryId: number) {
     const [lastCodeHistory, beforeLastCodeHistory] =
-      await this.codeHistoryRepo.find({
-        order: { timestamp: 'DESC' },
-        take: 2
-      });
+      await this.codeHistoryRepo.findLastTwoByLastCodeHistoryId(codeHistoryId);
 
     const codeHistory = await this.codeHistoryRepo.findOne({
       where: {
