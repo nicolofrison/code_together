@@ -82,22 +82,6 @@ class AuthController extends Controller {
           wsCode: WebSocketService.getInstance().generateUniqueWsCode()
         } as UserSignInResponse;
 
-        try {
-          const lastCodeHistory = await this.codeHistoryService.findLastByUser(
-            user.id
-          );
-          const text = await gitService.getCode(
-            user.id.toString(),
-            user.id.toString()
-          );
-
-          userWithToken.lastCodeHistory = { ...lastCodeHistory, text };
-        } catch (e) {
-          if (e instanceof RecordNotFoundError) {
-            // not needed to send the userWithToken without lastCodeHistory because if it comes here, is not set by default
-          }
-        }
-
         response.status(200);
         response.send(userWithToken);
       }

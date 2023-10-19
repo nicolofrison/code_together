@@ -7,10 +7,12 @@ import RecordNotFoundError from '../../src/models/exceptions/RecordNotFoundError
 import { codeControllerInstance } from '../../src/controllers/code.controller';
 import { jwtService } from '../../src/services/jwt.service';
 import User from '../../src/models/entities/User';
+import { gitService } from '../../src/services/git.service';
 
 describe('CodeController', () => {
   jest.mock('../../src/services/code.service', () => jest.fn());
   jest.mock('../../src/services/jwt.service', () => jest.fn());
+  jest.mock('../../src/services/git.service', () => jest.fn());
 
   const server = new Server([codeControllerInstance]);
 
@@ -67,8 +69,12 @@ describe('CodeController', () => {
         id: 1,
         ownerId: 4
       };
+      const expectedCodeWithText = { ...expectedCode, text: 'text' };
       codeService.findById = jest.fn(() =>
         Promise.resolve(expectedCode as Code)
+      );
+      gitService.getCode = jest.fn(() =>
+        Promise.resolve(expectedCodeWithText.text)
       );
 
       const response = await request(server.app)
@@ -76,7 +82,25 @@ describe('CodeController', () => {
         .send()
         .set({ authorization: 'Bearer ' + accessToken });
       expect(response.statusCode).toBe(200);
-      expect(response.body).toMatchObject(expectedCode);
+      expect(response.body).toMatchObject(expectedCodeWithText);
+    });
+
+    test('find code by id without text response 500', async () => {
+      const expectedCode = {
+        name: 'code name',
+        id: 1,
+        ownerId: 4
+      };
+      codeService.findById = jest.fn(() =>
+        Promise.resolve(expectedCode as Code)
+      );
+      gitService.getCode = jest.fn(() => Promise.reject(new Error()));
+
+      const response = await request(server.app)
+        .get(apiUrl)
+        .send()
+        .set({ authorization: 'Bearer ' + accessToken });
+      expect(response.statusCode).toBe(500);
     });
 
     test('find code by id not found response 404', async () => {
