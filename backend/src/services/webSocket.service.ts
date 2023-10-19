@@ -48,7 +48,7 @@ export default class WebSocketService {
       // that is no longer valid, send an error message and close the client's
       // connection.
       ws.on('message', (data: string) => this.onMessage(ws, data));
-      ws.on('close', this.onClose);
+      ws.on('close', () => this.onClose(ws));
     });
   }
 
@@ -71,14 +71,18 @@ export default class WebSocketService {
     return defaultWsCode;
   }
 
-  private onClose(ws: WebSocket) {
+  private onClose = (ws: WebSocket) => {
+    if (Object.entries(this.wsClients).length === 0) {
+      return;
+    }
+
     const token = Object.entries(this.wsClients).find(
       (item) => item[1] === ws
     )[0];
     if (token) {
       delete this.wsClients[token];
     }
-  }
+  };
 
   private onMessage(ws: WebSocket, data: string) {
     console.log('On Message');
