@@ -9,10 +9,7 @@ export default function handleError(error: Error | AxiosError) {
     console.error(error);
 
     const errorResponse = error.response;
-    const errorMessage =
-      errorResponse?.data?.translationKey ??
-      errorResponse?.data?.message ??
-      error.message;
+    const errorMessage = errorResponse?.data?.message ?? error.message;
     alertService.showAlert(errorMessage, AlertType.error);
 
     if (errorResponse?.status === 409) {

@@ -23,6 +23,9 @@ import handleError from '../../utils/errorHandler';
 import UserUtils from '../../utils/UserUtils';
 import User from '../../models/interfaces/user.interface';
 import CommitDialog from '../Utils/CommitDialog';
+import { AxiosError } from 'axios';
+import alertService from '../../services/alert.service';
+import { AlertType } from '../Utils/TopAlert';
 
 export function CodeEditorWithSyntax(): JSX.Element {
   const [code, setCode] = useState(``);
@@ -88,9 +91,13 @@ export function CodeEditorWithSyntax(): JSX.Element {
       const codeHistory =
         await codeHistoryService.createCodeHistory(codeHistoryPost);
 
+      alertService.showAlert(
+        `Commit submitted successfully with commit sha: ${codeHistory.commit_sha}`,
+        AlertType.success
+      );
       console.log(codeHistory);
     } catch (e) {
-      handleError(e as Error);
+      handleError(e as Error | AxiosError);
     }
   };
 
