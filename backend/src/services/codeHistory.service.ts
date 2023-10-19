@@ -89,6 +89,7 @@ class CodeHistoryService {
     await this.codeHistoryRepo.delete(codeHistoryId);
     if (beforeLastCodeHistory === null || beforeLastCodeHistory === undefined) {
       await this.codeRepo.delete(codeHistory.codeId);
+      await gitService.delete(ownerId.toString());
     } else {
       await gitService.resetToCommit(
         ownerId.toString(),

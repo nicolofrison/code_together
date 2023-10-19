@@ -44,6 +44,13 @@ class GitService {
 
     await git.reset(['--hard', commitSha]);
   }
+
+  public async delete(gitFolderName: string) {
+    // get git for the folder
+    const { gitFolder } = await getGit(gitFolderName);
+
+    fs.rmdirSync(gitFolder, { recursive: true });
+  }
 }
 
 export default GitService;
