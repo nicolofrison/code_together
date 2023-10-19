@@ -1,6 +1,7 @@
 import getGit from '../config/gitConfig';
 import * as fs from 'fs';
 import * as path from 'path';
+import GitNothingToCommitError from '../models/exceptions/GitNothingToCommitError';
 
 class GitService {
   public async commit(
@@ -20,6 +21,12 @@ class GitService {
     }
     filePath = path.join(gitFolder, filePath);
     fs.writeFileSync(filePath, text);
+
+    // check status
+    const status = await git.status();
+    if (status.isClean()) {
+      throw new GitNothingToCommitError();
+    }
 
     // git commit
     await git.add(filePath).commit(comment);

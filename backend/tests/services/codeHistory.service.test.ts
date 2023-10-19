@@ -9,6 +9,7 @@ import RecordNotAuthorizedError from '../../src/models/exceptions/RecordNotAutho
 import NotLastCodeHistoryError from '../../src/models/exceptions/NotLastCodeHistoryError';
 import CodeHistoryPost from '../../src/models/http/requests/codeHistoryPost';
 import { gitService } from '../../src/services/git.service';
+import GitNothingToCommitError from '../../src/models/exceptions/GitNothingToCommitError';
 
 describe('CodeHistoryService', () => {
   jest.mock('../../src/repositories/code.repository', () => jest.fn());
@@ -172,6 +173,46 @@ describe('CodeHistoryService', () => {
       );
       expect(codeHistory).toBe(expectedCodeHistory);
       expect(gitService.commit).toBeCalled();
+    });
+
+    test('create codeHistory with already existent code and same content throws GitNothingToCommitError', async () => {
+      const expectedCode = {
+        id: 1,
+        name: 'name',
+        ownerId: 1,
+        owner: {}
+      } as Code;
+      const expectedCodeHistory = {
+        id: 1,
+        codeId: 1,
+        code: expectedCode,
+        comment: 'comment',
+        commit_sha: 'commit_sha',
+        timestamp: new Date()
+      } as CodeHistory;
+
+      codeRepository.findOneBy = jest.fn(() => Promise.resolve(expectedCode));
+      codeRepository.createAndSave = jest.fn(() =>
+        Promise.reject(new Error("It shouldn't call me"))
+      );
+      codeHistoryRepository.createAndSave = jest.fn(() =>
+        Promise.reject(new Error("It shouldn't call me"))
+      );
+
+      gitService.commit = jest.fn(() =>
+        Promise.reject(new GitNothingToCommitError())
+      );
+
+      const codeHistoryPost = {
+        codeId: expectedCode.id,
+        comment: expectedCodeHistory.comment,
+        text: 'text'
+      } as CodeHistoryPost;
+      const codeHistoryCreate = codeHistoryService.create(
+        expectedCode.ownerId,
+        codeHistoryPost
+      );
+      await expect(codeHistoryCreate).rejects.toThrow(GitNothingToCommitError);
     });
 
     test('create codeHistory with not existent code through code id throws RecordNotFoundError', async () => {

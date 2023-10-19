@@ -13,6 +13,7 @@ import validationMiddleware from '../middlewares/validation.middleware';
 import CodeHistoryPost from '../models/http/requests/codeHistoryPost';
 import RecordNotAuthorizedError from '../models/exceptions/RecordNotAuthorizedError';
 import NotLastCodeHistoryError from '../models/exceptions/NotLastCodeHistoryError';
+import GitNothingToCommitError from '../models/exceptions/GitNothingToCommitError';
 
 class CodeHistoryController extends Controller {
   private static readonly PATH = '/codeHistories';
@@ -121,7 +122,10 @@ class CodeHistoryController extends Controller {
       response.status(200);
       response.send(codeHistory);
     } catch (e) {
-      if (e instanceof RecordNotFoundError) {
+      if (
+        e instanceof RecordNotFoundError ||
+        e instanceof GitNothingToCommitError
+      ) {
         next(new HttpError(400, e.message, ''));
       } else if (e instanceof RecordNotAuthorizedError) {
         next(new HttpError(403, e.message, ''));

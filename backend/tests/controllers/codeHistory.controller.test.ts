@@ -11,6 +11,7 @@ import CodeHistory from '../../src/models/entities/CodeHistory';
 import CodeHistoryPost from '../../src/models/http/requests/codeHistoryPost';
 import RecordNotAuthorizedError from '../../src/models/exceptions/RecordNotAuthorizedError';
 import NotLastCodeHistoryError from '../../src/models/exceptions/NotLastCodeHistoryError';
+import GitNothingToCommitError from '../../src/models/exceptions/GitNothingToCommitError';
 
 describe('CodeController', () => {
   jest.mock('../../src/services/codeHistory.service', () => jest.fn());
@@ -153,6 +154,23 @@ describe('CodeController', () => {
         ...expectedCodeHistory,
         timestamp: expectedCodeHistory.timestamp.toISOString()
       });
+    });
+
+    test('create codeHistory with existent code id and no changes response 400', async () => {
+      codeHistoryService.create = jest.fn(() =>
+        Promise.reject(new GitNothingToCommitError())
+      );
+
+      const codeHistoryPost = {
+        codeId: 1,
+        comment: 'commit with no changes',
+        text: 'text'
+      } as CodeHistoryPost;
+      const response = await request(server.app)
+        .post(apiUrl)
+        .send(codeHistoryPost)
+        .set({ authorization: 'Bearer ' + accessToken });
+      expect(response.statusCode).toBe(400);
     });
 
     test('create codeHistory with non existent codeId response 400', async () => {
