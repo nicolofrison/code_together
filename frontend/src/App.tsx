@@ -51,11 +51,11 @@ function App() {
           <Grid container spacing={2} height="100%" style={{ marginTop: 0 }}>
             <Grid item xs={12} md={3} lg={3}>
               <Card style={{ height: '100%' }}>
+                {/* The padding bottom is 24px, and the top is 16px */}
                 <CardContent
                   style={{
                     position: 'relative',
-                    paddingTop: 0,
-                    height: 'calc(100% - 24px)'
+                    height: 'calc(100% - 40px)'
                   }}
                 >
                   <Auth />
@@ -64,7 +64,7 @@ function App() {
             </Grid>
             <Grid item xs={12} md={9} lg={9} overflow={'auto'}>
               <Card style={{ height: '100%' }}>
-                {/* The padding bottom is 24px, and the top is 16px */}
+                {/* The padding bottom is 24px */}
                 <CardContent
                   style={{
                     position: 'relative',
