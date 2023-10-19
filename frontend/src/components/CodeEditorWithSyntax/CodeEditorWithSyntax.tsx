@@ -68,17 +68,17 @@ export function CodeEditorWithSyntax(): JSX.Element {
   };
 
   return (
-    <>
+    <Grid container direction="column" alignItems="stretch" height="100%">
       <Grid
+        width="100%"
         container
-        height="100%"
+        alignItems="center"
         justifyContent="space-between"
-        alignItems="stretch"
       >
-        <Grid item xs={8}>
+        <Grid item>
           <p>Connected to {wsCode}</p>
         </Grid>
-        <Grid item xs={4}>
+        <Grid item>
           <Select
             labelId="language-select-label"
             id="language-select"
@@ -93,24 +93,24 @@ export function CodeEditorWithSyntax(): JSX.Element {
             ))}
           </Select>
         </Grid>
-        <Grid item xs>
-          <CodeEditor
-            disabled={isAllowedToWrite()}
-            value={code}
-            language={language}
-            placeholder={`Please enter ${language} code.`}
-            onChange={onChange}
-            padding={15}
-            style={{
-              fontSize: 12,
-              fontFamily:
-                'ui-monospace,SFMono-Regular,SF Mono,Consolas,Liberation Mono,Menlo,monospace',
-              width: '100%',
-              height: '100%'
-            }}
-          />
-        </Grid>
       </Grid>
-    </>
+      <Grid flexGrow={1}>
+        <CodeEditor
+          disabled={isAllowedToWrite()}
+          value={code}
+          language={language}
+          placeholder={`Please enter ${language} code.`}
+          onChange={onChange}
+          padding={15}
+          style={{
+            fontSize: 12,
+            fontFamily:
+              'ui-monospace,SFMono-Regular,SF Mono,Consolas,Liberation Mono,Menlo,monospace',
+            width: '100%',
+            height: '100%'
+          }}
+        />
+      </Grid>
+    </Grid>
   );
 }
