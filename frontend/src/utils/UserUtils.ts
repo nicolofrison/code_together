@@ -1,3 +1,4 @@
+import CodeHistory from '../models/interfaces/codeHistory.interface';
 import User from '../models/interfaces/user.interface';
 import { Observable } from './Observer';
 
@@ -81,6 +82,24 @@ export default class UserUtils extends Observable<boolean> {
     }
 
     return user.wsCode;
+  }
+
+  public setLastCodeHistory(codeHistory: CodeHistory) {
+    if (!this.isLoggedIn || !this.user) {
+      return;
+    }
+
+    this.user = { ...this.user, lastCodeHistory: codeHistory };
+  }
+
+  public getLastCodeHistory(): CodeHistory | null {
+    const user = this.user;
+
+    if (!user) {
+      return null;
+    }
+
+    return user.lastCodeHistory;
   }
 
   public removeUser() {

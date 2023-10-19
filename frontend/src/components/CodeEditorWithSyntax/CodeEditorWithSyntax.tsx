@@ -82,7 +82,9 @@ export function CodeEditorWithSyntax(): JSX.Element {
     const user = UserUtils.getInstance().user as User;
 
     const codeHistoryPost: CodeHistoryPost = {
-      codeId: user.id.toString(),
+      codeId: user.lastCodeHistory
+        ? user.lastCodeHistory.codeId
+        : user.id.toString(),
       comment,
       text: code
     };
@@ -96,6 +98,7 @@ export function CodeEditorWithSyntax(): JSX.Element {
         AlertType.success
       );
       console.log(codeHistory);
+      UserUtils.getInstance().setLastCodeHistory(codeHistory);
     } catch (e) {
       handleError(e as Error | AxiosError);
     }
