@@ -36,6 +36,8 @@ export const AuthContextProvider = ({ children }: Props) => {
       setIsDialogOpen(true);
     } else {
       WebSocketService.getInstance().closeSocket();
+      setDefaultWsCode('');
+      setWsCode('');
     }
   }, [isLoggedIn]);
 
