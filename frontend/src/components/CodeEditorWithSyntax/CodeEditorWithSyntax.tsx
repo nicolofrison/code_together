@@ -18,14 +18,17 @@ import WebSocketService from '../../services/webSocket.service';
 import { AuthContext } from '../AuthContext';
 import { Button, Grid } from '@mui/material';
 import CodeHistoryPost from '../../models/http/requests/codeHistoryPost';
-import codeHistoryService from '../../services/codeHistory.service';
+import CodeHistoryService from '../../services/codeHistory.service';
 import handleError from '../../utils/errorHandler';
 import UserUtils from '../../utils/UserUtils';
 import UserSession from '../../models/interfaces/userSession.interface';
 import CommitDialog from '../Utils/CommitDialog';
 import { AxiosError } from 'axios';
-import alertService from '../../services/alert.service';
+import AlertService from '../../services/alert.service';
 import { AlertType } from '../Utils/TopAlert';
+
+const alertService = AlertService.getInstance();
+const codeHistoryService = CodeHistoryService.getInstance();
 
 export function CodeEditorWithSyntax(): JSX.Element {
   const [code, setCode] = useState(``);

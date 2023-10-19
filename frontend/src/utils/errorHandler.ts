@@ -1,7 +1,10 @@
 import axios, { AxiosError } from 'axios';
-import alertService from '../services/alert.service';
+import AlertService from '../services/alert.service';
 import { AlertType } from '../components/Utils/TopAlert';
-import userService from '../services/user.service';
+import UserService from '../services/user.service';
+
+const alertService = AlertService.getInstance();
+const userService = UserService.getInstance();
 
 export default function handleError(error: Error | AxiosError) {
   if (axios.isAxiosError(error)) {

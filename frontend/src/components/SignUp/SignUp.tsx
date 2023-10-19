@@ -5,12 +5,15 @@ import TextField from '@mui/material/TextField';
 import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
 
-import userService from '../../services/user.service';
+import UserService from '../../services/user.service';
 import { ButtonGroup } from '@mui/material';
 import validator from 'validator';
 import { AlertType } from '../Utils/TopAlert';
-import alertService from '../../services/alert.service';
+import AlertService from '../../services/alert.service';
 import handleError from '../../utils/errorHandler';
+
+const alertService = AlertService.getInstance();
+const userService = UserService.getInstance();
 
 const enum ModeEnum {
   signIn,

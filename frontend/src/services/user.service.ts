@@ -5,7 +5,7 @@ import UserSession from '../models/interfaces/userSession.interface';
 import User from '../models/interfaces/user.interface';
 import UserSignInResponse from '../models/http/responses/userSignIn.interface';
 
-export class UserService extends BaseAuthService {
+export default class UserService extends BaseAuthService {
   private static instance: UserService;
 
   public static getInstance(): UserService {
@@ -43,5 +43,3 @@ export class UserService extends BaseAuthService {
     UserUtils.getInstance().removeUser();
   }
 }
-
-export default UserService.getInstance();

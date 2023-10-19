@@ -2,7 +2,7 @@ import BaseAuthService from './baseAuth.service';
 import CodeHistory from '../models/interfaces/codeHistory.interface';
 import CodeHistoryPost from '../models/http/requests/codeHistoryPost';
 
-export class CodeHistoryService extends BaseAuthService {
+export default class CodeHistoryService extends BaseAuthService {
   private static instance: CodeHistoryService;
 
   public static getInstance(): CodeHistoryService {
@@ -24,5 +24,3 @@ export class CodeHistoryService extends BaseAuthService {
     return response.data;
   }
 }
-
-export default CodeHistoryService.getInstance();

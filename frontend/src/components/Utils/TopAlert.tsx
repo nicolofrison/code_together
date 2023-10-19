@@ -2,7 +2,9 @@ import { useState } from 'react';
 
 import { Alert, AlertTitle, Collapse } from '@mui/material';
 
-import alertService from '../../services/alert.service';
+import AlertService from '../../services/alert.service';
+
+const alertService = AlertService.getInstance();
 
 export enum AlertType {
   info = 'info',

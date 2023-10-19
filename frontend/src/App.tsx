@@ -4,7 +4,7 @@ import { AuthContext, AuthContextProvider } from './components/AuthContext';
 import { CodeEditorWithSyntax } from './components/CodeEditorWithSyntax/CodeEditorWithSyntax';
 import SignUp from './components/SignUp/SignUp';
 import TopAlert from './components/Utils/TopAlert';
-import userService from './services/user.service';
+import UserService from './services/user.service';
 import {
   Box,
   Button,
@@ -15,6 +15,8 @@ import {
   Paper,
   styled
 } from '@mui/material';
+
+const userService = UserService.getInstance();
 
 function Auth() {
   const { isLoggedIn } = useContext(AuthContext);

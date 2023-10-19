@@ -1,6 +1,6 @@
 import { AlertType } from '../components/Utils/TopAlert';
 
-export class AlertService {
+export default class AlertService {
   private static instance: AlertService;
 
   private setAlertVisibleTimeout: number | undefined;
@@ -52,5 +52,3 @@ export class AlertService {
     }
   }
 }
-
-export default AlertService.getInstance();
