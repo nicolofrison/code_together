@@ -47,6 +47,33 @@ describe('CodeHistoryService', () => {
     });
   });
 
+  describe('findLastByUser', () => {
+    test('find last codeHistory by user found', async () => {
+      const expectedCodeHistory = {
+        id: 1,
+        codeId: 1,
+        code: {},
+        comment: 'comment',
+        commit_sha: 'commit_sha',
+        timestamp: new Date()
+      } as CodeHistory;
+      codeHistoryRepository.findOne = jest.fn(() =>
+        Promise.resolve(expectedCodeHistory)
+      );
+
+      const codeHistory = await codeHistoryService.findLastByUser(1);
+      expect(codeHistory).toBe(expectedCodeHistory);
+    });
+
+    test('find last codeHistory by user not found throws RecordNotFoundError', async () => {
+      codeHistoryRepository.findOne = jest.fn(() => Promise.resolve(null));
+
+      await expect(codeHistoryService.findLastByUser(1)).rejects.toThrow(
+        RecordNotFoundError
+      );
+    });
+  });
+
   describe('findById', () => {
     test('findById codeHistory found', async () => {
       const expectedCodeHistory = {

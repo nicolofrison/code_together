@@ -38,6 +38,23 @@ class GitService {
     return { ...commitInfo, timestamp };
   }
 
+  public async getCode(
+    gitFolderName: string,
+    fileName: string,
+    subPath?: string
+  ) {
+    // get git for the folder
+    const { gitFolder } = await getGit(gitFolderName);
+
+    // edit local file replacing with text
+    let filePath = fileName;
+    if (subPath) {
+      filePath = path.join(subPath, filePath);
+    }
+    filePath = path.join(gitFolder, filePath);
+    return fs.readFileSync(filePath, { encoding: 'utf-8' });
+  }
+
   public async resetToCommit(gitFolderName: string, commitSha: string) {
     // get git for the folder
     const { git } = await getGit(gitFolderName);

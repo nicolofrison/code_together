@@ -9,6 +9,10 @@ import { TypeORMError } from 'typeorm';
 import RecordNotFoundError from '../../src/models/exceptions/RecordNotFoundError';
 import WrongPasswordError from '../../src/models/exceptions/WrongPasswordError';
 import WebSocketService from '../../src/services/webSocket.service';
+import { codeHistoryService } from '../../src/services/codeHistory.service';
+import { gitService } from '../../src/services/git.service';
+import CodeHistory from '../../src/models/entities/CodeHistory';
+import Code from '../../src/models/entities/Code';
 
 describe('AuthController', () => {
   jest.mock('../../src/services/user.service', () => jest.fn());
@@ -18,7 +22,7 @@ describe('AuthController', () => {
     const apiUrl = '/auth/signin';
     const server = new Server([authControllerInstance]);
 
-    test('sign in a user successfully', async () => {
+    test('sign in a user successfully without last code history', async () => {
       const req = { email: 'email', password: 'password' };
       const expectedUser = {
         email: req.email,
@@ -26,6 +30,12 @@ describe('AuthController', () => {
       };
       userService.signIn = userService.findById = jest.fn(() =>
         Promise.resolve(expectedUser as User)
+      );
+      codeHistoryService.findLastByUser = jest.fn(() =>
+        Promise.reject(new RecordNotFoundError(CodeHistory.name, 'ownerId'))
+      );
+      gitService.getCode = jest.fn(() =>
+        Promise.reject(new Error("It shouldn't come here"))
       );
 
       const expectedWsCode = 133456;
@@ -40,6 +50,60 @@ describe('AuthController', () => {
       expect(response.body).toMatchObject(expectedUser);
       expect(response.body).toHaveProperty('accessToken');
       expect(response.body).toHaveProperty('wsCode', expectedWsCode);
+      expect(gitService.getCode).not.toBeCalled();
+    });
+
+    test('sign in a user successfully with last code history', async () => {
+      const req = { email: 'email', password: 'password' };
+      const expectedUser = {
+        email: req.email,
+        id: 1
+      } as User;
+      const expectedCode: Code = {
+        id: 1,
+        name: expectedUser.id.toString(),
+        owner: expectedUser,
+        ownerId: expectedUser.id
+      };
+      const expectedCodeHistory: CodeHistory = {
+        id: 1,
+        code: expectedCode,
+        codeId: expectedCode.id,
+        comment: 'comment',
+        commit_sha: 'commit_sha',
+        timestamp: new Date()
+      };
+      const expectedLastCodeHistoryWithText = {
+        ...expectedCodeHistory,
+        text: 'text'
+      };
+
+      userService.signIn = userService.findById = jest.fn(() =>
+        Promise.resolve(expectedUser as User)
+      );
+      codeHistoryService.findLastByUser = jest.fn(() =>
+        Promise.resolve(expectedCodeHistory)
+      );
+      gitService.getCode = jest.fn(() =>
+        Promise.resolve(expectedLastCodeHistoryWithText.text)
+      );
+
+      const expectedWsCode = 133456;
+      const mockStaticGetInstance = jest.fn().mockReturnValue({
+        generateUniqueWsCode: () => expectedWsCode
+      });
+
+      WebSocketService.getInstance = mockStaticGetInstance;
+
+      const response = await request(server.app).post(apiUrl).send(req);
+      expect(response.statusCode).toBe(200);
+      expect(response.body).toMatchObject(expectedUser);
+      expect(response.body).toHaveProperty('accessToken');
+      expect(response.body).toHaveProperty('wsCode', expectedWsCode);
+      expect(response.body).toHaveProperty('lastCodeHistory', {
+        ...expectedLastCodeHistoryWithText,
+        timestamp: expectedCodeHistory.timestamp.toISOString()
+      });
     });
 
     test('sign in a user with wrong request body response 400', async () => {

@@ -12,11 +12,14 @@ import RecordAlreadyExistsError from '../models/exceptions/RecordAlreadyExistsEr
 import { jwtService } from '../services/jwt.service';
 import UserSignInResponse from '../models/http/responses/userSignIn.interface';
 import WebSocketService from '../services/webSocket.service';
+import { codeHistoryService } from '../services/codeHistory.service';
+import { gitService } from '../services/git.service';
 
 class AuthController extends Controller {
   private static readonly PATH = '/auth';
 
   private userService = userServiceInstance;
+  private codeHistoryService = codeHistoryService;
 
   public constructor() {
     super();
@@ -78,6 +81,22 @@ class AuthController extends Controller {
           accessToken: token,
           wsCode: WebSocketService.getInstance().generateUniqueWsCode()
         } as UserSignInResponse;
+
+        try {
+          const lastCodeHistory = await this.codeHistoryService.findLastByUser(
+            user.id
+          );
+          const text = await gitService.getCode(
+            user.id.toString(),
+            user.id.toString()
+          );
+
+          userWithToken.lastCodeHistory = { ...lastCodeHistory, text };
+        } catch (e) {
+          if (e instanceof RecordNotFoundError) {
+            // not needed to send the userWithToken without lastCodeHistory because if it comes here, is not set by default
+          }
+        }
 
         response.status(200);
         response.send(userWithToken);
