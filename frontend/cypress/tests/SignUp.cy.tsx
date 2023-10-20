@@ -1,6 +1,6 @@
 import SignUp from '../../src/components/SignUp/SignUp';
-import userService from '../../src/services/user.service';
-import alertService from '../../src/services/alert.service';
+import UserService from '../../src/services/user.service';
+import AlertService from '../../src/services/alert.service';
 import { AlertType } from '../../src/components/Utils/TopAlert';
 
 describe('<SignUp />', () => {
@@ -121,8 +121,8 @@ describe('<SignUp />', () => {
       cy.mount(<SignUp />);
 
       const user = { id: 1, email: 'aaaa@aaaa.com', password: 'password' };
-      cy.stub(userService, 'signUp').returns(user);
-      cy.stub(alertService, 'showAlert').as('showAlert');
+      cy.stub(UserService.getInstance(), 'signUp').returns(user);
+      cy.stub(AlertService.getInstance(), 'showAlert').as('showAlert');
 
       cy.get('#signUpModeButton').should(
         'have.class',
@@ -147,8 +147,8 @@ describe('<SignUp />', () => {
 
       const user = { id: 1, email: 'aaaa@aaaa.com', password: 'password' };
       const expectedError = new Error();
-      cy.stub(userService, 'signUp').throws(expectedError);
-      cy.stub(alertService, 'showAlert').as('showAlert');
+      cy.stub(UserService.getInstance(), 'signUp').throws(expectedError);
+      cy.stub(AlertService.getInstance(), 'showAlert').as('showAlert');
 
       cy.get('#signUpModeButton').should(
         'have.class',
@@ -243,8 +243,8 @@ describe('<SignUp />', () => {
       setSignIn();
 
       const user = { id: 1, email: 'aaaa@aaaa.com', password: 'password' };
-      cy.stub(userService, 'signIn').returns(user);
-      cy.stub(alertService, 'showAlert').as('showAlert');
+      cy.stub(UserService.getInstance(), 'signIn').returns(user);
+      cy.stub(AlertService.getInstance(), 'showAlert').as('showAlert');
 
       cy.get('#signInModeButton').should(
         'have.class',
@@ -263,14 +263,14 @@ describe('<SignUp />', () => {
       );
     });
 
-    it('Simulate a failed signUp', () => {
+    it('Simulate a failed signIn', () => {
       cy.mount(<SignUp />);
       setSignIn();
 
       const user = { id: 1, email: 'aaaa@aaaa.com', password: 'password' };
       const expectedError = new Error();
-      cy.stub(userService, 'signIn').throws(expectedError);
-      cy.stub(alertService, 'showAlert').as('showAlert');
+      cy.stub(UserService.getInstance(), 'signIn').throws(expectedError);
+      cy.stub(AlertService.getInstance(), 'showAlert').as('showAlert');
 
       cy.get('input[name="email"]').type(user.email);
       cy.get('input[name="password"]').type(user.password);
