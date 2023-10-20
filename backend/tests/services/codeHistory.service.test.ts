@@ -9,6 +9,7 @@ import RecordNotAuthorizedError from '../../src/models/exceptions/RecordNotAutho
 import NotLastCodeHistoryError from '../../src/models/exceptions/NotLastCodeHistoryError';
 import CodeHistoryPost from '../../src/models/http/requests/codeHistoryPost';
 import { gitService } from '../../src/services/git.service';
+import GitNothingToCommitError from '../../src/models/exceptions/GitNothingToCommitError';
 
 describe('CodeHistoryService', () => {
   jest.mock('../../src/repositories/code.repository', () => jest.fn());
@@ -43,6 +44,33 @@ describe('CodeHistoryService', () => {
 
       const codeHistory = await codeHistoryService.findAll(1);
       expect(codeHistory).toBe(expectedCodeHistories);
+    });
+  });
+
+  describe('findLastByUser', () => {
+    test('find last codeHistory by user found', async () => {
+      const expectedCodeHistory = {
+        id: 1,
+        codeId: 1,
+        code: {},
+        comment: 'comment',
+        commit_sha: 'commit_sha',
+        timestamp: new Date()
+      } as CodeHistory;
+      codeHistoryRepository.findOne = jest.fn(() =>
+        Promise.resolve(expectedCodeHistory)
+      );
+
+      const codeHistory = await codeHistoryService.findLastByUser(1);
+      expect(codeHistory).toBe(expectedCodeHistory);
+    });
+
+    test('find last codeHistory by user not found throws RecordNotFoundError', async () => {
+      codeHistoryRepository.findOne = jest.fn(() => Promise.resolve(null));
+
+      await expect(codeHistoryService.findLastByUser(1)).rejects.toThrow(
+        RecordNotFoundError
+      );
     });
   });
 
@@ -174,6 +202,46 @@ describe('CodeHistoryService', () => {
       expect(gitService.commit).toBeCalled();
     });
 
+    test('create codeHistory with already existent code and same content throws GitNothingToCommitError', async () => {
+      const expectedCode = {
+        id: 1,
+        name: 'name',
+        ownerId: 1,
+        owner: {}
+      } as Code;
+      const expectedCodeHistory = {
+        id: 1,
+        codeId: 1,
+        code: expectedCode,
+        comment: 'comment',
+        commit_sha: 'commit_sha',
+        timestamp: new Date()
+      } as CodeHistory;
+
+      codeRepository.findOneBy = jest.fn(() => Promise.resolve(expectedCode));
+      codeRepository.createAndSave = jest.fn(() =>
+        Promise.reject(new Error("It shouldn't call me"))
+      );
+      codeHistoryRepository.createAndSave = jest.fn(() =>
+        Promise.reject(new Error("It shouldn't call me"))
+      );
+
+      gitService.commit = jest.fn(() =>
+        Promise.reject(new GitNothingToCommitError())
+      );
+
+      const codeHistoryPost = {
+        codeId: expectedCode.id,
+        comment: expectedCodeHistory.comment,
+        text: 'text'
+      } as CodeHistoryPost;
+      const codeHistoryCreate = codeHistoryService.create(
+        expectedCode.ownerId,
+        codeHistoryPost
+      );
+      await expect(codeHistoryCreate).rejects.toThrow(GitNothingToCommitError);
+    });
+
     test('create codeHistory with not existent code through code id throws RecordNotFoundError', async () => {
       codeRepository.findOneBy = jest.fn(() => Promise.resolve(null));
 
@@ -206,10 +274,8 @@ describe('CodeHistoryService', () => {
     });
   });
 
-  gitService.resetToCommit = jest.fn(() => Promise.resolve());
-
   describe('delete', () => {
-    test('delete code history as second with commit reset successfully', async () => {
+    test('delete last code history not last standing with commit reset successfully', async () => {
       const expectedCode = {
         id: 1,
         name: 'name',
@@ -225,7 +291,7 @@ describe('CodeHistoryService', () => {
         timestamp: new Date()
       } as CodeHistory;
 
-      codeHistoryRepository.find = jest.fn(() =>
+      codeHistoryRepository.findLastTwoByLastCodeHistoryId = jest.fn(() =>
         Promise.resolve([
           expectedCodeHistory,
           { ...expectedCodeHistory, id: 2 }
@@ -237,6 +303,10 @@ describe('CodeHistoryService', () => {
       codeHistoryRepository.delete = jest.fn(() =>
         Promise.resolve({} as DeleteResult)
       );
+      gitService.resetToCommit = jest.fn(() => Promise.resolve());
+      gitService.delete = jest.fn(() =>
+        Promise.reject(new Error("It shouldn't be called"))
+      );
 
       await codeHistoryService.delete(
         expectedCode.ownerId,
@@ -244,9 +314,10 @@ describe('CodeHistoryService', () => {
       );
       expect(codeHistoryRepository.delete).toBeCalled();
       expect(gitService.resetToCommit).toBeCalled();
+      expect(gitService.delete).not.toBeCalled();
     });
 
-    test('delete code history as first with code delete successfully', async () => {
+    test('delete last standing code history with code delete successfully', async () => {
       const expectedCode = {
         id: 1,
         name: 'name',
@@ -262,7 +333,7 @@ describe('CodeHistoryService', () => {
         timestamp: new Date()
       } as CodeHistory;
 
-      codeHistoryRepository.find = jest.fn(() =>
+      codeHistoryRepository.findLastTwoByLastCodeHistoryId = jest.fn(() =>
         Promise.resolve([expectedCodeHistory])
       );
       codeHistoryRepository.findOne = jest.fn(() =>
@@ -276,21 +347,36 @@ describe('CodeHistoryService', () => {
           raw: ''
         })
       );
+      gitService.resetToCommit = jest.fn(() =>
+        Promise.reject(new Error("It shouldn't be called"))
+      );
+      gitService.delete = jest.fn(() => Promise.resolve());
 
       await codeHistoryService.delete(
         expectedCode.ownerId,
         expectedCodeHistory.id
       );
       expect(codeHistoryRepository.delete).toBeCalled();
-      expect(gitService.resetToCommit).toBeCalled();
+      expect(gitService.resetToCommit).not.toBeCalled();
+      expect(gitService.delete).toBeCalled();
     });
 
     test('delete code history not found throws RecordNotFoundError', async () => {
-      codeHistoryRepository.find = jest.fn(() => Promise.resolve([]));
+      codeHistoryRepository.findLastTwoByLastCodeHistoryId = jest.fn(() =>
+        Promise.resolve([])
+      );
       codeHistoryRepository.findOne = jest.fn(() => Promise.resolve(null));
+      gitService.resetToCommit = jest.fn(() =>
+        Promise.reject(new Error("It shouldn't be called"))
+      );
+      gitService.delete = jest.fn(() =>
+        Promise.reject(new Error("It shouldn't be called"))
+      );
 
       const codeHistoryDelete = codeHistoryService.delete(1, 1);
       await expect(codeHistoryDelete).rejects.toThrow(RecordNotFoundError);
+      expect(gitService.resetToCommit).not.toBeCalled();
+      expect(gitService.delete).not.toBeCalled();
     });
 
     test('delete codeHistory that is not last throws error', async () => {
@@ -313,11 +399,17 @@ describe('CodeHistoryService', () => {
         id: 2
       } as CodeHistory;
 
-      codeHistoryRepository.find = jest.fn(() =>
+      codeHistoryRepository.findLastTwoByLastCodeHistoryId = jest.fn(() =>
         Promise.resolve([expectedLastCodeHistory, expectedCodeHistory])
       );
       codeHistoryRepository.findOne = jest.fn(() =>
         Promise.resolve(expectedCodeHistory)
+      );
+      gitService.resetToCommit = jest.fn(() =>
+        Promise.reject(new Error("It shouldn't be called"))
+      );
+      gitService.delete = jest.fn(() =>
+        Promise.reject(new Error("It shouldn't be called"))
       );
 
       const codeHistoryDelete = codeHistoryService.delete(
@@ -325,6 +417,8 @@ describe('CodeHistoryService', () => {
         expectedCodeHistory.id
       );
       await expect(codeHistoryDelete).rejects.toThrow(NotLastCodeHistoryError);
+      expect(gitService.resetToCommit).not.toBeCalled();
+      expect(gitService.delete).not.toBeCalled();
     });
 
     test('delete codeHistory with code owned by another user throws RecordNotAuthorizedError', async () => {
@@ -343,11 +437,17 @@ describe('CodeHistoryService', () => {
         timestamp: new Date()
       } as CodeHistory;
 
-      codeHistoryRepository.find = jest.fn(() =>
+      codeHistoryRepository.findLastTwoByLastCodeHistoryId = jest.fn(() =>
         Promise.resolve([expectedCodeHistory, expectedCodeHistory])
       );
       codeHistoryRepository.findOne = jest.fn(() =>
         Promise.resolve(expectedCodeHistory)
+      );
+      gitService.resetToCommit = jest.fn(() =>
+        Promise.reject(new Error("It shouldn't be called"))
+      );
+      gitService.delete = jest.fn(() =>
+        Promise.reject(new Error("It shouldn't be called"))
       );
 
       const codeHistoryDelete = codeHistoryService.delete(
@@ -355,6 +455,8 @@ describe('CodeHistoryService', () => {
         expectedCodeHistory.id
       );
       await expect(codeHistoryDelete).rejects.toThrow(RecordNotAuthorizedError);
+      expect(gitService.resetToCommit).not.toBeCalled();
+      expect(gitService.delete).not.toBeCalled();
     });
   });
 });

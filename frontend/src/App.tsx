@@ -1,20 +1,15 @@
 import { useContext } from 'react';
-import './App.css';
+
+import { Box, Button, Card, CardContent, Container, Grid } from '@mui/material';
+
 import { AuthContext, AuthContextProvider } from './components/AuthContext';
 import { CodeEditorWithSyntax } from './components/CodeEditorWithSyntax/CodeEditorWithSyntax';
 import SignUp from './components/SignUp/SignUp';
 import TopAlert from './components/Utils/TopAlert';
-import userService from './services/user.service';
-import {
-  Box,
-  Button,
-  Card,
-  CardContent,
-  Container,
-  Grid,
-  Paper,
-  styled
-} from '@mui/material';
+
+import UserService from './services/user.service';
+
+const userService = UserService.getInstance();
 
 function Auth() {
   const { isLoggedIn } = useContext(AuthContext);

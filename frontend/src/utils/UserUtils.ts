@@ -1,8 +1,11 @@
-import User from '../models/interfaces/user.interface';
+import CodeWithText from '../models/http/responses/codeWithText.interface';
+import Code from '../models/interfaces/code.interface';
+import UserSession from '../models/interfaces/userSession.interface';
 import { Observable } from './Observer';
 
 export default class UserUtils extends Observable<boolean> {
   private static readonly userKey = 'user';
+  private static readonly codeKey = 'code';
 
   private _isLoggedIn: boolean | undefined;
   public get isLoggedIn(): boolean {
@@ -25,7 +28,7 @@ export default class UserUtils extends Observable<boolean> {
     }
   }
 
-  public get user(): User | null {
+  public get user(): UserSession | null {
     const jsonUser = sessionStorage.getItem(UserUtils.userKey);
     console.log(jsonUser);
     if (!jsonUser) {
@@ -44,7 +47,7 @@ export default class UserUtils extends Observable<boolean> {
 
     return user;
   }
-  private set user(value: User | null) {
+  private set user(value: UserSession | null) {
     if (value) {
       sessionStorage.setItem(UserUtils.userKey, JSON.stringify(value));
       this.isLoggedIn = true;
@@ -55,7 +58,7 @@ export default class UserUtils extends Observable<boolean> {
   }
 
   private static instance: UserUtils;
-  public static getInstance() {
+  public static getInstance(): UserUtils {
     if (!this.instance) {
       this.instance = new UserUtils();
     }
@@ -87,7 +90,31 @@ export default class UserUtils extends Observable<boolean> {
     this.user = null;
   }
 
-  public setUser(user: User) {
+  public removeCode() {
+    sessionStorage.removeItem(UserUtils.codeKey);
+  }
+
+  public setUser(user: UserSession) {
     this.user = user;
+  }
+
+  public getCode(): Code | null {
+    const jsonCode = sessionStorage.getItem(UserUtils.codeKey);
+    if (!jsonCode) {
+      this.isLoggedIn = false;
+      return null;
+    }
+
+    const code = JSON.parse(jsonCode);
+    if (!code) {
+      this.removeCode();
+      return null;
+    }
+
+    return code;
+  }
+
+  setCode(code: Code) {
+    sessionStorage.setItem(UserUtils.codeKey, JSON.stringify(code));
   }
 }

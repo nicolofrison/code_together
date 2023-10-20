@@ -8,6 +8,8 @@ import RecordNotFoundError from '../models/exceptions/RecordNotFoundError';
 import authMiddleware from '../middlewares/auth.middleware';
 import RequestWithUser from '../models/http/requests/requestWithUser.interface';
 import { param } from 'express-validator';
+import { gitService } from '../services/git.service';
+import CodeWithText from '../models/http/responses/codeWithText.interface';
 
 class CodeController extends Controller {
   private static readonly PATH = '/codes';
@@ -50,7 +52,10 @@ class CodeController extends Controller {
     const codeId = +request.params.id;
 
     try {
-      const code = await this.codeService.findById(codeId);
+      const code: CodeWithText = await this.codeService.findById(codeId);
+
+      code.text = await gitService.getCode(code.name, code.name);
+
       response.status(200);
       response.send(code);
     } catch (e) {

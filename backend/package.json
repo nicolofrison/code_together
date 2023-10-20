@@ -9,10 +9,10 @@
       "lint": "eslint src",
       "test": "jest",
       "typeorm": "typeorm-ts-node-commonjs",
-      "migration:generate": "typeorm-ts-node-commonjs migration:generate -d src/config/dataSource.ts",
+      "migration:generate": "ts-node ./migrateScript.ts",
       "migration:migrate": "typeorm-ts-node-commonjs migration:run -d src/config/dataSource.ts",
-      "migration:revert": "typeorm-ts-node-commonjs migration:revert -d src/config/dataSourceLocal.ts",
-      "migration:drop": "typeorm-ts-node-commonjs schema:drop -d src/config/dataSourceLocal.ts"
+      "migration:revert": "typeorm-ts-node-commonjs migration:revert -d src/config/dataSource.ts",
+      "migration:drop": "typeorm-ts-node-commonjs schema:drop -d src/config/dataSource.ts"
    },
    "author": "",
    "license": "ISC",

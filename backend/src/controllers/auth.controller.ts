@@ -12,11 +12,14 @@ import RecordAlreadyExistsError from '../models/exceptions/RecordAlreadyExistsEr
 import { jwtService } from '../services/jwt.service';
 import UserSignInResponse from '../models/http/responses/userSignIn.interface';
 import WebSocketService from '../services/webSocket.service';
+import { codeHistoryService } from '../services/codeHistory.service';
+import { gitService } from '../services/git.service';
 
 class AuthController extends Controller {
   private static readonly PATH = '/auth';
 
   private userService = userServiceInstance;
+  private codeHistoryService = codeHistoryService;
 
   public constructor() {
     super();

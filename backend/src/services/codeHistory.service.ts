@@ -20,6 +20,18 @@ class CodeHistoryService {
     return codeHistories;
   }
 
+  public async findLastByUser(ownerId: number) {
+    const codeHistory = await this.codeHistoryRepo.findOne({
+      where: { code: { ownerId } },
+      order: { timestamp: 'DESC' }
+    });
+    if (codeHistory == null) {
+      throw new RecordNotFound(CodeHistory.name, 'ownerId');
+    }
+
+    return codeHistory;
+  }
+
   public async findById(id: number): Promise<CodeHistory> {
     const codeHistory = await this.codeHistoryRepo.findOneBy({ id });
     if (codeHistory == null) {
@@ -67,10 +79,7 @@ class CodeHistoryService {
 
   public async delete(ownerId: number, codeHistoryId: number) {
     const [lastCodeHistory, beforeLastCodeHistory] =
-      await this.codeHistoryRepo.find({
-        order: { timestamp: 'DESC' },
-        take: 2
-      });
+      await this.codeHistoryRepo.findLastTwoByLastCodeHistoryId(codeHistoryId);
 
     const codeHistory = await this.codeHistoryRepo.findOne({
       where: {
@@ -92,6 +101,7 @@ class CodeHistoryService {
     await this.codeHistoryRepo.delete(codeHistoryId);
     if (beforeLastCodeHistory === null || beforeLastCodeHistory === undefined) {
       await this.codeRepo.delete(codeHistory.codeId);
+      await gitService.delete(ownerId.toString());
     } else {
       await gitService.resetToCommit(
         ownerId.toString(),
