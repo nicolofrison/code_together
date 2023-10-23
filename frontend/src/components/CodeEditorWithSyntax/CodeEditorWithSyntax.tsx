@@ -138,6 +138,7 @@ export function CodeEditorWithSyntax(): JSX.Element {
         const codeWithoutText = code as any;
         delete codeWithoutText.text;
         setCodeEntity(codeWithText);
+        codeId.set(codeWithText.id);
       }
 
       updateCodeHistoryList.set(!updateCodeHistoryList.get);
