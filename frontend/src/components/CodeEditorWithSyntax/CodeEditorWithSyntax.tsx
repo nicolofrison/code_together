@@ -66,9 +66,10 @@ export function CodeEditorWithSyntax(): JSX.Element {
         .then((codeWithText) => {
           if (codeWithText && typeof codeWithText.text === 'string') {
             setText(codeWithText.text);
+
             const codeWithoutText = codeWithText as any;
             delete codeWithoutText.text;
-            setCodeEntity(codeWithText);
+            setCodeEntity(codeWithoutText as Code);
             codeId.set(codeWithText.id);
           }
         });
@@ -137,7 +138,7 @@ export function CodeEditorWithSyntax(): JSX.Element {
 
         const codeWithoutText = codeWithText as any;
         delete codeWithoutText.text;
-        setCodeEntity(codeWithText);
+        setCodeEntity(codeWithoutText as Code);
         codeId.set(codeWithText.id);
       }
 
