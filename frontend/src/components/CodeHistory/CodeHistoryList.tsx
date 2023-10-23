@@ -27,7 +27,7 @@ export default function CodeHistoryList() {
 
   return (
     <>
-      {codeHistories.length > 1 ? (
+      {codeHistories.length > 0 ? (
         <Grid container style={{ height: '100%', overflowY: 'auto' }}>
           <Stack>
             <Divider />
