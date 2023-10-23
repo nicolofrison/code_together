@@ -25,7 +25,7 @@ function Auth() {
   const { isLoggedIn } = useContext(AuthContext);
 
   return (
-    <Grid alignItems="center" height="100%">
+    <Grid container justifyContent="center" height="100%" spacing={2}>
       {!isLoggedIn ? (
         <Grid item>
           <SignUp />
