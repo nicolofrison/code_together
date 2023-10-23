@@ -14,6 +14,12 @@ export default class CodeHistoryService extends BaseAuthService {
     return CodeHistoryService.instance;
   }
 
+  public async deleteById(id: number): Promise<CodeHistory[]> {
+    const response = await this.apiRequest().delete(`codeHistories/${id}`);
+
+    return response.data;
+  }
+
   public async getAllByCodeId(codeId: number): Promise<CodeHistory[]> {
     const response = await this.apiRequest().get(
       `codeHistories?codeId=${codeId}`
