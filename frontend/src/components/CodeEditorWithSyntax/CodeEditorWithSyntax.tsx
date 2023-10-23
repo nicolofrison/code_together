@@ -40,7 +40,7 @@ const codeService = CodeService.getInstance();
 const codeHistoryService = CodeHistoryService.getInstance();
 
 export function CodeEditorWithSyntax(): JSX.Element {
-  const [code, setCode] = useState(``);
+  const [text, setText] = useState(``);
   const [isFirstCodeReceived, setIsFirstCodeReceived] = useState(false);
   const [isWSConnected, setIsWsConnected] = useState(false);
   const [language, setLanguage] = useState('javascript');
@@ -65,8 +65,8 @@ export function CodeEditorWithSyntax(): JSX.Element {
         })
         .then((codeWithText) => {
           if (codeWithText && typeof codeWithText.text === 'string') {
-            setCode(codeWithText.text);
-            const codeWithoutText = code as any;
+            setText(codeWithText.text);
+            const codeWithoutText = codeWithText as any;
             delete codeWithoutText.text;
             setCodeEntity(codeWithText);
             codeId.set(codeWithText.id);
@@ -80,7 +80,7 @@ export function CodeEditorWithSyntax(): JSX.Element {
       if (!isFirstCodeReceived) {
         setIsFirstCodeReceived(true);
       }
-      setCode(data.text);
+      setText(data.text);
     });
     WebSocketService.getInstance().addOnConnectedCallback(
       (isConnected: boolean) => {
@@ -105,7 +105,7 @@ export function CodeEditorWithSyntax(): JSX.Element {
   ) => {
     console.log(e);
     if (isAllowedToWrite()) {
-      setCode(e.target.value);
+      setText(e.target.value);
 
       if (isLoggedIn) {
         const codeData: CodeData = { text: e.target.value };
@@ -120,7 +120,7 @@ export function CodeEditorWithSyntax(): JSX.Element {
     const codeHistoryPost: CodeHistoryPost = {
       codeId: codeEntity ? codeEntity.id : user.id.toString(),
       comment,
-      text: code
+      text: text
     };
 
     try {
@@ -135,7 +135,7 @@ export function CodeEditorWithSyntax(): JSX.Element {
       if (!codeEntity) {
         const codeWithText = await codeService.getCode(codeHistory.codeId);
 
-        const codeWithoutText = code as any;
+        const codeWithoutText = codeWithText as any;
         delete codeWithoutText.text;
         setCodeEntity(codeWithText);
         codeId.set(codeWithText.id);
@@ -193,7 +193,7 @@ export function CodeEditorWithSyntax(): JSX.Element {
       <Grid flexGrow={1}>
         <CodeEditor
           disabled={!isAllowedToWrite()}
-          value={code}
+          value={text}
           language={language}
           placeholder={`Please enter ${language} code.`}
           onChange={onChange}
