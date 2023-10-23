@@ -48,7 +48,7 @@ export default function WebSocketCodeDialog(props: Props) {
             autoFocus
             margin="dense"
             id="wsCode"
-            label="Shared code"
+            label="Message"
             fullWidth
             variant="standard"
             onChange={handleValidation}
