@@ -29,6 +29,7 @@ import CodeService from '../../services/code.service';
 import CodeHistoryService from '../../services/codeHistory.service';
 
 import { AuthContext } from '../AuthContext';
+import { CodeHistoryContext } from '../contexts/CodeHistoryContext';
 import CommitDialog from '../Utils/CommitDialog';
 import { AlertType } from '../Utils/TopAlert';
 
@@ -51,6 +52,7 @@ export function CodeEditorWithSyntax(): JSX.Element {
   const languages = refractor.listLanguages();
 
   const { isLoggedIn, defaultWsCode, wsCode } = useContext(AuthContext);
+  const { codeId, updateCodeHistoryList } = useContext(CodeHistoryContext);
 
   useEffect(() => {
     if (isLoggedIn && wsCode && wsCode === defaultWsCode) {
@@ -67,6 +69,7 @@ export function CodeEditorWithSyntax(): JSX.Element {
             const codeWithoutText = code as any;
             delete codeWithoutText.text;
             setCodeEntity(codeWithText);
+            codeId.set(codeWithText.id);
           }
         });
     }
@@ -136,6 +139,8 @@ export function CodeEditorWithSyntax(): JSX.Element {
         delete codeWithoutText.text;
         setCodeEntity(codeWithText);
       }
+
+      updateCodeHistoryList.set(!updateCodeHistoryList.get);
     } catch (e) {
       handleError(e as Error | AxiosError);
     }
