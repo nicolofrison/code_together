@@ -57,7 +57,7 @@ export function CodeEditorWithSyntax(): JSX.Element {
   async function updateCodeById(id: number, isSetText = false) {
     const codeWithText = await codeService.getCode(id);
 
-    const codeWithoutText = codeWithText as any;
+    const codeWithoutText = { ...codeWithText } as any;
     delete codeWithoutText.text;
     setCode(codeWithoutText as Code);
     codeId.set(id);
