@@ -1,12 +1,16 @@
 import AuthPost from '../models/http/requests/authPost';
-import BaseAuthService from './baseAuth.service';
-import UserUtils from '../utils/UserUtils';
+import UserSession from '../models/interfaces/userSession.interface';
 import User from '../models/interfaces/user.interface';
+import UserSignInResponse from '../models/http/responses/userSignIn.interface';
 
-export class UserService extends BaseAuthService {
+import UserUtils from '../utils/UserUtils';
+
+import BaseAuthService from './baseAuth.service';
+
+export default class UserService extends BaseAuthService {
   private static instance: UserService;
 
-  public static getInstance() {
+  public static getInstance(): UserService {
     if (!UserService.instance) {
       UserService.instance = new UserService();
     }
@@ -14,31 +18,30 @@ export class UserService extends BaseAuthService {
     return UserService.instance;
   }
 
-  public async signUp(authPost: AuthPost) {
+  public async signUp(authPost: AuthPost): Promise<User> {
     const response = await this.apiRequest().post('auth/signup', authPost);
 
-    return response.data as User;
+    return response.data;
   }
 
-  public async signIn(authPost: AuthPost) {
+  public async signIn(authPost: AuthPost): Promise<User> {
     const response = await this.apiRequest().post('auth/signin', authPost);
-    const user = response.data;
+    const userResponse = response.data as UserSignInResponse;
 
-    if (!user.accessToken || !user.wsCode) {
+    if (!userResponse.accessToken || !userResponse.wsCode) {
       throw new Error(
         'The response from the server is missing some information'
       );
     }
 
-    UserUtils.getInstance().setUser(user);
-    delete user.accessToken;
+    UserUtils.getInstance().setUser(userResponse as UserSession);
 
-    return user as User;
+    const user = { id: userResponse.id, email: userResponse.email } as User;
+
+    return user;
   }
 
   signOut() {
     UserUtils.getInstance().removeUser();
   }
 }
-
-export default UserService.getInstance();

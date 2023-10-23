@@ -1,14 +1,15 @@
-import axios, { CreateAxiosDefaults } from 'axios';
+import axios, { AxiosInstance, CreateAxiosDefaults } from 'axios';
+
 import UserUtils from '../utils/UserUtils';
 
 export default abstract class BaseAuthService {
   protected readonly baseUrl = `${process.env.REACT_APP_BACKEND_URL}:${process.env.REACT_APP_BACKEND_PORT}/`;
 
-  private getToken() {
+  private getToken(): string | null {
     return UserUtils.getInstance().getToken();
   }
 
-  protected apiRequest() {
+  protected apiRequest(): AxiosInstance {
     const defaultOptions: CreateAxiosDefaults<object> = {
       baseURL: this.baseUrl
     };

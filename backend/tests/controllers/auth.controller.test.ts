@@ -18,12 +18,37 @@ describe('AuthController', () => {
     const apiUrl = '/auth/signin';
     const server = new Server([authControllerInstance]);
 
-    test('sign in a user successfully', async () => {
+    test('sign in a user successfully without last code history', async () => {
       const req = { email: 'email', password: 'password' };
       const expectedUser = {
         email: req.email,
         id: 1
       };
+      userService.signIn = userService.findById = jest.fn(() =>
+        Promise.resolve(expectedUser as User)
+      );
+
+      const expectedWsCode = 133456;
+      const mockStaticGetInstance = jest.fn().mockReturnValue({
+        generateUniqueWsCode: () => expectedWsCode
+      });
+
+      WebSocketService.getInstance = mockStaticGetInstance;
+
+      const response = await request(server.app).post(apiUrl).send(req);
+      expect(response.statusCode).toBe(200);
+      expect(response.body).toMatchObject(expectedUser);
+      expect(response.body).toHaveProperty('accessToken');
+      expect(response.body).toHaveProperty('wsCode', expectedWsCode);
+    });
+
+    test('sign in a user successfully with last code history', async () => {
+      const req = { email: 'email', password: 'password' };
+      const expectedUser = {
+        email: req.email,
+        id: 1
+      } as User;
+
       userService.signIn = userService.findById = jest.fn(() =>
         Promise.resolve(expectedUser as User)
       );

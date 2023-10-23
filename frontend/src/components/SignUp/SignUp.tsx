@@ -1,16 +1,22 @@
 import { FormEvent, useEffect, useState } from 'react';
 
+import { ButtonGroup } from '@mui/material';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
 
-import userService from '../../services/user.service';
-import { FormControlLabel, Radio, RadioGroup } from '@mui/material';
 import validator from 'validator';
-import { AlertType } from '../Utils/TopAlert';
-import alertService from '../../services/alert.service';
+
 import handleError from '../../utils/errorHandler';
+
+import UserService from '../../services/user.service';
+import AlertService from '../../services/alert.service';
+
+import { AlertType } from '../Utils/TopAlert';
+
+const alertService = AlertService.getInstance();
+const userService = UserService.getInstance();
 
 const enum ModeEnum {
   signIn,
@@ -112,103 +118,104 @@ export default function SignUp() {
   };
 
   return (
-    <div>
-      <Typography component="h1" variant="h5">
-        Sign up
-      </Typography>
-      <form method="post" onSubmit={handleSubmit}>
-        <Grid container spacing={2}>
-          <Grid item xs={12}>
-            <RadioGroup
-              aria-label="mode"
-              name="mode"
-              value={mode}
-              onChange={(e) =>
-                e.target.value === ModeEnum.signIn.toString()
-                  ? setMode(ModeEnum.signIn)
-                  : setMode(ModeEnum.signUp)
-              }
-            >
-              <FormControlLabel
-                value={ModeEnum.signUp}
-                control={<Radio />}
-                label="Sign Up"
-              />
-              <FormControlLabel
-                value={ModeEnum.signIn}
-                control={<Radio />}
-                label="Sign In"
-              />
-            </RadioGroup>
-          </Grid>
-          <Grid item xs={12}>
-            <TextField
-              autoComplete="email"
-              name="email"
-              variant="outlined"
-              required
-              fullWidth
-              id="email"
-              label="Email"
-              autoFocus
-              error={errors.email}
-              helperText={!errors.email ? '' : 'The email is invalid'}
-              onChange={handleChange}
-              value={formData.email}
-            />
-          </Grid>
-          <Grid item xs={12}>
-            <TextField
-              variant="outlined"
-              required
-              fullWidth
-              name="password"
-              label="Password"
-              type="password"
-              id="password"
-              autoComplete="password"
-              error={errors.password}
-              helperText={
-                !errors.password
-                  ? ''
-                  : "The password doesn't match the pattern: at least 8 charactes length"
-              }
-              onChange={handleChange}
-              value={formData.password}
-            />
-          </Grid>
-          {mode === ModeEnum.signUp && (
+    <Grid container alignItems="center" direction="column" spacing={2}>
+      <Grid item>
+        <Typography component="h1" variant="h5">
+          Sign up
+        </Typography>
+      </Grid>
+      <Grid item>
+        <form method="post" onSubmit={handleSubmit}>
+          <Grid container alignItems="center" direction="column" spacing={2}>
+            <Grid item>
+              <ButtonGroup
+                variant="outlined"
+                aria-label="Select Sign In or Sign Up"
+              >
+                <Button
+                  id="signUpModeButton"
+                  onClick={() => setMode(ModeEnum.signUp)}
+                  variant={mode === ModeEnum.signUp ? 'contained' : 'outlined'}
+                >
+                  Sign Up
+                </Button>
+                <Button
+                  id="signInModeButton"
+                  onClick={() => setMode(ModeEnum.signIn)}
+                  variant={mode === ModeEnum.signIn ? 'contained' : 'outlined'}
+                >
+                  Sign In
+                </Button>
+              </ButtonGroup>
+            </Grid>
             <Grid item xs={12}>
-              {errors.confirmPassword.toString()}
+              <TextField
+                autoComplete="email"
+                name="email"
+                variant="outlined"
+                required
+                fullWidth
+                id="email"
+                label="Email"
+                autoFocus
+                error={errors.email}
+                helperText={!errors.email ? '' : 'The email is invalid'}
+                onChange={handleChange}
+                value={formData.email}
+              />
+            </Grid>
+            <Grid item xs={12}>
               <TextField
                 variant="outlined"
                 required
                 fullWidth
-                name="confirmPassword"
-                label="Confirm Password"
+                name="password"
+                label="Password"
                 type="password"
-                id="confirmPassword"
-                autoComplete="confirmPassword"
-                error={errors.confirmPassword}
+                id="password"
+                autoComplete="password"
+                error={errors.password}
                 helperText={
-                  !errors.confirmPassword ? '' : 'The passwords do not match'
+                  !errors.password
+                    ? ''
+                    : "The password doesn't match the pattern: at least 8 charactes length"
                 }
-                onChange={(e) => setConfirmPassword(e.target.value)}
+                onChange={handleChange}
+                value={formData.password}
               />
             </Grid>
-          )}
-          <Grid item xs={6}>
-            <Button
-              size="large"
-              variant="contained"
-              color="primary"
-              type="submit"
-            >
-              {mode === ModeEnum.signUp ? 'Sign Up' : 'Sign In'}
-            </Button>
+            {mode === ModeEnum.signUp && (
+              <Grid item xs={12}>
+                <TextField
+                  variant="outlined"
+                  required
+                  fullWidth
+                  name="confirmPassword"
+                  label="Confirm Password"
+                  type="password"
+                  id="confirmPassword"
+                  autoComplete="confirmPassword"
+                  error={errors.confirmPassword}
+                  helperText={
+                    !errors.confirmPassword ? '' : 'The passwords do not match'
+                  }
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                />
+              </Grid>
+            )}
+            <Grid item>
+              <Button
+                size="large"
+                variant="contained"
+                color="primary"
+                type="submit"
+              >
+                {mode === ModeEnum.signUp ? 'Sign Up' : 'Sign In'}
+              </Button>
+            </Grid>
           </Grid>
-        </Grid>
-      </form>
-    </div>
+        </form>
+      </Grid>
+    </Grid>
   );
 }

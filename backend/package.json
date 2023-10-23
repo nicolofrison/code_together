@@ -9,10 +9,10 @@
       "lint": "eslint src",
       "test": "jest",
       "typeorm": "typeorm-ts-node-commonjs",
-      "migration:generate": "typeorm-ts-node-commonjs migration:generate -d src/config/dataSource.ts",
+      "migration:generate": "ts-node ./migrateScript.ts",
       "migration:migrate": "typeorm-ts-node-commonjs migration:run -d src/config/dataSource.ts",
-      "migration:revert": "typeorm-ts-node-commonjs migration:revert -d src/config/dataSourceLocal.ts",
-      "migration:drop": "typeorm-ts-node-commonjs schema:drop -d src/config/dataSourceLocal.ts"
+      "migration:revert": "typeorm-ts-node-commonjs migration:revert -d src/config/dataSource.ts",
+      "migration:drop": "typeorm-ts-node-commonjs schema:drop -d src/config/dataSource.ts"
    },
    "author": "",
    "license": "ISC",
@@ -26,9 +26,11 @@
       "dotenv": "^16.3.1",
       "envalid": "^8.0.0",
       "express": "^4.18.2",
+      "express-validator": "^7.0.1",
       "jsonwebtoken": "^9.0.2",
       "pg": "^8.4.0",
       "reflect-metadata": "^0.1.13",
+      "simple-git": "^3.20.0",
       "supertest": "^6.3.3",
       "typeorm": "0.3.17",
       "ws": "^8.14.2"

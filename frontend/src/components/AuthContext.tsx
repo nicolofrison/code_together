@@ -1,6 +1,9 @@
 import { useState, createContext, useEffect } from 'react';
+
 import UserUtils from '../utils/UserUtils';
+
 import WebSocketService from '../services/webSocket.service';
+
 import WebSocketCodeDialog from './Utils/WebSocketCodeDialog';
 
 export const AuthContext = createContext<{
@@ -36,6 +39,8 @@ export const AuthContextProvider = ({ children }: Props) => {
       setIsDialogOpen(true);
     } else {
       WebSocketService.getInstance().closeSocket();
+      setDefaultWsCode('');
+      setWsCode('');
     }
   }, [isLoggedIn]);
 
@@ -46,12 +51,14 @@ export const AuthContextProvider = ({ children }: Props) => {
 
   return (
     <AuthContext.Provider value={{ isLoggedIn, defaultWsCode, wsCode }}>
-      <WebSocketCodeDialog
-        onSubmit={onTokenSubmit}
-        open={isDialogOpen}
-        handleClose={() => setIsDialogOpen(false)}
-        defaultWsCode={defaultWsCode}
-      />
+      {isDialogOpen && (
+        <WebSocketCodeDialog
+          onSubmit={onTokenSubmit}
+          open={isDialogOpen}
+          handleClose={() => setIsDialogOpen(false)}
+          defaultWsCode={defaultWsCode}
+        />
+      )}
       {children}
     </AuthContext.Provider>
   );

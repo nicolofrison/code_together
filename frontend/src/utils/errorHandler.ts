@@ -1,7 +1,12 @@
 import axios, { AxiosError } from 'axios';
-import alertService from '../services/alert.service';
+
 import { AlertType } from '../components/Utils/TopAlert';
-import userService from '../services/user.service';
+
+import AlertService from '../services/alert.service';
+import UserService from '../services/user.service';
+
+const alertService = AlertService.getInstance();
+const userService = UserService.getInstance();
 
 export default function handleError(error: Error | AxiosError) {
   if (axios.isAxiosError(error)) {
@@ -9,10 +14,7 @@ export default function handleError(error: Error | AxiosError) {
     console.error(error);
 
     const errorResponse = error.response;
-    const errorMessage =
-      errorResponse?.data?.translationKey ??
-      errorResponse?.data?.message ??
-      error.message;
+    const errorMessage = errorResponse?.data?.message ?? error.message;
     alertService.showAlert(errorMessage, AlertType.error);
 
     if (errorResponse?.status === 409) {
