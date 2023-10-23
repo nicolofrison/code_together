@@ -14,7 +14,8 @@ class CodeHistoryService {
 
   public async findAll(codeId: number): Promise<CodeHistory[]> {
     const codeHistories = await this.codeHistoryRepo.find({
-      where: { codeId }
+      where: { codeId },
+      order: { timestamp: 'DESC' }
     });
 
     return codeHistories;
