@@ -64,7 +64,7 @@ export function CodeEditorWithSyntax(): JSX.Element {
           }
         })
         .then((codeWithText) => {
-          if (codeWithText && codeWithText.text) {
+          if (codeWithText && typeof codeWithText.text === 'string') {
             setCode(codeWithText.text);
             const codeWithoutText = code as any;
             delete codeWithoutText.text;
