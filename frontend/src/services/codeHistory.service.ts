@@ -14,6 +14,14 @@ export default class CodeHistoryService extends BaseAuthService {
     return CodeHistoryService.instance;
   }
 
+  public async getAllByCodeId(codeId: number): Promise<CodeHistory[]> {
+    const response = await this.apiRequest().get(
+      `codeHistories?codeId=${codeId}`
+    );
+
+    return response.data;
+  }
+
   public async createCodeHistory(
     codeHistoryPost: CodeHistoryPost
   ): Promise<CodeHistory> {
