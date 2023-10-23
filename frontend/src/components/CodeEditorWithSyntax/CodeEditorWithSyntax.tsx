@@ -45,7 +45,7 @@ export function CodeEditorWithSyntax(): JSX.Element {
   const [isWSConnected, setIsWsConnected] = useState(false);
   const [language, setLanguage] = useState('javascript');
 
-  const [codeEntity, setCodeEntity] = useState(null as Code | null);
+  const [code, setCode] = useState(null as Code | null);
 
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
@@ -69,7 +69,7 @@ export function CodeEditorWithSyntax(): JSX.Element {
 
             const codeWithoutText = codeWithText as any;
             delete codeWithoutText.text;
-            setCodeEntity(codeWithoutText as Code);
+            setCode(codeWithoutText as Code);
             codeId.set(codeWithText.id);
           }
         });
@@ -119,7 +119,7 @@ export function CodeEditorWithSyntax(): JSX.Element {
     const user = UserUtils.getInstance().user as UserSession;
 
     const codeHistoryPost: CodeHistoryPost = {
-      codeId: codeEntity ? codeEntity.id : user.id.toString(),
+      codeId: code ? code.id : user.id.toString(),
       comment,
       text: text
     };
@@ -133,12 +133,12 @@ export function CodeEditorWithSyntax(): JSX.Element {
         AlertType.success
       );
 
-      if (!codeEntity) {
+      if (!code) {
         const codeWithText = await codeService.getCode(codeHistory.codeId);
 
         const codeWithoutText = codeWithText as any;
         delete codeWithoutText.text;
-        setCodeEntity(codeWithoutText as Code);
+        setCode(codeWithoutText as Code);
         codeId.set(codeWithText.id);
       }
 
