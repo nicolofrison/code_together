@@ -78,7 +78,7 @@ export default function CodeHistoryList() {
               </Button>
               <Divider />
               {codeHistories.map((ch) => (
-                <>
+                <div key={ch.id}>
                   <Paper>
                     <p>
                       <b>{ch.comment}</b>
@@ -86,7 +86,7 @@ export default function CodeHistoryList() {
                     <p>{ch.timestamp.toString()}</p>
                   </Paper>
                   <Divider />
-                </>
+                </div>
               ))}
             </Stack>
           </Grid>
