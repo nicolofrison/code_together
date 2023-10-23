@@ -54,25 +54,26 @@ export function CodeEditorWithSyntax(): JSX.Element {
   const { isLoggedIn, defaultWsCode, wsCode } = useContext(AuthContext);
   const { codeId, updateCodeHistoryList } = useContext(CodeHistoryContext);
 
+  async function updateCodeById(id: number, isSetText = false) {
+    const codeWithText = await codeService.getCode(id);
+
+    const codeWithoutText = codeWithText as any;
+    delete codeWithoutText.text;
+    setCode(codeWithoutText as Code);
+    codeId.set(id);
+
+    if (isSetText) {
+      setText(codeWithText.text);
+    }
+  }
+
   useEffect(() => {
     if (isLoggedIn && wsCode && wsCode === defaultWsCode) {
-      codeService
-        .getCodes()
-        .then((codes) => {
-          if (codes.length > 0) {
-            return codeService.getCode(codes[0].id);
-          }
-        })
-        .then((codeWithText) => {
-          if (codeWithText && typeof codeWithText.text === 'string') {
-            setText(codeWithText.text);
-
-            const codeWithoutText = codeWithText as any;
-            delete codeWithoutText.text;
-            setCode(codeWithoutText as Code);
-            codeId.set(codeWithText.id);
-          }
-        });
+      codeService.getCodes().then((codes) => {
+        if (codes.length > 0) {
+          updateCodeById(codes[0].id, true);
+        }
+      });
     }
   }, [wsCode]);
 
@@ -134,12 +135,7 @@ export function CodeEditorWithSyntax(): JSX.Element {
       );
 
       if (!code) {
-        const codeWithText = await codeService.getCode(codeHistory.codeId);
-
-        const codeWithoutText = codeWithText as any;
-        delete codeWithoutText.text;
-        setCode(codeWithoutText as Code);
-        codeId.set(codeWithText.id);
+        updateCodeById(codeHistory.codeId);
       }
 
       updateCodeHistoryList.set(!updateCodeHistoryList.get);
