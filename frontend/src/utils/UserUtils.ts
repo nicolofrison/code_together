@@ -30,14 +30,12 @@ export default class UserUtils extends Observable<boolean> {
 
   public get user(): UserSession | null {
     const jsonUser = sessionStorage.getItem(UserUtils.userKey);
-    console.log(jsonUser);
     if (!jsonUser) {
       this.isLoggedIn = false;
       return null;
     }
 
     const user = JSON.parse(jsonUser);
-    console.debug(user);
     if (!user.accessToken) {
       this.removeUser();
       return null;
