@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import {
   Grid,
@@ -11,69 +11,40 @@ import {
 import { Send } from '@mui/icons-material';
 
 import ChatMessage from '../../models/interfaces/chatMessage.interface';
+import { ChatData } from '../../models/interfaces/webSocketMessage.interface';
 
 import './Chat.css';
 import UserUtils from '../../utils/UserUtils';
 
-const exampleMessages = [
-  {
-    from: 'user1',
-    message: 'hi user 2'
-  },
-  {
-    from: 'a@a.com',
-    message: 'hi user 1'
-  },
-  {
-    from: 'a@a.com',
-    message: 'how are you?'
-  },
-  {
-    from: 'user1',
-    message: 'so far so good'
-  },
-  {
-    from: 'user1',
-    message: 'what about you?'
-  },
-  {
-    from: 'a@a.com',
-    message: 'Same shit'
-  },
-  {
-    from: 'user1',
-    message: 'hi user 2'
-  },
-  {
-    from: 'a@a.com',
-    message: 'hi user 1'
-  },
-  {
-    from: 'a@a.com',
-    message: 'how are you?'
-  },
-  {
-    from: 'user1',
-    message: 'so far so good'
-  },
-  {
-    from: 'user1',
-    message: 'what about you?'
-  },
-  {
-    from: 'a@a.com',
-    message: 'Same shit'
-  }
-] as ChatMessage[];
+import WebSocketService from '../../services/webSocket.service';
 
 export default function Chat() {
   const [message, setMessage] = useState('');
-  const [messagesList, setMessagesList] = useState(exampleMessages);
+  const [messagesList, setMessagesList] = useState([] as ChatMessage[]);
+  const messagesListRef: React.MutableRefObject<ChatMessage[]> = useRef([]);
+
+  messagesListRef.current = messagesList;
+
+  const [isWSConnected, setIsWsConnected] = useState(false);
 
   const currentUsername = UserUtils.getInstance().user?.email;
 
+  useEffect(() => {
+    WebSocketService.getInstance().setOnChatCallback((data: ChatData) => {
+      setMessagesList([...messagesListRef.current, { ...data } as ChatMessage]);
+    });
+    WebSocketService.getInstance().addOnConnectedCallback(
+      (isConnected: boolean) => {
+        setIsWsConnected(isConnected);
+      }
+    );
+  }, []);
+
   const sendMessage = () => {
-    console.log(message);
+    WebSocketService.getInstance().sendMessage({
+      from: currentUsername as string,
+      message
+    });
     setMessage('');
   };
 
@@ -128,7 +99,11 @@ export default function Chat() {
           />
         </Grid>
         <Grid item>
-          <IconButton color="primary" onClick={() => sendMessage()}>
+          <IconButton
+            disabled={!isWSConnected}
+            color="primary"
+            onClick={() => sendMessage()}
+          >
             <Send />
           </IconButton>
         </Grid>

@@ -2,7 +2,8 @@
 
 export enum MessageType {
   AUTH,
-  CODE
+  CODE,
+  CHAT
 }
 
 export interface CodeData {
@@ -21,7 +22,12 @@ export interface AuthData {
   text: string;
 }
 
+export interface ChatData {
+  from: string;
+  message: string;
+}
+
 export interface WebSocketMessage {
   type: MessageType;
-  data: AuthData | CodeData;
+  data: AuthData | CodeData | ChatData;
 }
