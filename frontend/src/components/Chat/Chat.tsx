@@ -13,10 +13,14 @@ import { Send } from '@mui/icons-material';
 import ChatMessage from '../../models/interfaces/chatMessage.interface';
 import { ChatData } from '../../models/interfaces/webSocketMessage.interface';
 
-import './Chat.css';
 import UserUtils from '../../utils/UserUtils';
 
 import WebSocketService from '../../services/webSocket.service';
+
+import './Chat.css';
+
+const userUtils = UserUtils.getInstance();
+const webSocketService = WebSocketService.getInstance();
 
 export default function Chat() {
   const [message, setMessage] = useState('');
@@ -27,21 +31,19 @@ export default function Chat() {
 
   const [isWSConnected, setIsWsConnected] = useState(false);
 
-  const currentUsername = UserUtils.getInstance().user?.email;
+  const currentUsername = userUtils.user?.email;
 
   useEffect(() => {
-    WebSocketService.getInstance().setOnChatCallback((data: ChatData) => {
+    webSocketService.setOnChatCallback((data: ChatData) => {
       setMessagesList([...messagesListRef.current, { ...data } as ChatMessage]);
     });
-    WebSocketService.getInstance().addOnConnectedCallback(
-      (isConnected: boolean) => {
-        setIsWsConnected(isConnected);
-      }
-    );
+    webSocketService.addOnConnectedCallback((isConnected: boolean) => {
+      setIsWsConnected(isConnected);
+    });
   }, []);
 
   const sendMessage = () => {
-    WebSocketService.getInstance().sendMessage({
+    webSocketService.sendMessage({
       from: currentUsername as string,
       message
     });
