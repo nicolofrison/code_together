@@ -1,6 +1,15 @@
 import { useState } from 'react';
 
-import { Grid, List, ListItem, Paper, Stack, TextField } from '@mui/material';
+import {
+  Grid,
+  IconButton,
+  List,
+  ListItem,
+  Paper,
+  TextField
+} from '@mui/material';
+import { Send } from '@mui/icons-material';
+
 import ChatMessage from '../../models/interfaces/chatMessage.interface';
 
 import './Chat.css';
@@ -63,6 +72,11 @@ export default function Chat() {
 
   const currentUsername = UserUtils.getInstance().user?.email;
 
+  const sendMessage = () => {
+    console.log(message);
+    setMessage('');
+  };
+
   return (
     <Grid
       container
@@ -94,17 +108,30 @@ export default function Chat() {
           ))}
         </List>
       </Grid>
-      <Grid item style={{ paddingTop: 0 }}>
-        <TextField
-          autoFocus
-          margin="dense"
-          id="wsCode"
-          label="Message"
-          fullWidth
-          variant="standard"
-          onChange={(e) => setMessage(e.target.value)}
-          value={message}
-        />
+      <Grid
+        item
+        container
+        style={{ paddingTop: 0 }}
+        alignItems="center"
+        wrap="nowrap"
+      >
+        <Grid item>
+          <TextField
+            autoFocus
+            margin="dense"
+            id="wsCode"
+            label="Message"
+            fullWidth
+            variant="standard"
+            onChange={(e) => setMessage(e.target.value)}
+            value={message}
+          />
+        </Grid>
+        <Grid item>
+          <IconButton color="primary" onClick={() => sendMessage()}>
+            <Send />
+          </IconButton>
+        </Grid>
       </Grid>
     </Grid>
   );
