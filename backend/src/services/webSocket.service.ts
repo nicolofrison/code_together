@@ -3,6 +3,7 @@ import { WebSocketServer, WebSocket } from 'ws';
 import {
   AuthCodes,
   AuthData,
+  ChatData,
   CodeData,
   MessageType,
   WebSocketMessage
@@ -96,6 +97,9 @@ export default class WebSocketService {
         case MessageType.CODE:
           this.sendCode(ws, message.data as CodeData);
           break;
+        case MessageType.CHAT:
+          this.sendChat(ws, message.data as ChatData);
+          break;
         default:
           // error
           console.error('message type error');
@@ -121,6 +125,23 @@ export default class WebSocketService {
       .forEach((wsClient) => {
         this.sendObj(wsClient, {
           type: MessageType.CODE,
+          data
+        });
+      });
+  }
+
+  private sendChat(ws: WebSocket, data: ChatData) {
+    console.log('On Chat');
+    if (!Object.values(this.wsClients).includes(ws)) {
+      // error
+      console.error('not authenticated error');
+    }
+
+    Object.values(this.wsClients)
+      .filter((wsClient) => wsClient.protocol === ws.protocol)
+      .forEach((wsClient) => {
+        this.sendObj(wsClient, {
+          type: MessageType.CHAT,
           data
         });
       });
