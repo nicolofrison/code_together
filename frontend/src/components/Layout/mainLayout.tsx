@@ -9,6 +9,7 @@ import Chat from '../Chat/Chat';
 import { CodeEditorWithSyntax } from '../CodeEditorWithSyntax/CodeEditorWithSyntax';
 import CodeHistoryList from '../CodeHistory/CodeHistoryList';
 import SignUp from '../SignUp/SignUp';
+import CardItem from './CardItem';
 
 const userService = UserService.getInstance();
 
@@ -45,46 +46,19 @@ export default function MainLayout() {
   return (
     <Grid container spacing={2} height="100%" style={{ marginTop: 0 }}>
       <Grid style={{ height: '100%' }} item xs={12} md={3} lg={3}>
-        <Card style={{ height: '100%' }}>
-          {/* The padding bottom is 24px, and the top is 16px */}
-          <CardContent
-            style={{
-              position: 'relative',
-              height: 'calc(100% - 32px)',
-              paddingBottom: '16px'
-            }}
-          >
-            <Auth />
-          </CardContent>
-        </Card>
+        <CardItem>
+          <Auth />
+        </CardItem>
       </Grid>
       <Grid item xs={12} md={6} lg={6} overflow={'auto'}>
-        <Card style={{ height: '100%' }}>
-          {/* The padding bottom is 24px */}
-          <CardContent
-            style={{
-              position: 'relative',
-              paddingTop: 0,
-              height: 'calc(100% - 24px)'
-            }}
-          >
-            <CodeEditorWithSyntax />
-          </CardContent>
-        </Card>
+        <CardItem>
+          <CodeEditorWithSyntax />
+        </CardItem>
       </Grid>
       <Grid style={{ height: '100%' }} item xs={12} md={3} lg={3}>
-        <Card style={{ height: '100%' }}>
-          {/* The padding bottom is 24px, and the top is 16px */}
-          <CardContent
-            style={{
-              position: 'relative',
-              height: 'calc(100% - 32px)',
-              paddingBottom: '16px'
-            }}
-          >
-            <Chat />
-          </CardContent>
-        </Card>
+        <CardItem>
+          <Chat />
+        </CardItem>
       </Grid>
     </Grid>
   );

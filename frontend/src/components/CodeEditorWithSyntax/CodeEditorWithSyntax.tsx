@@ -157,9 +157,7 @@ export function CodeEditorWithSyntax(): JSX.Element {
         alignItems="center"
         justifyContent="space-between"
       >
-        <Grid item>
-          <p>{wsCode ? `Connected to ${wsCode}` : <br />}</p>
-        </Grid>
+        <Grid item>{wsCode ? `Connected to ${wsCode}` : <br />}</Grid>
         <Grid item>
           <Select
             labelId="language-select-label"
