@@ -13,7 +13,7 @@ type Props = {
 
 export default function CardItem({ children }: Props) {
   return (
-    <Card style={{ height: '100%' }}>
+    <Card elevation={3} style={{ height: '100%' }}>
       {/* The padding bottom is 24px, and the top is 16px */}
       <CardContent style={cardContentStyle}>{children}</CardContent>
     </Card>
