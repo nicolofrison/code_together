@@ -4,7 +4,7 @@ import { Button, Grid } from '@mui/material';
 
 import UserService from '../../services/user.service';
 
-import { AuthContext } from '../AuthContext';
+import { AuthContext } from '../contexts/AuthContext';
 import SignUp from '../SignUp/SignUp';
 import CodeHistoryList from '../CodeHistory/CodeHistoryList';
 

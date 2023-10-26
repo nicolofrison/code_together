@@ -28,7 +28,7 @@ import WebSocketService from '../../services/webSocket.service';
 import CodeService from '../../services/code.service';
 import CodeHistoryService from '../../services/codeHistory.service';
 
-import { AuthContext } from '../AuthContext';
+import { AuthContext } from '../contexts/AuthContext';
 import { CodeHistoryContext } from '../contexts/CodeHistoryContext';
 import CommitDialog from '../Utils/CommitDialog';
 import { AlertType } from '../Utils/TopAlert';

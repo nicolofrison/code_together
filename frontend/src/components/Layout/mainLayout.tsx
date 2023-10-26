@@ -2,7 +2,7 @@ import { useContext } from 'react';
 
 import { Grid } from '@mui/material';
 
-import { AuthContext } from '../AuthContext';
+import { AuthContext } from '../contexts/AuthContext';
 import CardItem from './cardItem';
 import Chat from '../Chat/Chat';
 import { CodeEditorWithSyntax } from '../CodeEditorWithSyntax/CodeEditorWithSyntax';

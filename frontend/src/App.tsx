@@ -1,6 +1,6 @@
 import { Container } from '@mui/material';
 
-import { AuthContextProvider } from './components/AuthContext';
+import { AuthContextProvider } from './components/contexts/AuthContext';
 import { CodeHistoryContextProvider } from './components/contexts/CodeHistoryContext';
 import TopAlert from './components/Utils/TopAlert';
 import MainLayout from './components/Layout/mainLayout';
