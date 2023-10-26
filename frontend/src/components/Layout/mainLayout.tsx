@@ -13,7 +13,7 @@ export default function MainLayout() {
           <LeftColumn />
         </CardItem>
       </Grid>
-      <Grid item xs={12} md={6} lg={6} height="100%" overflow={'auto'}>
+      <Grid item xs={12} md={6} lg={6} height="100%">
         <CardItem>
           <CodeEditorWithSyntax />
         </CardItem>
