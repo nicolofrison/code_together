@@ -6,7 +6,8 @@ import {
   List,
   ListItem,
   Paper,
-  TextField
+  TextField,
+  Typography
 } from '@mui/material';
 import { Send } from '@mui/icons-material';
 
@@ -56,14 +57,16 @@ export default function Chat() {
       justifyContent="center"
       height="100%"
       spacing={2}
+      direction="column"
+      flexWrap="nowrap"
       style={{ marginTop: 0 }}
     >
-      <Grid
-        item
-        width="100%"
-        height="calc(100% - 60px)"
-        style={{ overflowY: 'auto' }}
-      >
+      <Grid item style={{ paddingTop: 0 }}>
+        <Typography textAlign="center" component="h1" variant="h5">
+          Chat
+        </Typography>
+      </Grid>
+      <Grid item flexGrow={2} width="100%" overflow="auto">
         <List>
           {messagesList.map((m, i) => (
             <ListItem
