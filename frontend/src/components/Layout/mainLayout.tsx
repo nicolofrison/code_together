@@ -8,17 +8,17 @@ import LeftColumn from './LeftColumn';
 export default function MainLayout() {
   return (
     <Grid container spacing={2} height="100%" style={{ marginTop: 0 }}>
-      <Grid style={{ height: '100%' }} item xs={12} md={3} lg={3}>
+      <Grid item xs={12} md={3} lg={3} height="100%">
         <CardItem>
           <LeftColumn />
         </CardItem>
       </Grid>
-      <Grid item xs={12} md={6} lg={6} overflow={'auto'}>
+      <Grid item xs={12} md={6} lg={6} height="100%" overflow={'auto'}>
         <CardItem>
           <CodeEditorWithSyntax />
         </CardItem>
       </Grid>
-      <Grid style={{ height: '100%' }} item xs={12} md={3} lg={3}>
+      <Grid item xs={12} md={3} lg={3} height="100%">
         <CardItem>
           <Chat />
         </CardItem>
