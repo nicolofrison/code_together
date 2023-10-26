@@ -18,6 +18,7 @@ import TopAlert from './components/Utils/TopAlert';
 import UserService from './services/user.service';
 import CodeHistoryList from './components/CodeHistory/CodeHistoryList';
 import { CodeHistoryContextProvider } from './components/contexts/CodeHistoryContext';
+import Chat from './components/Chat/Chat';
 
 const userService = UserService.getInstance();
 
@@ -74,7 +75,7 @@ function App() {
                   </CardContent>
                 </Card>
               </Grid>
-              <Grid item xs={12} md={9} lg={9} overflow={'auto'}>
+              <Grid item xs={12} md={6} lg={6} overflow={'auto'}>
                 <Card style={{ height: '100%' }}>
                   {/* The padding bottom is 24px */}
                   <CardContent
@@ -85,6 +86,20 @@ function App() {
                     }}
                   >
                     <CodeEditorWithSyntax />
+                  </CardContent>
+                </Card>
+              </Grid>
+              <Grid style={{ height: '100%' }} item xs={12} md={3} lg={3}>
+                <Card style={{ height: '100%' }}>
+                  {/* The padding bottom is 24px, and the top is 16px */}
+                  <CardContent
+                    style={{
+                      position: 'relative',
+                      height: 'calc(100% - 32px)',
+                      paddingBottom: '16px'
+                    }}
+                  >
+                    <Chat />
                   </CardContent>
                 </Card>
               </Grid>
