@@ -145,7 +145,13 @@ export function CodeEditorWithSyntax(): JSX.Element {
   };
 
   return (
-    <Grid container direction="column" alignItems="stretch" height="100%">
+    <Grid
+      container
+      direction="column"
+      alignItems="stretch"
+      height="100%"
+      flexWrap="nowrap"
+    >
       <CommitDialog
         onSubmit={onCommitSubmit}
         open={isDialogOpen}
@@ -153,6 +159,7 @@ export function CodeEditorWithSyntax(): JSX.Element {
       />
       <Grid
         width="100%"
+        item
         container
         alignItems="center"
         justifyContent="space-between"
@@ -185,7 +192,7 @@ export function CodeEditorWithSyntax(): JSX.Element {
           </Grid>
         )}
       </Grid>
-      <Grid flexGrow={1}>
+      <Grid item height="100%" overflow="hidden">
         <CodeEditor
           disabled={!isAllowedToWrite()}
           value={text}
@@ -194,6 +201,7 @@ export function CodeEditorWithSyntax(): JSX.Element {
           onChange={onChange}
           padding={15}
           style={{
+            overflowY: 'auto',
             fontSize: 12,
             fontFamily:
               'ui-monospace,SFMono-Regular,SF Mono,Consolas,Liberation Mono,Menlo,monospace',
