@@ -1,9 +1,9 @@
 import { Grid } from '@mui/material';
 
-import CardItem from './CardItem';
+import CardItem from './cardItem';
 import Chat from '../Chat/Chat';
 import { CodeEditorWithSyntax } from '../CodeEditorWithSyntax/CodeEditorWithSyntax';
-import LeftColumn from './LeftColumn';
+import LeftColumn from './leftColumn';
 
 export default function MainLayout() {
   return (
