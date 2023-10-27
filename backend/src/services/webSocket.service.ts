@@ -77,11 +77,11 @@ export default class WebSocketService {
       return;
     }
 
-    const token = Object.entries(this.wsClients).find(
+    const wsClient = Object.entries(this.wsClients).find(
       (item) => item[1] === ws
-    )[0];
-    if (token) {
-      delete this.wsClients[token];
+    );
+    if (wsClient) {
+      delete this.wsClients[wsClient[0]];
     }
   };
 
