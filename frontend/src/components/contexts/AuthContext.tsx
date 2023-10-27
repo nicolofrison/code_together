@@ -1,10 +1,10 @@
 import { useState, createContext, useEffect } from 'react';
 
-import UserUtils from '../utils/UserUtils';
+import UserUtils from '../../utils/UserUtils';
 
-import WebSocketService from '../services/webSocket.service';
+import WebSocketService from '../../services/webSocket.service';
 
-import WebSocketCodeDialog from './Utils/WebSocketCodeDialog';
+import WebSocketCodeDialog from '../Utils/WebSocketCodeDialog';
 
 export const AuthContext = createContext<{
   isLoggedIn: boolean;

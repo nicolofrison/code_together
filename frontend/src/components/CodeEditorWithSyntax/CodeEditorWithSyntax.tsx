@@ -28,7 +28,7 @@ import WebSocketService from '../../services/webSocket.service';
 import CodeService from '../../services/code.service';
 import CodeHistoryService from '../../services/codeHistory.service';
 
-import { AuthContext } from '../AuthContext';
+import { AuthContext } from '../contexts/AuthContext';
 import { CodeHistoryContext } from '../contexts/CodeHistoryContext';
 import CommitDialog from '../Utils/CommitDialog';
 import { AlertType } from '../Utils/TopAlert';
@@ -145,7 +145,13 @@ export function CodeEditorWithSyntax(): JSX.Element {
   };
 
   return (
-    <Grid container direction="column" alignItems="stretch" height="100%">
+    <Grid
+      container
+      direction="column"
+      alignItems="stretch"
+      height="100%"
+      flexWrap="nowrap"
+    >
       <CommitDialog
         onSubmit={onCommitSubmit}
         open={isDialogOpen}
@@ -153,13 +159,12 @@ export function CodeEditorWithSyntax(): JSX.Element {
       />
       <Grid
         width="100%"
+        item
         container
         alignItems="center"
         justifyContent="space-between"
       >
-        <Grid item>
-          <p>{wsCode ? `Connected to ${wsCode}` : <br />}</p>
-        </Grid>
+        <Grid item>{wsCode ? `Connected to ${wsCode}` : <br />}</Grid>
         <Grid item>
           <Select
             labelId="language-select-label"
@@ -187,7 +192,7 @@ export function CodeEditorWithSyntax(): JSX.Element {
           </Grid>
         )}
       </Grid>
-      <Grid flexGrow={1}>
+      <Grid item height="100%" overflow="hidden">
         <CodeEditor
           disabled={!isAllowedToWrite()}
           value={text}
@@ -196,6 +201,7 @@ export function CodeEditorWithSyntax(): JSX.Element {
           onChange={onChange}
           padding={15}
           style={{
+            overflowY: 'auto',
             fontSize: 12,
             fontFamily:
               'ui-monospace,SFMono-Regular,SF Mono,Consolas,Liberation Mono,Menlo,monospace',
