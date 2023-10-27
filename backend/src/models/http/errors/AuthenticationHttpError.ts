@@ -14,7 +14,7 @@ export class AuthenticationHttpError extends HttpError {
     switch (type) {
       case AuthenticationHttpErrorType.ExpiredAuthenticationToken:
         super(
-          409,
+          419,
           'The authentication token is expired',
           'expiredAuthenticationToken'
         );

@@ -17,7 +17,7 @@ export default function handleError(error: Error | AxiosError) {
     const errorMessage = errorResponse?.data?.message ?? error.message;
     alertService.showAlert(errorMessage, AlertType.error);
 
-    if (errorResponse?.status === 409) {
+    if (errorResponse?.status === 419) {
       userService.signOut();
     }
   } else {
