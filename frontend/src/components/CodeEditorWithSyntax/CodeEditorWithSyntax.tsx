@@ -192,7 +192,7 @@ export function CodeEditorWithSyntax(): JSX.Element {
           </Grid>
         )}
       </Grid>
-      <Grid item height="100%" overflow="hidden">
+      <Grid item height="100%" overflow="auto">
         <CodeEditor
           disabled={!isAllowedToWrite()}
           value={text}
@@ -201,12 +201,11 @@ export function CodeEditorWithSyntax(): JSX.Element {
           onChange={onChange}
           padding={15}
           style={{
-            overflowY: 'auto',
             fontSize: 12,
             fontFamily:
               'ui-monospace,SFMono-Regular,SF Mono,Consolas,Liberation Mono,Menlo,monospace',
             width: '100%',
-            height: '100%'
+            minHeight: '100%'
           }}
         />
       </Grid>
