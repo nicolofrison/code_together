@@ -25,12 +25,14 @@ export const AuthContextProvider = ({ children }: Props) => {
   const [defaultWsCode, setDefaultWsCode] = useState('');
   const [wsCode, setWsCode] = useState('');
 
-  UserUtils.getInstance().attach({
-    update(value: boolean) {
-      console.log('update: ' + value);
-      setIsLoggedIn(value);
-    }
-  });
+  useEffect(() => {
+    UserUtils.getInstance().attach({
+      update(value: boolean) {
+        console.log('update: ' + value);
+        setIsLoggedIn(value);
+      }
+    });
+  }, []);
 
   useEffect(() => {
     console.log('effect');
