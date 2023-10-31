@@ -24,7 +24,7 @@ export default class UserUtils extends Observable<boolean> {
     this._isLoggedIn = value;
 
     if (toNotify) {
-      this.notify(this.isLoggedIn);
+      this.notify(value);
     }
   }
 

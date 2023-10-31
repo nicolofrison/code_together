@@ -30,6 +30,8 @@ export default function CodeHistoryList() {
       codeHistoryService.getAllByCodeId(codeId.get).then((list) => {
         setCodeHistories(list);
       });
+    } else {
+      setCodeHistories([]);
     }
   };
 
@@ -55,6 +57,14 @@ export default function CodeHistoryList() {
   useEffect(() => {
     updateCodeHistories();
   }, [updateCodeHistoryList.get, codeId.get]);
+
+  useEffect(
+    () => () => {
+      console.log('cleaned up');
+      codeId.set(-1);
+    },
+    []
+  );
 
   return (
     <>

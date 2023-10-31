@@ -72,6 +72,8 @@ export function CodeEditorWithSyntax(): JSX.Element {
       codeService.getCodes().then((codes) => {
         if (codes.length > 0) {
           updateCodeById(codes[0].id, true);
+        } else {
+          setCode(null);
         }
       });
     }

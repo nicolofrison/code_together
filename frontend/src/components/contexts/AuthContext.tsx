@@ -35,7 +35,7 @@ export const AuthContextProvider = ({ children }: Props) => {
   }, []);
 
   useEffect(() => {
-    console.log('effect');
+    console.log('AuthContext isLoggedIn effect');
     setDefaultWsCode(UserUtils.getInstance().getDefaultWsCode());
     if (isLoggedIn) {
       setIsDialogOpen(true);
