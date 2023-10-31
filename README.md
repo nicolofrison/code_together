@@ -1,58 +1,70 @@
 # code_together
+
 Web-based code editor that allows multiple users to collaboratively edit code in real-time
 
-You are tasked with creating a web-based code editor that allows multiple users to collaboratively edit code in real-time, with the specific requirement of hosting it locally. The application should support the following features:
+## Features
+Guest:
+- Edit code
+- Set code editor syntax
+- Sign up
+- Sign in
+Authenticated user:
+- Create or join a code session (through code)
+- Edit code shared in real time with other users in the same session
+- Chat with the other users in the same session
+- Sign out
+- With a created session:
+  - show code history
+  - delete last code history
+  - commit current code
+- With a joined session:
+  - Cannot edit before the receipt of the code from anyone else in the group
 
-Real-Time Collaboration: Multiple users should be able to connect to the same code editor session simultaneously. Any changes made by one user should be immediately reflected on the screens of all other connected users in real-time, even when hosted on a local network.
+The reload of the browser and the logout would reset the chat
+The reload of the browser would reset the code editor
+The sign in would reset the code either if the user choose to create a session and there is already an history or the user join a session
 
-User Authentication: Implement user authentication and authorization for local users. Users should be able to create accounts, log in, and join or create collaborative code editing sessions within the local network.
+## Technologies used
 
-Code Syntax Highlighting: The code editor should support syntax highlighting for popular programming languages (e.g., JavaScript, Python, HTML, CSS).
+Database: postgres through docker
+Backend: nodejs, express, typescript, websocket, typeorm, jwt, git
+Frontend: React, MaterialUI, websocket, axios
 
-Code Versioning: Implement a basic version control system that allows users to view the revision history, revert to previous versions, and leave comments on specific code changes.
+## Installation
 
-Chat Integration: Include a chat feature within the application to allow users to communicate with each other while collaborating on code, all within the confines of a local network.
+I have used node v18.18.0 to develop the application
 
-Error Handling: Handle synchronization conflicts gracefully, ensuring that if two users edit the same line of code simultaneously, it doesn't result in data corruption, even in a local hosting environment.
+### Database
+A database is provided through the docker-compose
+Use the same data in the backend .env and the docker-compose
 
-User Interface: Design a user-friendly interface that is responsive and intuitive to use for local users.
+### Backend
+Go to the `backend` folder and run `npm install`
 
-Local Deployment: Deploy the application to a local server or network environment, such as a local intranet or a network-attached server. Provide detailed documentation on the local deployment process.
+#### .env
+PORT=8080
 
-Tech Stack:
+JWT_SECRET=secret
+JWT_EXPIRATION=#time in seconds
 
-Frontend: Choose a modern JavaScript framework (e.g., React, Angular, or Vue.js) and use WebSocket or a similar technology for real-time updates.
+PGHOST=databse url
+PGPORT=databse port
+PGUSER=databse user
+PGPASSWORD=databse password
+PGDATABASE=databse name
 
-Backend: Use a server-side technology like Node.js or Django, and employ WebSockets or another suitable technology for real-time communication in a local network.
+#### Database migrations
+To install the migrations in the database, with database up and running, `npm run migration:migrate`
 
-Database: Choose an appropriate database system (e.g., PostgreSQL or MongoDB) for storing user data and code revisions in a local context.
+#### Run
+Execute `npm start`
 
-Version Control: Integrate a version control system like Git or implement a custom solution suitable for local hosting.
+### Frontend
+Go to the `frontend` folder and run `npm install`
 
-Chat: Implement the chat feature using WebSocket or a chat library for local users.
+#### .env
+REACT_APP_BACKEND_URL=backend url
+REACT_APP_BACKEND_PORT=backend port
 
-Local Deployment: Deploy the application to a local server or network environment.
-
-Additional Considerations:
-
-Ensure the codebase is well-structured, maintainable, and follows best practices for local hosting.
-
-Write comprehensive documentation for both users and developers, specifically tailored to local deployment.
-
-Implement security measures to protect user data and prevent unauthorized access within the local network environment.
-
-Optimize the application for performance, especially concerning real-time updates in a local hosting context.
-
-This project showcases your ability to create a locally hosted, full-stack, real-time collaborative code editor with various complex features, making it an impressive addition to a full-stack developer's resume.
-
-
-
-# Installation
-
-## backend
-npm install
-with database up and running, npm run migration:migrate
-
-### to create new migration
-Create/Edit any entity
-npm run migration:generate Name-of-the-migration
+#### Run
+Execute `npm start`

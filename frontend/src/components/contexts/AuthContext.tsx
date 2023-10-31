@@ -1,10 +1,10 @@
 import { useState, createContext, useEffect } from 'react';
 
-import UserUtils from '../utils/UserUtils';
+import UserUtils from '../../utils/UserUtils';
 
-import WebSocketService from '../services/webSocket.service';
+import WebSocketService from '../../services/webSocket.service';
 
-import WebSocketCodeDialog from './Utils/WebSocketCodeDialog';
+import WebSocketCodeDialog from '../Utils/WebSocketCodeDialog';
 
 export const AuthContext = createContext<{
   isLoggedIn: boolean;
@@ -25,15 +25,17 @@ export const AuthContextProvider = ({ children }: Props) => {
   const [defaultWsCode, setDefaultWsCode] = useState('');
   const [wsCode, setWsCode] = useState('');
 
-  UserUtils.getInstance().attach({
-    update(value: boolean) {
-      console.log('update: ' + value);
-      setIsLoggedIn(value);
-    }
-  });
+  useEffect(() => {
+    UserUtils.getInstance().attach({
+      update(value: boolean) {
+        console.log('update: ' + value);
+        setIsLoggedIn(value);
+      }
+    });
+  }, []);
 
   useEffect(() => {
-    console.log('effect');
+    console.log('AuthContext isLoggedIn effect');
     setDefaultWsCode(UserUtils.getInstance().getDefaultWsCode());
     if (isLoggedIn) {
       setIsDialogOpen(true);

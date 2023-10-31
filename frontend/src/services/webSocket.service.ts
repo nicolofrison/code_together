@@ -1,6 +1,7 @@
 import {
   AuthCodes,
   AuthData,
+  ChatData,
   CodeData,
   MessageType,
   WebSocketMessage
@@ -39,6 +40,17 @@ export default class WebSocketService extends BaseAuthService {
 
   public removeOnCodeCallback() {
     this.onCodeCallback = undefined;
+  }
+  // #endregion
+
+  // #region OnChatCallback
+  private onChatCallback: ((data: ChatData) => void) | undefined;
+  public setOnChatCallback(callback: (data: ChatData) => void) {
+    this.onChatCallback = callback;
+  }
+
+  public removeOnChatCallback() {
+    this.onChatCallback = undefined;
   }
   // #endregion
 
@@ -110,6 +122,13 @@ export default class WebSocketService extends BaseAuthService {
     });
   };
 
+  public sendMessage = (data: ChatData) => {
+    this.sendJsonMessage({
+      type: MessageType.CHAT,
+      data
+    });
+  };
+
   private onMessage = (event: WebSocketEventMap['message']) => {
     console.log('On Message');
     const data = event.data;
@@ -123,6 +142,10 @@ export default class WebSocketService extends BaseAuthService {
         case MessageType.CODE:
           // code incoming
           this.onCodeInternal(message.data as CodeData);
+          break;
+        case MessageType.CHAT:
+          // code incoming
+          this.onMessageInternal(message.data as ChatData);
           break;
         default:
           // error
@@ -158,6 +181,12 @@ export default class WebSocketService extends BaseAuthService {
   private onCodeInternal = (data: CodeData) => {
     if (this.onCodeCallback) {
       this.onCodeCallback(data);
+    }
+  };
+
+  private onMessageInternal = (data: ChatData) => {
+    if (this.onChatCallback) {
+      this.onChatCallback(data);
     }
   };
 }
