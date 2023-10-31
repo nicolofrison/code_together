@@ -20,14 +20,14 @@ Authenticated user:
 - With a joined session:
   - Cannot edit before the receipt of the code from anyone else in the group
 
-The reload of the browser and the logout would reset the chat
-The reload of the browser would reset the code editor
+The reload of the browser and the logout would reset the chat\
+The reload of the browser would reset the code editor\
 The sign in would reset the code either if the user choose to create a session and there is already an history or the user join a session
 
 ## Technologies used
 
-Database: postgres through docker
-Backend: nodejs, express, typescript, websocket, typeorm, jwt, git
+Database: postgres through docker\
+Backend: nodejs, express, typescript, websocket, typeorm, jwt, git\
 Frontend: React, MaterialUI, websocket, axios
 
 ## Installation
@@ -42,6 +42,7 @@ Use the same data in the backend .env and the docker-compose
 Go to the `backend` folder and run `npm install`
 
 #### .env
+```
 PORT=8080
 
 JWT_SECRET=secret
@@ -52,7 +53,7 @@ PGPORT=databse port
 PGUSER=databse user
 PGPASSWORD=databse password
 PGDATABASE=databse name
-
+```
 #### Database migrations
 To install the migrations in the database, with database up and running, `npm run migration:migrate`
 
@@ -63,8 +64,9 @@ Execute `npm start`
 Go to the `frontend` folder and run `npm install`
 
 #### .env
+```
 REACT_APP_BACKEND_URL=backend url
 REACT_APP_BACKEND_PORT=backend port
-
+```
 #### Run
 Execute `npm start`
